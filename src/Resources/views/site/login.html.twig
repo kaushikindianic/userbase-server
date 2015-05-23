@@ -1,0 +1,25 @@
+{% extends "site/layout.html.twig" %}
+
+{% block content %}
+<h1>Login</h1>
+<form action="/login_check" method="post">
+    <div class="form-group form-group form-group">
+        
+        <div class="input-group">
+            <input name="_username" autofocus class="form-control" placeholder="Username" required="required" style="Xtext-align: right;" />
+            <div class="input-group-addon"><i class="fa fa-star"></i> userbase.web</div>
+        </div>
+    </div>
+
+    <div class="form-group form-group">
+         <input name="_password" class="form-control" placeholder="Password" type="password" required="required" />
+    </div>
+
+
+    <button type="submit" class="btn btn-success btn-lg">Login</button><br />
+    <br />
+    Don't have an account yet? <a href="/signup" class="">Signup here</a><br />
+    Lost your password? <a href="/password-reset" class="">Click here</a><br />
+</form>
+
+{% endblock %}

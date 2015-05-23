@@ -1,0 +1,13 @@
+<schema>
+
+    <table name="user">
+        <column name="name" type="varchar(128)" />
+        <column name="display_name" type="varchar(128)" />
+        <column name="password" type="varchar(128)" />
+        <column name="email" type="varchar(128)" />
+        <column name="bio" type="text" />
+        <column name="created_at" type="integer" />
+        <column name="deleted_at" type="integer" />
+    </table>
+
+</schema>

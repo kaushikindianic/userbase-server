@@ -1,0 +1,24 @@
+index:
+    pattern: /
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::indexAction }
+
+login:
+    pattern: /login
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
+
+login_submit:
+    pattern: /login/submit
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::loginSubmitAction }
+
+signup:
+    pattern: /signup
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::signupAction }
+
+signup_submit:
+    pattern: /signup/submit
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::signupSubmitAction }
+
+
+api_v1_root:
+    pattern: /api/v1
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::indexAction }

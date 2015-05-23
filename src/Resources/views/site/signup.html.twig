@@ -1,0 +1,23 @@
+{% extends "site/layout.html.twig" %}
+
+{% block content %}
+<h1>Signup</h1>
+<form action="/signup/submit" method="post">
+    <div class="form-group form-group form-group">
+        
+        <div class="input-group">
+            <input name="_username" autofocus class="form-control" placeholder="Username" required="required" style="Xtext-align: right;" />
+            <div class="input-group-addon"><i class="fa fa-star"></i> userbase.web</div>
+        </div>
+    </div>
+
+    <div class="form-group form-group">
+         <input name="_email" class="form-control" placeholder="E-mail" type="email" required="required" />
+    </div>
+
+    <button type="submit" class="btn btn-success btn-lg">Sign up</button><br />
+    <br />
+    Already have an account? <a href="/login" class="">Login here</a>
+</form>
+
+{% endblock %}
