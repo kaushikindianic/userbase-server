@@ -12,22 +12,37 @@ class SiteController
 
     public function indexAction(Application $app, Request $request)
     {
+        
+        if (isset($app['user'])) {
+            return $app->redirect("/cp");
+        }
         $data = array();
+        
+        $error = $app['security.last_error']($request);
+        
         return new Response($app['twig']->render(
             'site/index.html.twig',
-            array($data)
+            $data
         ));
     }
     
     public function loginAction(Application $app, Request $request)
     {
+        if (isset($app['user'])) {
+            return $app->redirect("/cp");
+        }
+        
         $data = array();
+        //echo $error;
         
         $error = $app['security.last_error']($request);
-        //echo $error;
+        if ($error) {
+            $data['errormessage'] = $error;
+        }
+        
         return new Response($app['twig']->render(
             'site/login.html.twig',
-            array($data)
+            $data
         ));
     }
 
@@ -44,13 +59,19 @@ class SiteController
     {
         $username = $request->request->get('_username');
         $email = $request->request->get('_email');
-        
+        $password = $request->request->get('_password');
+        $password2 = $request->request->get('_password2');
+        if ($password != $password2) {
+            return $app->redirect("/signup?errorcode=E02");
+        }
+
         $repo = $app->getUserRepository();
         try {
             $user = $repo->register($username, $email);
         } catch (Exception $e) {
             return $app->redirect("/signup?errorcode=E01");
         }
+        $repo->setPassword($username, $password);
         
         exit("UN$username EM:$email " . $user->getUsername());
         

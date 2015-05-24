@@ -1,0 +1,14 @@
+{% extends "site/cp/layout.html.twig" %}
+
+{% block content %}
+{% if user is defined %}
+<h1>CP of {{ user.getName() }}</h1>
+{% else %}
+<h1>CP Anon</h1>
+{% endif %}
+<a href="/logout" class="btn btn-default btn-lg">Logout</a><br />
+
+        
+
+
+{% endblock %}

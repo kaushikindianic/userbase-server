@@ -18,6 +18,9 @@ signup_submit:
     pattern: /signup/submit
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupSubmitAction }
 
+cp_index:
+    pattern: /cp
+    defaults:  { _controller: UserBase\Server\Controller\CpController::indexAction }
 
 api_v1_root:
     pattern: /api/v1

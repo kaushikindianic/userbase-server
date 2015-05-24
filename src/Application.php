@@ -50,13 +50,17 @@ class Application extends SilexApplication
             'session.storage.save_path' => '/tmp/userbase_sessions'
         ));
         
+        $this->register(new SilexSecurityServiceProvider(), array());
+
+        
         $dbname = 'userbase';
         
         $dm = new DatabaseManager();
         $pdo = $dm->getPdo($dbname);
         $this['pdo'] = $pdo;
-
-        $this->userRepository = new PdoUserRepository($pdo);
+        
+        $factory = $this['security.encoder_factory'];
+        $this->userRepository = new PdoUserRepository($pdo, $factory);
 
     }
 
@@ -88,7 +92,6 @@ class Application extends SilexApplication
 
     private function configureSecurity()
     {
-        $this->register(new SilexSecurityServiceProvider(), array());
 
         /*
         $security = $parameters['security'];

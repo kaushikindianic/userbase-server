@@ -6,6 +6,7 @@ use Symfony\Component\Security\Core\User\UserProviderInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
+use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use UserBase\Server\Model\User;
 use RuntimeException;
 use PDO;
@@ -13,10 +14,12 @@ use PDO;
 final class PdoUserRepository implements UserProviderInterface
 {
     private $pdo;
+    private $encoderFactory;
 
-    public function __construct(PDO $pdo)
+    public function __construct(PDO $pdo, $encoderFactory)
     {
         $this->pdo = $pdo;
+        $this->encoderFactory = $encoderFactory;
     }
     
     public function getById($id)
@@ -105,13 +108,14 @@ final class PdoUserRepository implements UserProviderInterface
     
     public function setPassword($name, $password)
     {
-        $account = $this->getByName($name);
-        if (!$account) {
+        $user = $this->getByName($name);
+        if (!$user) {
             throw new RuntimeException("Username does not exist");
         }
         
-        $hash = $this->getPasswordHash($password);
-    
+        $encoder = $this->encoderFactory->getEncoder($user);
+        $hash = $encoder->encodePassword($password, $user->getSalt());
+
         $statement = $this->pdo->prepare(
             "UPDATE user SET password = :password WHERE name=:name"
         );
@@ -124,40 +128,26 @@ final class PdoUserRepository implements UserProviderInterface
         );
     }
     
-    
-    public function getPasswordHash($password)
-    {
-        // Initialize sufficiently randomized salt
-        $salt = strtr(base64_encode(mcrypt_create_iv(16, MCRYPT_DEV_URANDOM)), '+', '.');
-        // Create $2a$ (bcrypt) password, switch to 2y once prod runs 5.3.7
-        // http://php.net/manual/en/function.crypt.php
-        $hash = crypt($password, '$2a$10$' . $salt . '$');
-        return $hash;
-    }
-
-
-
     // Needed for symfony user provider interface
-
     public function loadUserByUsername($username)
     {
-        $account = $this->getByName($username);
-        if (!$account) {
+        $user = $this->getByName($username);
+        if (!$user) {
             throw new UsernameNotFoundException(sprintf('User %s is not found.', $username));
         }
-        return $account;
+        return $user;
     }
 
 
     // Needed for symfony user provider interface
 
-    public function refreshUser(UserInterface $account)
+    public function refreshUser(UserInterface $user)
     {
-        if (!$account instanceof Account) {
-            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($account)));
+        if (!$user instanceof User) {
+            throw new UnsupportedUserException(sprintf('Instances of "%s" are not supported.', get_class($user)));
         }
 
-        return $this->loadUserByUsername($account->getUsername());
+        return $this->loadUserByUsername($user->getUsername());
     }
 
     // Needed for symfony user provider interface

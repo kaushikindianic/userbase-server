@@ -79,9 +79,9 @@
     
     <div class="container">
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-1">
             </div>
-            <div class="col-md-4">
+            <div class="col-md-10">
                 <div id="screen">
                     <div id="header">
                         <img class="logo" src="http://www.epifaniasolar.cl/images/member1.jpg" />
@@ -89,19 +89,12 @@
                         <p class="description">It's super awesome</p>
                     </div>
                     <div id="content">
-                        
-                        {% if errormessage is defined %}
-                        <div class="alert alert-danger">
-                            {{ errormessage }}
-                        </div>
-                        {% endif %}
-
                         {% block content %}{% endblock %}
                     </div>
                     <p class="poweredby">&copy; 2015 Powered by UserBase</p>
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-1">
             </div>
     </div>
     <!-- JS Global Compulsory -->

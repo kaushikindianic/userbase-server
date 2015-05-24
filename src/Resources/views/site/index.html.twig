@@ -1,7 +1,12 @@
 {% extends "site/layout.html.twig" %}
 
 {% block content %}
-<h1>Welcome</h1>
+
+{% if user is defined %}
+<h1>Welcome, {{ user.getName() }}</h1>
+{% else %}
+<h1>Please login</h1>
+{% endif %}
 <a href="/login" class="btn btn-success btn-lg">Login</a><br />
 <br />
 <a href="/signup" class="btn btn-default btn-lg">Sign up</a><br />

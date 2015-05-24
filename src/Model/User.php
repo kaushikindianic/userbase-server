@@ -28,6 +28,7 @@ final class User implements AdvancedUserInterface
         $this->credentialsNonExpired = true;
         $this->accountNonLocked = true;
         $this->roles = array();
+        $this->salt = "KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324";
     }
 
     /**
@@ -56,6 +57,7 @@ final class User implements AdvancedUserInterface
      */
     public function getSalt()
     {
+        return $this->salt;
     }
 
     /**
@@ -143,4 +145,5 @@ final class User implements AdvancedUserInterface
     {
         $this->pictureUrl = $url;
     }
+
 }
