@@ -29,3 +29,16 @@ cp_index:
 api_v1_root:
     pattern: /api/v1
     defaults:  { _controller: UserBase\Server\Controller\ApiController::indexAction }
+
+
+admin_index:
+    pattern: /admin
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
+
+admin_user_list:
+    pattern: /admin/users
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::userListAction }
+
+admin_user_view:
+    pattern: /admin/users/{username}
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::userViewAction }

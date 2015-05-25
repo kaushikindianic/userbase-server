@@ -1,0 +1,10 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>User: {{ username }}</h2>
+
+<ul>
+    <li>Username: {{ viewuser.getUsername() }}</li>
+    <li>Created at: {{ viewuser.getCreatedAt() }}</li>
+</ul>
+{% endblock %}
