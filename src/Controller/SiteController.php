@@ -14,7 +14,7 @@ class SiteController
     {
         
         if (isset($app['user'])) {
-            return $app->redirect("/cp");
+            //return $app->redirect("/cp");
         }
         $data = array();
         
@@ -36,8 +36,8 @@ class SiteController
         //echo $error;
         
         $error = $app['security.last_error']($request);
-        if ($error) {
-            $data['errormessage'] = $error;
+        if ($error == 'Bad credentials.') {
+            $data['errormessage'] = $app['translator']->trans('common.error_incorrectcredentials');
         }
         
         return new Response($app['twig']->render(
@@ -90,9 +90,10 @@ class SiteController
     public function signupThankYouAction(Application $app, Request $request)
     {
         $data = array();
+        $data['email'] = 'x@y.z';
         return new Response($app['twig']->render(
             'site/signup_thankyou.html.twig',
-            array($data)
+            $data
         ));
     }
 

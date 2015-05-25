@@ -1,31 +1,36 @@
 {% extends "site/layout.html.twig" %}
 
 {% block content %}
-<h1>Signup</h1>
+<h1>{{ "signup.header"|trans }}</h1>
 <form action="/signup/submit" method="post">
     <div class="form-group form-group form-group">
         
-        <div class="input-group">
-            <input name="_username" autofocus class="form-control" placeholder="Username" required="required" style="Xtext-align: right;" />
-            <div class="input-group-addon"><i class="fa fa-star"></i> userbase.web</div>
-        </div>
+        {% if postfix is defined %}
+            <div class="input-group">
+                <input name="_username" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+                <div class="input-group-addon">{{ postfix }}</div>
+            </div>
+        {% else %}
+            <input name="_username" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+        {% endif %}
+        
     </div>
 
     <div class="form-group form-group">
-         <input name="_email" class="form-control" placeholder="E-mail" type="email" required="required" />
+         <input name="_email" class="form-control" placeholder="{{ "common.label_email"|trans }}" type="email" required="required" />
     </div>
 
     <div class="form-group form-group">
-         <input name="_password" class="form-control" placeholder="Password" type="password" required="required" />
+         <input name="_password" class="form-control" placeholder="{{ "common.label_password"|trans }}" type="password" required="required" />
     </div>
     
     <div class="form-group form-group">
-         <input name="_password2" class="form-control" placeholder="Password (repeat)" type="password" required="required" />
+         <input name="_password2" class="form-control" placeholder="{{ "common.label_passwordrepeat"|trans }}" type="password" required="required" />
     </div>
 
-    <button type="submit" class="btn btn-success btn-lg">Sign up</button><br />
+    <button type="submit" class="btn btn-success btn-lg">{{ "common.action_signup"|trans }}</button><br />
     <br />
-    Already have an account? <a href="/login" class="">Login here</a>
+    {{ "common.label_alreadyhaveanaccount"|trans }} <a href="/login" class="">{{ "common.action_loginhere"|trans }}</a>
 </form>
 
 {% endblock %}

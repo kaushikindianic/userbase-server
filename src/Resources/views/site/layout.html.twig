@@ -4,7 +4,7 @@
 <!--[if IE 9]> <html lang="en" class="ie9"> <![endif]-->
 <!--[if !IE]><!--> <html lang="en"> <!--<![endif]-->
 <head>
-    <title>UserBase Site</title>
+    <title>{{ "site.title"|trans }}</title>
 
     <!-- Meta -->
     <meta charset="utf-8">
@@ -85,20 +85,13 @@
                 <div id="screen">
                     <div id="header">
                         <img class="logo" src="http://www.epifaniasolar.cl/images/member1.jpg" />
-                        <h1>UserBase</h1>
-                        <p class="description">It's super awesome</p>
+                        <h1>{{ "site.title"|trans }}</h1>
+                        <p class="description">{{ "site.subtitle"|trans }}</p>
                     </div>
                     <div id="content">
-                        
-                        {% if errormessage is defined %}
-                        <div class="alert alert-danger">
-                            {{ errormessage }}
-                        </div>
-                        {% endif %}
-
                         {% block content %}{% endblock %}
                     </div>
-                    <p class="poweredby">&copy; 2015 Powered by UserBase</p>
+                    <p class="poweredby">{{ "site.powered_by"|trans }}</p>
                 </div>
             </div>
             <div class="col-md-4">

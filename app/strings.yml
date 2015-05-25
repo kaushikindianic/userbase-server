@@ -1,0 +1,25 @@
+site.title: My UserDB
+site.subtitle: It's awesome
+site.powered_by: ©2015 Powered by UserBase
+
+common.action_login: Login
+common.action_signup: Signup
+common.action_clickhere: Click here
+common.action_loginhere: Login here
+
+common.label_username: Username
+common.label_password: Password
+common.label_passwordrepeat: Password (repeat)
+common.label_noaccountyet: Don't have an account yet?
+common.label_lostpassword: Forgot your password?
+common.label_alreadyhaveanaccount: Already have an account?
+
+common.error_incorrectcredentials: Incorrect username / password
+
+index.pleaselogin: Please login
+index.welcome_username: Hello %username%
+
+login.header: Login
+signup.header: Signup
+signup.thankyou: Thanks for signing up!
+signup.pleaseconfirm: Please confirm your signup by clicking on the link in the email we just sent to %email%

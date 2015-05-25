@@ -1,25 +1,36 @@
 {% extends "site/layout.html.twig" %}
 
 {% block content %}
-<h1>Login</h1>
+<h1>{{ "login.header"|trans }}</h1>
+{% if errormessage is defined %}
+<div class="alert alert-danger">
+    {{ errormessage }}
+</div>
+{% endif %}
+
 <form action="/login_check" method="post">
     <div class="form-group form-group form-group">
         
-        <div class="input-group">
-            <input name="_username" autofocus class="form-control" placeholder="Username" required="required" style="Xtext-align: right;" />
-            <div class="input-group-addon"><i class="fa fa-star"></i> userbase.web</div>
-        </div>
+        {% if postfix is defined %}
+            <div class="input-group">
+                <input name="_username" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+                <div class="input-group-addon">{{ postfix }}</div>
+            </div>
+        {% else %}
+            <input name="_username" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+        {% endif %}
+        
     </div>
 
     <div class="form-group form-group">
-         <input name="_password" class="form-control" placeholder="Password" type="password" required="required" />
+         <input name="_password" class="form-control" placeholder="{{ "common.label_password"|trans }}" type="password" required="required" />
     </div>
 
 
-    <button type="submit" class="btn btn-success btn-lg">Login</button><br />
+    <button type="submit" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</button><br />
     <br />
-    Don't have an account yet? <a href="/signup" class="">Signup here</a><br />
-    Lost your password? <a href="/password-reset" class="">Click here</a><br />
+    {{ "common.label_noaccountyet"|trans }} <a href="/signup">{{ "common.action_signup"|trans }}</a><br />
+    {{ "common.label_lostpassword"|trans }} <a href="/password-reset">{{ "common.action_clickhere"|trans }}</a><br />
 </form>
 
 {% endblock %}

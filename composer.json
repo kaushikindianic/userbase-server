@@ -25,7 +25,8 @@
         "monolog/monolog": "~1.6",
         "swiftmailer/swiftmailer": "~5.3",
         "html2text/html2text": "~2.0",
-        "herald-project/client-php": "~1.0"
+        "herald-project/client-php": "~1.0",
+        "symfony/translation": "~2.6"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5"

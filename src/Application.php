@@ -9,10 +9,16 @@ use Silex\Provider\FormServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\RoutingServiceProvider;
 use Silex\Provider\MonologServiceProvider;
+
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder;
+
+use Symfony\Component\Translation\Translator;
+use Symfony\Component\Translation\MessageSelector;
+use Symfony\Component\Translation\Loader\ArrayLoader;
+
 use LinkORB\Component\DatabaseManager\DatabaseManager;
 use UserBase\Server\Repository\PdoUserRepository;
 use Monolog\Handler\StreamHandler;
@@ -24,6 +30,7 @@ use UserBase\Server\Mailer\HeraldMailer;
 class Application extends SilexApplication
 {
     private $config;
+    private $strings = array();
     
     public function __construct(array $values = array())
     {
@@ -31,6 +38,7 @@ class Application extends SilexApplication
 
         $this->configureParameters();
         $this->configureService();
+        $this->configureStrings();
         $this->configureRoutes();
         $this->configureTemplateEngine();
         $this->configureSecurity();
@@ -45,17 +53,23 @@ class Application extends SilexApplication
         }
         
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
+        $this['userbase.postfix'] = $this->config['userbase']['postfix'];
+        $this['userbaselogourl'] = $this->config['userbase']['logourl'];
     }
 
+    
     private function configureService()
     {
+        $this->register(
+            new TranslationServiceProvider(),
+            array(
+                'locale' => 'en'
+            )
+        );
+        //  'translation.class_path' =>  __DIR__.'/../vendor/symfony/src',
+        
         /*
         // the form service
-        $this->register(new TranslationServiceProvider(), array(
-              'locale' => 'en',
-              'translation.class_path' =>  __DIR__.'/../vendor/symfony/src',
-              'translator.messages' => array(),
-        ));
         $this->register(new FormServiceProvider());
         */
         $this->register(new RoutingServiceProvider());
@@ -92,6 +106,32 @@ class Application extends SilexApplication
         
         $mailer = new HeraldMailer($herald);
         $this['mailer'] = $mailer;
+    }
+    
+    private function loadStrings($filename)
+    {
+        if (!file_exists($filename)) {
+            throw new RuntimeException("Strings file not found: " . $filename);
+        }
+        
+        $parser = new YamlParser();
+        $lines = $parser->parse(file_get_contents($filename));
+        foreach ($lines as $key => $value) {
+            $this->strings[$key] = $value;
+            //$this->strings[$key] = "#" . $value . "#";
+        }
+    }
+    
+    private function configureStrings()
+    {
+        $this->loadStrings(__DIR__ . '/../app/strings.yml');
+        
+        $this['translator.domains'] = array(
+            'messages' => array(
+                'en' => $this->strings
+            )
+        );
+        
     }
 
     private function configureRoutes()

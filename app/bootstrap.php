@@ -18,6 +18,13 @@ $application->before(function (Request $request) use ($application) {
                 $application['twig']->addGlobal('user', $token->getUser());
             }
         }
+
+
+        $postfix = $application['userbase.postfix'];
+        if ($postfix) {
+            $application['twig']->addGlobal('postfix', $postfix);
+        }
+
     }
     //$application['twig']->addGlobal('site', $application['site']);
 });
