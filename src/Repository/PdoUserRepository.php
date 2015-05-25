@@ -78,6 +78,9 @@ final class PdoUserRepository implements UserProviderInterface
     {
         $user = new User($row['name']);
         $user->setEmail($row['email']);
+        $user->setCreatedAt($row['created_at']);
+        $user->setDeletedAt($row['deleted_at']);
+        $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
         
         return $user;
@@ -93,12 +96,13 @@ final class PdoUserRepository implements UserProviderInterface
         //$nodeId = $this->pdo->lastInsertId();
         
         $statement = $this->pdo->prepare(
-            "INSERT INTO user(name, email) VALUES (:name, :email)"
+            "INSERT INTO user(name, email, created_at) VALUES (:name, :email, :stamp)"
         );
         $statement->execute(
             array(
                 ':name' => $name,
-                ':email' => $email
+                ':email' => $email,
+                ':stamp' => time()
             )
         );
         
@@ -116,12 +120,15 @@ final class PdoUserRepository implements UserProviderInterface
         $hash = $encoder->encodePassword($password, $user->getSalt());
 
         $statement = $this->pdo->prepare(
-            "UPDATE user SET password = :password WHERE name=:name"
+            "UPDATE user SET
+            password = :password, password_updated_at = :stamp
+            WHERE name=:name"
         );
         
         $statement->execute(
             array(
                 ':password' => $hash,
+                ':stamp' => $now,
                 ':name' => $user->getUsername()
             )
         );
@@ -139,7 +146,6 @@ final class PdoUserRepository implements UserProviderInterface
 
 
     // Needed for symfony user provider interface
-
     public function refreshUser(UserInterface $user)
     {
         if (!$user instanceof User) {

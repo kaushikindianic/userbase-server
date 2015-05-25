@@ -14,6 +14,12 @@ final class User implements AdvancedUserInterface
     private $accountNonLocked;
     private $roles;
     private $displayName;
+    
+    private $createdAt;
+    private $emailVerifiedAt;
+    private $passwordUpdatedAt;
+    private $lastSeenAt;
+    private $deletedAt;
 
     public function __construct($name)
     {
@@ -30,7 +36,50 @@ final class User implements AdvancedUserInterface
         $this->roles = array();
         $this->salt = "KJH6212kjwek_fj23D01-239.1023fkjdsj^k2hdfssfjk!h234uiy4324";
     }
-
+    
+    public function getCreatedAt()
+    {
+        return $this->createdAt;
+    }
+    
+    public function setCreatedAt($createdAt)
+    {
+        $this->createdAt = $createdAt;
+    }
+    
+    public function getDeletedAt()
+    {
+        return $this->deletedAt;
+    }
+    
+    public function setDeletedAt($deletedAt)
+    {
+        $this->deletedAt = $deletedAt;
+    }
+    
+    public function getPasswordUpdatedAt()
+    {
+        return $this->passwordUpdatedAt;
+    }
+    
+    public function setPasswordUpdatedAt($passwordUpdatedAt)
+    {
+        $this->passwordUpdatedAt = $passwordUpdatedAt;
+    }
+    
+    public function getLastSeenAt()
+    {
+        return $this->lastSeenAt;
+    }
+    
+    public function setLastSeenAt($lastSeenAt)
+    {
+        if ($this->lastSeenAt>0) {
+            $this->lastSeenAt = $lastSeenAt;
+        }
+        return null;
+    }
+    
     /**
      * {@inheritdoc}
      */
