@@ -29,7 +29,7 @@ class SiteController
     public function loginAction(Application $app, Request $request)
     {
         if (isset($app['user'])) {
-            return $app->redirect("/cp");
+            return $app->redirect($app['url_generator']->generate('cp_index'));
         }
         
         $data = array();
@@ -63,14 +63,14 @@ class SiteController
         $password2 = $request->request->get('_password2');
         
         if ($password != $password2) {
-            return $app->redirect("/signup?errorcode=E02");
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E02');
         }
 
         $repo = $app->getUserRepository();
         try {
             $user = $repo->register($username, $email);
         } catch (Exception $e) {
-            return $app->redirect("/signup?errorcode=E01");
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E01');
         }
         $user = $repo->getByName($username);
         
@@ -84,7 +84,8 @@ class SiteController
         $data['username'] = $username;
         $app['mailer']->sendTemplate('welcome', $user, $data);
         
-        return $app->redirect("/signup/thankyou");
+        return $app->redirect($app['url_generator']->generate('signup_thankyou'));
+
     }
     
     public function signupThankYouAction(Application $app, Request $request)
