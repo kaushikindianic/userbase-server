@@ -134,6 +134,27 @@ final class PdoUserRepository implements UserProviderInterface
         );
     }
     
+    public function setEmail(User $user, $email)
+    {
+        if (!$user) {
+            throw new RuntimeException("User not specified");
+        }
+        
+        
+        $statement = $this->pdo->prepare(
+            "UPDATE user SET
+            email = :email
+            WHERE name=:name"
+        );
+        
+        $statement->execute(
+            array(
+                ':email' => $email,
+                ':name' => $user->getUsername()
+            )
+        );
+    }
+
     // Needed for symfony user provider interface
     public function loadUserByUsername($username)
     {

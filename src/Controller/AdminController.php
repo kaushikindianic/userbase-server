@@ -55,7 +55,18 @@ class AdminController
         $repo->setPassword($viewuser, $newPassword);
         
         return $app->redirect('/admin/users/' . $viewuser->getUsername());
+    }
 
+
+    public function userUpdateEmailAction(Application $app, Request $request, $username)
+    {
+        $newEmail = $request->request->get('_email');
+        $data = array();
+        $repo = $app->getUserRepository();
+        $viewuser = $repo->getByName($username);
+        $repo->setEmail($viewuser, $newEmail);
+        
+        return $app->redirect('/admin/users/' . $viewuser->getUsername());
     }
 
 }
