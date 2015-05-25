@@ -31,6 +31,14 @@ api_v1_root:
     pattern: /api/v1
     defaults:  { _controller: UserBase\Server\Controller\ApiController::indexAction }
 
+api_v1_user_list:
+    pattern: /api/v1/users
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::userListAction }
+    
+api_v1_user_view:
+    pattern: /api/v1/users/{username}
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
+
 
 admin_index:
     pattern: /admin
