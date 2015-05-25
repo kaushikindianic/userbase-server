@@ -1,12 +1,10 @@
 userbase:
-    database: userbase
+    dbname: userbase
     baseurl: http://localhost:8888
-
-site:
     title: My Site Name
     postfix: "*userbase.web"
-    logo: http://www.epifaniasolar.cl/images/member1.jpg
-    
+    logourl: http://www.epifaniasolar.cl/images/member1.jpg
+
 herald:
     username: my_herald_username
     password: my_herald_password

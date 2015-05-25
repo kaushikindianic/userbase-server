@@ -7,10 +7,10 @@
 {% else %}
 <h1>{{ "index.pleaselogin"|trans }}</h1>
 {% endif %}
-<a href="/login" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</a><br />
+<a href="{{ path('login') }}" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</a><br />
 <br />
-<a href="/signup" class="btn btn-default btn-lg">{{ "common.action_signup"|trans }}</a><br />
-        
+<a href="{{ path('signup') }}" class="btn btn-default btn-lg">{{ "common.action_signup"|trans }}</a><br />
+
 
 
 {% endblock %}

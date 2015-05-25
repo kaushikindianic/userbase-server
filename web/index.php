@@ -4,6 +4,11 @@
 require_once __DIR__.'/../vendor/autoload.php';
 
 $app = require_once __DIR__.'/../app/bootstrap.php';
-
+// support baseurl
+if (isset($app['userbase.baseurl'])) {
+    $app->before(function () use ($app) {
+        $app['request_context']->setBaseUrl($app['userbase.baseurl']);
+    });
+}
 // $app->run(Request::createFromGlobals());
 $app->run();

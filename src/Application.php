@@ -31,7 +31,7 @@ class Application extends SilexApplication
 {
     private $config;
     private $strings = array();
-    
+
     public function __construct(array $values = array())
     {
         parent::__construct($values);
@@ -51,13 +51,13 @@ class Application extends SilexApplication
         if (isset($this->config['debug'])) {
             $this['debug'] = true;
         }
-        
+
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbaselogourl'] = $this->config['userbase']['logourl'];
     }
 
-    
+
     private function configureService()
     {
         $this->register(
@@ -67,31 +67,31 @@ class Application extends SilexApplication
             )
         );
         //  'translation.class_path' =>  __DIR__.'/../vendor/symfony/src',
-        
+
         /*
         // the form service
         $this->register(new FormServiceProvider());
         */
         $this->register(new RoutingServiceProvider());
-        
+
         // *** Setup Sessions ***
         $this->register(new \Silex\Provider\SessionServiceProvider(), array(
             'session.storage.save_path' => '/tmp/userbase_sessions'
         ));
-        
+
         $this->register(new SilexSecurityServiceProvider(), array());
 
-        
+
         $dbname = $this->config['userbase']['dbname'];
-        
+
         $dm = new DatabaseManager();
         $pdo = $dm->getPdo($dbname);
         $this['pdo'] = $pdo;
-        
+
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
-        
-        
+
+
 
 
         $herald = new HeraldClient(
@@ -101,19 +101,19 @@ class Application extends SilexApplication
             $this->config['herald']['transport']
         );
         $herald->setTemplateNamePrefix($this->config['herald']['prefix']);
-        
+
         $this['herald'] = $herald;
-        
+
         $mailer = new HeraldMailer($herald);
         $this['mailer'] = $mailer;
     }
-    
+
     private function loadStrings($filename)
     {
         if (!file_exists($filename)) {
             throw new RuntimeException("Strings file not found: " . $filename);
         }
-        
+
         $parser = new YamlParser();
         $lines = $parser->parse(file_get_contents($filename));
         foreach ($lines as $key => $value) {
@@ -121,17 +121,17 @@ class Application extends SilexApplication
             //$this->strings[$key] = "#" . $value . "#";
         }
     }
-    
+
     private function configureStrings()
     {
         $this->loadStrings(__DIR__ . '/../app/strings.yml');
-        
+
         $this['translator.domains'] = array(
             'messages' => array(
                 'en' => $this->strings
             )
         );
-        
+
     }
 
     private function configureRoutes()
@@ -162,7 +162,7 @@ class Application extends SilexApplication
             $this['security.encoder.digest'] = new $digest(true);
         }
         */
-        
+
         $this['security.firewalls'] = array(
             'default' => array(
                 'anonymous' => true,
