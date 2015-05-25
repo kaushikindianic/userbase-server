@@ -24,6 +24,16 @@ $application->before(function (Request $request) use ($application) {
         if ($postfix) {
             $application['twig']->addGlobal('postfix', $postfix);
         }
+        
+        $filter = new Twig_SimpleFilter('mydate', function ($value) {
+            if ($value>0) {
+                return date('d/M/Y');
+            } else {
+                return '-';
+            }
+        });
+        $application['twig']->addFilter($filter);
+
 
     }
     //$application['twig']->addGlobal('site', $application['site']);
