@@ -45,4 +45,17 @@ class AdminController
         ));
     }
 
+
+    public function userUpdatePasswordAction(Application $app, Request $request, $username)
+    {
+        $newPassword = $request->request->get('_password');
+        $data = array();
+        $repo = $app->getUserRepository();
+        $viewuser = $repo->getByName($username);
+        $repo->setPassword($viewuser, $newPassword);
+        
+        return $app->redirect('/admin/users/' . $viewuser->getUsername());
+
+    }
+
 }

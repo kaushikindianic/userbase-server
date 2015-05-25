@@ -6,10 +6,6 @@ login:
     pattern: /login
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
 
-login_submit:
-    pattern: /login/submit
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::loginSubmitAction }
-
 signup:
     pattern: /signup
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupAction }
@@ -21,6 +17,11 @@ signup_submit:
 signup_thankyou:
     pattern: /signup/thankyou
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupThankYouAction }
+
+password_reset:
+    pattern: /password/reset
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
+
 
 cp_index:
     pattern: /cp
@@ -42,3 +43,15 @@ admin_user_list:
 admin_user_view:
     pattern: /admin/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userViewAction }
+
+admin_user_update_password:
+    pattern: /admin/users/{username}/updatepassword
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdatePasswordAction }
+
+admin_user_update_email:
+    pattern: /admin/users/{username}/updateemail
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateEmailAction }
+
+admin_log_list:
+    pattern: /admin/logs
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
