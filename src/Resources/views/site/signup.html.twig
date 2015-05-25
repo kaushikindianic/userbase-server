@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>{{ "signup.header"|trans }}</h1>
-<form action="/signup/submit" method="post">
+<form action="{{ path("signup_submit") }}" method="post">
     <div class="form-group form-group form-group">
         
         {% if postfix is defined %}

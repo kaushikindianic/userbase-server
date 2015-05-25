@@ -93,10 +93,10 @@
                     <div id="content">
                         <div id="nav">
                             <ul class="nav nav-pills nav-inverse">
-                                <li><a href="/admin">Home</a></li>
-                                <li><a href="/admin/users">Users</a></li>
-                                <li><a href="/admin/log">Log</a></li>
-                                <li><a href="/logout">Logout</a></li>
+                                <li><a href="{{ path("admin_index") }}">Home</a></li>
+                                <li><a href="{{ path("admin_user_list") }}">Users</a></li>
+                                <li><a href="{{ path("admin_log_list") }}">Log</a></li>
+                                <li><a href="{{ path("logout") }}">Logout</a></li>
                             </ul>
                         </div>
                         <hr />
