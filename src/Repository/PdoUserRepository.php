@@ -82,6 +82,7 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setDeletedAt($row['deleted_at']);
         $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
+        $user->setDisplayName($row['display_name']);
         
         return $user;
     }
@@ -154,6 +155,28 @@ final class PdoUserRepository implements UserProviderInterface
             )
         );
     }
+    
+    public function setDisplayName(User $user, $displayname)
+    {
+        if (!$user) {
+            throw new RuntimeException("User not specified");
+        }
+        
+        
+        $statement = $this->pdo->prepare(
+            "UPDATE user SET
+            display_name = :displayname
+            WHERE name=:name"
+        );
+        
+        $statement->execute(
+            array(
+                ':displayname' => $displayname,
+                ':name' => $user->getUsername()
+            )
+        );
+    }
+
 
     // Needed for symfony user provider interface
     public function loadUserByUsername($username)

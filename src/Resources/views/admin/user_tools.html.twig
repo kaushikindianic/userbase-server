@@ -1,0 +1,49 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+
+<h2>User: {{ username }}</h2>
+
+<h3>Update password</h3>
+
+<form action="{{ path("admin_user_update_password", {"username": viewuser.getUsername()} ) }}" method="post">
+
+    <div class="form-group form-group">
+         <input name="_password" class="form-control" placeholder="Enter a new password" type="password" required="required" />
+    </div>
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-default">Update</button>
+    </div>
+</form>
+
+<h3>Update E-mail address</h3>
+
+<form action="{{ path("admin_user_update_email", {"username": viewuser.getUsername() })}}" method="post">
+
+    <div class="form-group form-group">
+         <input name="_email" class="form-control" placeholder="Enter a new password" type="email" required="required" />
+    </div>
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-default">Update</button>
+    </div>
+</form>
+
+<h3>Update Display name</h3>
+
+<form action="{{ path("admin_user_update_displayname", {"username": viewuser.getUsername() })}}" method="post">
+
+    <div class="form-group form-group">
+         <input name="_displayname" class="form-control" placeholder="Enter a new display name" type="text" required="required" />
+    </div>
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-default">Update</button>
+    </div>
+</form>
+
+<div class="buttonbox">
+    <a class="btn btn-default" href="{{ path("admin_user_view", { "username": username } ) }}">Back</a>
+</div>
+{% endblock %}

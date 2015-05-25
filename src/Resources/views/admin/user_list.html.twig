@@ -5,11 +5,23 @@
 
 <table class="table">
     <tr>
-        <th>Username</th>
+        <th>User</th>
+        <th style="width: 100px; text-align: center">Last seen</th>
+        <th style="width: 100px; text-align: center">Registered</th>
     </tr>
     {% for user in users %}
     <tr>
-        <td><a href="/admin/users/{{ user.getUsername() }}">{{ user.getUsername() }}</a></td>
+        <td>
+            <a href="/admin/users/{{ user.getUsername() }}">
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ user.getPictureUrl() }}" />
+            </a>
+            
+            <a href="/admin/users/{{ user.getUsername() }}">{{ user.getUsername() }}</a>: {{ user.getDisplayName() }}<br />
+            <i>{{ user.getEmail() }}</i>
+        </td>
+        <td style="text-align: center">{{ user.getLastSeenAt()|mydate }}</td>
+        <td style="text-align: center">{{ user.getCreatedAt()|mydate }}</td>
+
     </tr>
     {% endfor %}
 </table>

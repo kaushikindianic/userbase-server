@@ -45,6 +45,18 @@ class AdminController
         ));
     }
 
+    public function userToolsAction(Application $app, Request $request, $username)
+    {
+        $data = array();
+        $repo = $app->getUserRepository();
+        $viewuser = $repo->getByName($username);
+        $data['username'] = $username;
+        $data['viewuser'] = $viewuser;
+        return new Response($app['twig']->render(
+            'admin/user_tools.html.twig',
+            $data
+        ));
+    }
 
     public function userUpdatePasswordAction(Application $app, Request $request, $username)
     {
@@ -68,5 +80,15 @@ class AdminController
         
         return $app->redirect('/admin/users/' . $viewuser->getUsername());
     }
-
+    
+    public function userUpdateDisplayNameAction(Application $app, Request $request, $username)
+    {
+        $newDisplayName = $request->request->get('_displayname');
+        $data = array();
+        $repo = $app->getUserRepository();
+        $viewuser = $repo->getByName($username);
+        $repo->setDisplayName($viewuser, $newDisplayName);
+        
+        return $app->redirect('/admin/users/' . $viewuser->getUsername());
+    }
 }

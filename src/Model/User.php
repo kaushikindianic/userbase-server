@@ -129,6 +129,11 @@ final class User implements AdvancedUserInterface
         }
         return $this->name;
     }
+    
+    public function setDisplayName($name)
+    {
+        $this->displayName = $name;
+    }
 
     /**
      * {@inheritdoc}

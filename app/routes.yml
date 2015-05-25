@@ -44,6 +44,10 @@ admin_user_view:
     pattern: /admin/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userViewAction }
 
+admin_user_tools:
+    pattern: /admin/users/{username}/tools
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::userToolsAction }
+
 admin_user_update_password:
     pattern: /admin/users/{username}/updatepassword
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdatePasswordAction }
@@ -51,6 +55,10 @@ admin_user_update_password:
 admin_user_update_email:
     pattern: /admin/users/{username}/updateemail
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateEmailAction }
+
+admin_user_update_displayname:
+    pattern: /admin/users/{username}/updatedisplayname
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateDisplayNameAction }
 
 admin_log_list:
     pattern: /admin/logs
