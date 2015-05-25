@@ -10,6 +10,7 @@
         <column name="deleted_at" type="integer" />
         <column name="password_updated_at" type="integer" />
         <column name="last_seen_at" type="integer" />
+        <column name="is_admin" type="integer" />
     </table>
     
     <table name="user_event">

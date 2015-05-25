@@ -21,6 +21,7 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use LinkORB\Component\DatabaseManager\DatabaseManager;
 use UserBase\Server\Repository\PdoUserRepository;
+use UserBase\Server\Repository\PdoAdminRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use RuntimeException;
@@ -31,6 +32,8 @@ class Application extends SilexApplication
 {
     private $config;
     private $strings = array();
+    private $userRepository;
+    private $adminRepository;
 
     public function __construct(array $values = array())
     {
@@ -90,6 +93,7 @@ class Application extends SilexApplication
 
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
+        $this->adminRepository = new PdoAdminRepository($pdo, $factory);
 
 
 
@@ -164,17 +168,23 @@ class Application extends SilexApplication
         */
 
         $this['security.firewalls'] = array(
+            'api' => array(
+                'stateless' => true,
+                'pattern' => '^/api',
+                'http' => true,
+                'users' => $this->getAdminRepository(),
+            ),
+            'admin' => array(
+                'stateless' => true,
+                'pattern' => '^/admin',
+                'http' => true,
+                'users' => $this->getAdminRepository(),
+            ),
             'default' => array(
                 'anonymous' => true,
                 'pattern' => '^/',
                 'form' => array('login_path' => '/login', 'check_path' => '/login_check'),
                 'logout' => array('logout_path' => '/logout'),
-                'users' => $this->getUserRepository(),
-            ),
-            'api' => array(
-                'stateless' => true,
-                'pattern' => '^/api',
-                'http' => true,
                 'users' => $this->getUserRepository(),
             ),
         );
@@ -183,5 +193,10 @@ class Application extends SilexApplication
     public function getUserRepository()
     {
         return $this->userRepository;
+    }
+    
+    public function getAdminRepository()
+    {
+        return $this->adminRepository;
     }
 }
