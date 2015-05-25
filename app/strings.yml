@@ -9,6 +9,7 @@ common.action_loginhere: Login here
 
 common.label_username: Username
 common.label_password: Password
+common.label_email: E-mail
 common.label_passwordrepeat: Password (repeat)
 common.label_noaccountyet: Don't have an account yet?
 common.label_lostpassword: Forgot your password?
