@@ -24,6 +24,7 @@ $application->before(function (Request $request) use ($application) {
         if ($postfix) {
             $application['twig']->addGlobal('postfix', $postfix);
         }
+        $application['twig']->addGlobal('logourl', $application['userbase.logourl']);
         
         $filter = new Twig_SimpleFilter('mydate', function ($value) {
             if ($value>0) {
