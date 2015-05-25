@@ -84,7 +84,7 @@ class Application extends SilexApplication
             $this->config['herald']['username'],
             $this->config['herald']['password'],
             $this->config['herald']['baseurl'],
-            $this->config['herald']['transport'],
+            $this->config['herald']['transport']
         );
         $herald->setTemplateNamePrefix($this->config['herald']['prefix']);
         

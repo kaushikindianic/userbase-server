@@ -106,11 +106,10 @@ final class PdoUserRepository implements UserProviderInterface
     }
 
     
-    public function setPassword($name, $password)
+    public function setPassword(User $user, $password)
     {
-        $user = $this->getByName($name);
         if (!$user) {
-            throw new RuntimeException("Username does not exist");
+            throw new RuntimeException("User not specified");
         }
         
         $encoder = $this->encoderFactory->getEncoder($user);
@@ -123,7 +122,7 @@ final class PdoUserRepository implements UserProviderInterface
         $statement->execute(
             array(
                 ':password' => $hash,
-                ':name' => $name
+                ':name' => $user->getUsername()
             )
         );
     }
