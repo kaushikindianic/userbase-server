@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "24907bda544024c7c444708d0642e39a",
+    "hash": "9481552ac6c203993f563443b09d871b",
     "packages": [
         {
             "name": "doctrine/instantiator",
@@ -177,6 +177,94 @@
                 "stream"
             ],
             "time": "2014-08-17 21:15:53"
+        },
+        {
+            "name": "herald-project/client-php",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/herald-project/herald-client-php.git",
+                "reference": "546da7348961fd71d0a7bd3e6958f5547e9a60db"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/herald-project/herald-client-php/zipball/546da7348961fd71d0a7bd3e6958f5547e9a60db",
+                "reference": "546da7348961fd71d0a7bd3e6958f5547e9a60db",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "~4.2",
+                "symfony/console": "~2.4"
+            },
+            "bin": [
+                "bin/herald-client"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Herald\\Client\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Hongliang Wang",
+                    "email": "h.wang@onatal.nl",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Joost Faassen",
+                    "email": "j.faassen@onatal.nl",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Herald client for PHP",
+            "keywords": [
+                "email",
+                "herald",
+                "mailgun",
+                "mandrill",
+                "messages",
+                "smtp",
+                "templates"
+            ],
+            "time": "2015-05-19 12:33:00"
+        },
+        {
+            "name": "html2text/html2text",
+            "version": "2.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mtibben/html2text.git",
+                "reference": "1ff30ba6b0905fc1714385f747e0228d6bfcab15"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mtibben/html2text/zipball/1ff30ba6b0905fc1714385f747e0228d6bfcab15",
+                "reference": "1ff30ba6b0905fc1714385f747e0228d6bfcab15",
+                "shasum": ""
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Html2Text\\": [
+                        "src/",
+                        "test/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPLv2"
+            ],
+            "description": "Converts HTML to formatted plain text",
+            "time": "2015-01-28 23:10:17"
         },
         {
             "name": "linkorb/database-manager",
@@ -1390,6 +1478,58 @@
                 "microframework"
             ],
             "time": "2015-05-08 15:01:15"
+        },
+        {
+            "name": "swiftmailer/swiftmailer",
+            "version": "v5.4.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/swiftmailer/swiftmailer.git",
+                "reference": "31454f258f10329ae7c48763eb898a75c39e0a9f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/swiftmailer/swiftmailer/zipball/31454f258f10329ae7c48763eb898a75c39e0a9f",
+                "reference": "31454f258f10329ae7c48763eb898a75c39e0a9f",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "mockery/mockery": "~0.9.1"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "5.4-dev"
+                }
+            },
+            "autoload": {
+                "files": [
+                    "lib/swift_required.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Corbyn"
+                },
+                {
+                    "name": "Fabien Potencier",
+                    "email": "fabien@symfony.com"
+                }
+            ],
+            "description": "Swiftmailer, free feature-rich PHP mailer",
+            "homepage": "http://swiftmailer.org",
+            "keywords": [
+                "mail",
+                "mailer"
+            ],
+            "time": "2015-03-14 06:06:39"
         },
         {
             "name": "symfony/config",

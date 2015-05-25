@@ -61,6 +61,7 @@ class SiteController
         $email = $request->request->get('_email');
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
+        
         if ($password != $password2) {
             return $app->redirect("/signup?errorcode=E02");
         }
@@ -71,10 +72,29 @@ class SiteController
         } catch (Exception $e) {
             return $app->redirect("/signup?errorcode=E01");
         }
-        $repo->setPassword($username, $password);
+        $user = $repo->getByName($username);
         
-        exit("UN$username EM:$email " . $user->getUsername());
+        $repo->setPassword($user, $password);
+
+        $baseUrl = $app['userbase.baseurl'];
         
+        $validatetoken = sha1($user->getEmail() . 'somesalt');
+        $data = array();
+        $data['link'] = $baseUrl . '/validate/' . $user->getUsername() . '/' . $validatetoken;
+        $data['username'] = $username;
+        $app['mailer']->sendTemplate('welcome', $user, $data);
+        
+        return $app->redirect("/signup/thankyou");
     }
+    
+    public function signupThankYouAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'site/signup_thankyou.html.twig',
+            array($data)
+        ));
+    }
+
 
 }

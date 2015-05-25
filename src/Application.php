@@ -18,9 +18,13 @@ use UserBase\Server\Repository\PdoUserRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use RuntimeException;
+use Herald\Client\Client as HeraldClient;
+use UserBase\Server\Mailer\HeraldMailer;
 
 class Application extends SilexApplication
 {
+    private $config;
+    
     public function __construct(array $values = array())
     {
         parent::__construct($values);
@@ -30,6 +34,17 @@ class Application extends SilexApplication
         $this->configureRoutes();
         $this->configureTemplateEngine();
         $this->configureSecurity();
+    }
+
+    private function configureParameters()
+    {
+        $parser = new YamlParser();
+        $this->config = $parser->parse(file_get_contents(__DIR__.'/../config.yml'));
+        if (isset($this->config['debug'])) {
+            $this['debug'] = true;
+        }
+        
+        $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
     }
 
     private function configureService()
@@ -53,7 +68,7 @@ class Application extends SilexApplication
         $this->register(new SilexSecurityServiceProvider(), array());
 
         
-        $dbname = 'userbase';
+        $dbname = $this->config['userbase']['dbname'];
         
         $dm = new DatabaseManager();
         $pdo = $dm->getPdo($dbname);
@@ -61,17 +76,22 @@ class Application extends SilexApplication
         
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
-
-    }
-
-    private function configureParameters()
-    {
-        $parser = new YamlParser();
-        $config = $parser->parse(file_get_contents(__DIR__.'/../config.yml'));
-
-        $this['debug'] = true;
+        
         
 
+
+        $herald = new HeraldClient(
+            $this->config['herald']['username'],
+            $this->config['herald']['password'],
+            $this->config['herald']['baseurl'],
+            $this->config['herald']['transport'],
+        );
+        $herald->setTemplateNamePrefix($this->config['herald']['prefix']);
+        
+        $this['herald'] = $herald;
+        
+        $mailer = new HeraldMailer($herald);
+        $this['mailer'] = $mailer;
     }
 
     private function configureRoutes()

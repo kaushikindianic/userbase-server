@@ -22,7 +22,10 @@
         "symfony/twig-bridge": "~2.6",
         "linkorb/database-manager": "dev-master",
         "guzzlehttp/guzzle": "~4.2",
-        "monolog/monolog": "~1.6"
+        "monolog/monolog": "~1.6",
+        "swiftmailer/swiftmailer": "~5.3",
+        "html2text/html2text": "~2.0",
+        "herald-project/client-php": "~1.0"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5"

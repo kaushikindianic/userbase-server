@@ -18,6 +18,10 @@ signup_submit:
     pattern: /signup/submit
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupSubmitAction }
 
+signup_thankyou:
+    pattern: /signup/thankyou
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::signupThankYouAction }
+
 cp_index:
     pattern: /cp
     defaults:  { _controller: UserBase\Server\Controller\CpController::indexAction }
