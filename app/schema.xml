@@ -8,6 +8,15 @@
         <column name="bio" type="text" />
         <column name="created_at" type="integer" />
         <column name="deleted_at" type="integer" />
+        <column name="password_updated_at" type="integer" />
+        <column name="last_seen_at" type="integer" />
+    </table>
+    
+    <table name="user_event">
+        <column name="username" type="varchar(128)" />
+        <column name="eventname" type="varchar(128)" />
+        <column name="occured_at" type="int" />
+        <column name="data" type="text" />
     </table>
 
 </schema>
