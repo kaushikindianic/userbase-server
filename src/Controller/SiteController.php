@@ -98,5 +98,17 @@ class SiteController
         ));
     }
 
+    public function loginSuccessAction(Application $app, Request $request)
+    {
+        return $app->redirect($app['url_generator']->generate('index'));
+    }
 
+    public function logoutSuccessAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'site/logout_success.html.twig',
+            $data
+        ));
+    }
 }

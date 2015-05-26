@@ -167,7 +167,7 @@ class Application extends SilexApplication
         }
         */
 
-        $targetUrl = $this['url_generator']->generate('index');
+        $baseUrl = $this['userbase.baseurl'];
         $this['security.firewalls'] = array(
             'api' => array(
                 'stateless' => true,
@@ -188,9 +188,12 @@ class Application extends SilexApplication
                     'login_path' => '/login',
                     'check_path' => '/login_check',
                     'always_use_default_target_path' => true,
-                    'default_target_path' => $targetUrl
+                    'default_target_path' => $baseUrl . '/login/success'
                 ),
-                'logout' => array('logout_path' => '/logout'),
+                'logout' => array(
+                    'logout_path' => '/logout',
+                    'target_url' => $baseUrl . '/logout/success'
+                ),
                 'users' => $this->getUserRepository(),
             ),
         );

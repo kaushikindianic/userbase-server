@@ -1,0 +1,16 @@
+{% extends "site/layout.html.twig" %}
+
+{% block content %}
+
+{% if user is defined %}
+<p>Error logging out</p>
+{% else %}
+<h1>{{ "logout.header"|trans }}</h1>
+<p>{{ "logout.message"|trans }}</p>
+
+<a href="{{ path('login') }}" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</a><br />
+<br />
+<a href="{{ path('signup') }}" class="btn btn-default btn-lg">{{ "common.action_signup"|trans }}</a><br />
+{% endif %}
+
+{% endblock %}

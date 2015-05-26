@@ -6,6 +6,14 @@ login:
     pattern: /login
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
 
+login/success:
+    pattern: /login/success
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::loginSuccessAction }
+
+logout/success:
+    pattern: /logout/success
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::logoutSuccessAction }
+
 signup:
     pattern: /signup
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupAction }
