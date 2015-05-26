@@ -33,12 +33,12 @@ $application->before(function (Request $request) use ($application) {
                 return '-';
             }
         });
+        $application['twig']->addFilter($filter);
 
         $filter = new Twig_SimpleFilter('star', function ($value) {
             $value = str_replace('*', '<i class="fa fa-star"></i>', $value);
             return $value;
         });
-
         $application['twig']->addFilter($filter);
 
 
