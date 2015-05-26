@@ -185,7 +185,7 @@ class Application extends SilexApplication
                 'anonymous' => true,
                 'pattern' => '^/',
                 'form' => array(
-                    'login_path' => '/login',
+                    'login_path' => $baseUrl . '/login',
                     'check_path' => '/login_check',
                     'always_use_default_target_path' => true,
                     'default_target_path' => $baseUrl . '/login/success'
