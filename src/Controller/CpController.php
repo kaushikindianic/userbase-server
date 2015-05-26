@@ -22,8 +22,7 @@ class CpController
         }
         
         $error = $app['security.last_error']($request);
-        echo "error: " . $error;
-
+        
         return new Response($app['twig']->render(
             'site/cp/index.html.twig',
             $data
