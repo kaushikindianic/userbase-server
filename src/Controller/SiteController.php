@@ -111,4 +111,20 @@ class SiteController
             $data
         ));
     }
+    
+    public function validateAction(Application $app, Request $request, $username, $token)
+    {
+        // TODO: verify token and update db
+        return $app->redirect($app['url_generator']->generate('validate_success'));
+    }
+
+    public function validateSuccessAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'site/validate_success.html.twig',
+            array($data)
+        ));
+    }
+
 }

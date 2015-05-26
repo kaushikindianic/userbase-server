@@ -30,6 +30,13 @@ password_reset:
     pattern: /password/reset
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
 
+validate:
+    pattern: /validate/{username}/{token}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::validateAction }
+
+validate_success:
+    pattern: /validate/success
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::validateSuccessAction }
 
 cp_index:
     pattern: /cp

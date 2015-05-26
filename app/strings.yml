@@ -29,3 +29,5 @@ logout.message: You have been successfully logged out. Thank you for using our s
 signup.header: Signup
 signup.thankyou: Thanks for signing up!
 signup.pleaseconfirm: Please confirm your signup by clicking on the link in the email we just sent to %email%
+validate_success.header: Verification success
+validate_success.description: Thank you for the verification. Your account is now activated, and you can now login.
