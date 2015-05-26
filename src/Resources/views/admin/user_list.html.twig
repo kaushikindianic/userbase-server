@@ -12,11 +12,9 @@
     {% for user in users %}
     <tr>
         <td>
-            <a href="/admin/users/{{ user.getUsername() }}">
+            <a href="{{ path("admin_user_view", {"username": user.getUsername() })}}">
                 <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ user.getPictureUrl() }}" />
-            </a>
-            
-            <a href="/admin/users/{{ user.getUsername() }}">{{ user.getUsername() }}</a>: {{ user.getDisplayName() }}<br />
+                {{ user.getUsername() }}</a>: {{ user.getDisplayName() }}<br />
             <i>{{ user.getEmail() }}</i>
         </td>
         <td style="text-align: center">{{ user.getLastSeenAt()|mydate }}</td>
