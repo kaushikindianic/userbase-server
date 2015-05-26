@@ -20,7 +20,7 @@ class HeraldMailer implements MailerInterface
         foreach ($data as $key => $value) {
             $message->setData($key, $value);
         }
-        $message->setToAddress('joost@joost.cx', $user->getDisplayName());
+        $message->setToAddress($user->getEmail(), $user->getDisplayName());
         $this->client->send($message);
     }
 }
