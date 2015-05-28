@@ -59,8 +59,20 @@ class ApiController
         $this->baseUrl = $app['userbase.baseurl'];
         $repo = $app->getUserRepository();
         $user = $repo->getByName($username);
+        if (!$user) {
+            return $this->getErrorResponse(404, "User not found");
+        }
         $data = $this->user2array($user, true);
 
         return new JsonResponse($data);
+    }
+    
+    private function getErrorResponse($code, $message)
+    {
+        $data = array();
+        $data['error'] = array();
+        $data['error']['code'] = $code;
+        $data['error']['message'] = $message;
+        return new JsonResponse($data, $code);
     }
 }
