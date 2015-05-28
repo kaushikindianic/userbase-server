@@ -86,3 +86,12 @@ admin_user_update_displayname:
 admin_log_list:
     pattern: /admin/logs
     defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
+
+
+admin_groups_list:
+    pattern: /admin/groups
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupListAction }
+
+admin_apps_list:
+    pattern: /admin/apps
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
