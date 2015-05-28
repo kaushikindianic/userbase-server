@@ -66,7 +66,7 @@ class AdminController
         $viewuser = $repo->getByName($username);
         $repo->setPassword($viewuser, $newPassword);
         
-        return $app->redirect('/admin/users/' . $viewuser->getUsername());
+        return $app->redirect($app['url_generator']->generate('admin_user_view', array('username' => $viewuser->getUsername())));
     }
 
 
@@ -78,7 +78,7 @@ class AdminController
         $viewuser = $repo->getByName($username);
         $repo->setEmail($viewuser, $newEmail);
         
-        return $app->redirect('/admin/users/' . $viewuser->getUsername());
+        return $app->redirect($app['url_generator']->generate('admin_user_view', array('username' => $viewuser->getUsername())));
     }
     
     public function userUpdateDisplayNameAction(Application $app, Request $request, $username)
@@ -89,6 +89,15 @@ class AdminController
         $viewuser = $repo->getByName($username);
         $repo->setDisplayName($viewuser, $newDisplayName);
         
-        return $app->redirect('/admin/users/' . $viewuser->getUsername());
+        return $app->redirect($app['url_generator']->generate('admin_user_view', array('username' => $viewuser->getUsername())));
+    }
+    
+    public function logListAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'admin/log_list.html.twig',
+            $data
+        ));
     }
 }
