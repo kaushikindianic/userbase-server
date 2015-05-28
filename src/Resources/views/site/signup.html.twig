@@ -30,7 +30,7 @@
 
     <button type="submit" class="btn btn-success btn-lg">{{ "common.action_signup"|trans }}</button><br />
     <br />
-    {{ "common.label_alreadyhaveanaccount"|trans }} <a href="/login" class="">{{ "common.action_loginhere"|trans }}</a>
+    {{ "common.label_alreadyhaveanaccount"|trans }} <a href="{{ path("login") }}"" class="">{{ "common.action_loginhere"|trans }}</a>
 </form>
 
 {% endblock %}
