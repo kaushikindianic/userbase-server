@@ -26,7 +26,8 @@
         "swiftmailer/swiftmailer": "~5.3",
         "html2text/html2text": "~2.0",
         "herald-project/client-php": "~1.0",
-        "symfony/translation": "~2.6"
+        "symfony/translation": "~2.6",
+        "firebase/php-jwt": "~2.0"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5"
