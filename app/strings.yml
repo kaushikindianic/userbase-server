@@ -5,6 +5,7 @@ site.powered_by: ©2015 Powered by UserBase
 common.action_login: Login
 common.action_logout: Logout
 common.action_controlpanel: Control Panel
+common.action_adminpanel: Admin Panel
 common.action_signup: Signup
 common.action_clickhere: Click here
 common.action_loginhere: Login here

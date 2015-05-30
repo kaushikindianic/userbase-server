@@ -1,14 +1,27 @@
 {% extends "site/cp/layout.html.twig" %}
 
 {% block content %}
-{% if user is defined %}
-<h1>CP of {{ user.getName() }}</h1>
-{% else %}
-<h1>CP Anon</h1>
-{% endif %}
+<h1>Welcome {{ currentuser.getDisplayName() }}</h1>
+
+<div style="text-align: left;">
+    <h3>My accounts: {{ accounts|length }}</h2>
+
+    <table class="table">
+        <tr>
+            <th>Account</th>
+        </tr>
+        {% for account in accounts %}
+        <tr>
+            <td>
+                <a href="{{ path("cp_app_login", {"appname": account.getApp().getName() })}}">
+                    <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ account.getApp().getPictureUrl() }}" />
+                    {{ account.getApp().getName() }}</a>: {{ account.getApp().getDisplayName() }}<br />
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</div>
+
 <a href="{{ path("logout") }}" class="btn btn-default btn-lg">Logout</a><br />
-
-        
-
 
 {% endblock %}

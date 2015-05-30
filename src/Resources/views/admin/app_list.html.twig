@@ -1,6 +1,21 @@
 {% extends "admin/layout.html.twig" %}
 
 {% block content %}
-<h2>Apps</h2>
-<p>TODO</p>
+<h2>Apps: {{ apps|length }}</h2>
+
+<table class="table">
+    <tr>
+        <th>App</th>
+    </tr>
+    {% for app in apps %}
+    <tr>
+        <td>
+            <a href="{{ path("admin_app_view", {"appname": app.getName() })}}">
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ app.getPictureUrl() }}" />
+                {{ app.getName() }}</a>: {{ app.getDisplayName() }}<br />
+                <i>{{ app.getBaseUrl() }}</i>
+        </td>
+    </tr>
+    {% endfor %}
+</table>
 {% endblock %}

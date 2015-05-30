@@ -22,6 +22,8 @@ use Symfony\Component\Translation\Loader\ArrayLoader;
 use LinkORB\Component\DatabaseManager\DatabaseManager;
 use UserBase\Server\Repository\PdoUserRepository;
 use UserBase\Server\Repository\PdoAdminRepository;
+use UserBase\Server\Repository\PdoAppRepository;
+use UserBase\Server\Repository\PdoAccountRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use RuntimeException;
@@ -95,8 +97,12 @@ class Application extends SilexApplication
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
-
-
+        $this->appRepository = new PdoAppRepository($pdo);
+        $this->accountRepository = new PdoAccountRepository(
+            $pdo,
+            $this->appRepository,
+            $this->userRepository
+        );
 
 
         $herald = new HeraldClient(
@@ -208,5 +214,15 @@ class Application extends SilexApplication
     public function getAdminRepository()
     {
         return $this->adminRepository;
+    }
+    
+    public function getAppRepository()
+    {
+        return $this->appRepository;
+    }
+    
+    public function getAccountRepository()
+    {
+        return $this->accountRepository;
     }
 }

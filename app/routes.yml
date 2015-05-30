@@ -62,6 +62,10 @@ cp_index:
     pattern: /cp
     defaults:  { _controller: UserBase\Server\Controller\CpController::indexAction }
 
+cp_app_login:
+    pattern: /cp/applogin/{appname}
+    defaults:  { _controller: UserBase\Server\Controller\CpController::appLoginAction }
+
 api_v1_root:
     pattern: /api/v1
     defaults:  { _controller: UserBase\Server\Controller\ApiController::indexAction }
@@ -120,3 +124,7 @@ admin_groups_list:
 admin_apps_list:
     pattern: /admin/apps
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
+    
+admin_app_view:
+    pattern: /admin/apps/{appname}
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }

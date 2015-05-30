@@ -6,6 +6,10 @@
 <h1>{{ "index.welcome_username"|trans({ '%username%': currentuser.getName() }) }}</h1>
     <a href="{{ path('cp_index') }}" class="btn btn-success btn-lg">{{ "common.action_controlpanel"|trans }}</a><br />
     <br />
+    {% if currentuser.isAdmin() %}
+    <a href="{{ path('admin_index') }}" class="btn btn-default btn-lg">{{ "common.action_adminpanel"|trans }}</a><br />
+    <br />
+    {% endif %}
     <a href="{{ path('logout') }}" class="btn btn-default btn-lg">{{ "common.action_logout"|trans }}</a><br />
 
 {% else %}

@@ -20,6 +20,7 @@ final class User implements AdvancedUserInterface
     private $passwordUpdatedAt;
     private $lastSeenAt;
     private $deletedAt;
+    private $isAdmin = false;
 
     public function __construct($name)
     {
@@ -200,4 +201,16 @@ final class User implements AdvancedUserInterface
         $this->pictureUrl = $url;
     }
 
+    public function setAdmin($bool)
+    {
+        $this->isAdmin = $bool;
+    }
+    
+    public function isAdmin()
+    {
+        if ($this->isAdmin) {
+            return true;
+        }
+        return false;
+    }
 }

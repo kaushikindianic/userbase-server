@@ -28,6 +28,24 @@
     <a class="btn btn-default" href="{{ path("admin_user_tools", { "username": username } ) }}">Tools</a>
 </div>
 
+
+<h3>Accounts: {{ accounts|length }}</h2>
+
+<table class="table">
+    <tr>
+        <th>Accounts</th>
+    </tr>
+    {% for account in accounts %}
+    <tr>
+        <td>
+            <a href="{{ path("admin_app_view", {"appname": account.getApp().getName() })}}">
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ account.getApp().getPictureUrl() }}" />
+                {{ account.getApp().getName() }}</a>: {{ account.getApp().getDisplayName() }}<br />
+        </td>
+    </tr>
+    {% endfor %}
+</table>
+
 <h3>Event log</h3>
 
 {% endblock %}

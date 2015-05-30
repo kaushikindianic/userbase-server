@@ -35,10 +35,13 @@ class AdminController
     public function userViewAction(Application $app, Request $request, $username)
     {
         $data = array();
-        $repo = $app->getUserRepository();
-        $viewuser = $repo->getByName($username);
+        $userRepo = $app->getUserRepository();
+        $accountRepo = $app->getAccountRepository();
+        
+        $viewuser = $userRepo->getByName($username);
         $data['username'] = $username;
         $data['viewuser'] = $viewuser;
+        $data['accounts'] = $accountRepo->getByUsername($username);
         return new Response($app['twig']->render(
             'admin/user_view.html.twig',
             $data
@@ -112,6 +115,11 @@ class AdminController
     public function appListAction(Application $app, Request $request)
     {
         $data = array();
+        $repo = $app->getAppRepository();
+        $apps = $repo->getAll();
+        $data['usercount'] = count($apps);
+        $data['apps'] = $apps;
+
         return new Response($app['twig']->render(
             'admin/app_list.html.twig',
             $data
