@@ -14,8 +14,8 @@ $application->before(function (Request $request) use ($application) {
                 //exit('anon!');
                 //return $app->redirect('/login');
             } else {
-                $application['user'] = $token->getUser();
-                $application['twig']->addGlobal('user', $token->getUser());
+                $application['currentuser'] = $token->getUser();
+                $application['twig']->addGlobal('currentuser', $token->getUser());
             }
         }
 

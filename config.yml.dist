@@ -4,7 +4,8 @@ userbase:
     title: My Site Name
     postfix: "*userbase.web"
     logourl: http://www.epifaniasolar.cl/images/member1.jpg
-
+    salt: some_random_salt
+    
 herald:
     username: my_herald_username
     password: my_herald_password

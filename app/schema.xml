@@ -5,6 +5,7 @@
         <column name="display_name" type="varchar(128)" />
         <column name="password" type="varchar(128)" />
         <column name="email" type="varchar(128)" />
+        <column name="email_verified_at" type="integer" />
         <column name="about" type="text" />
         <column name="created_at" type="integer" />
         <column name="deleted_at" type="integer" />

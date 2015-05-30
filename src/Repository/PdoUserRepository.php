@@ -129,7 +129,7 @@ final class PdoUserRepository implements UserProviderInterface
         $statement->execute(
             array(
                 ':password' => $hash,
-                ':stamp' => $now,
+                ':stamp' => time(),
                 ':name' => $user->getUsername()
             )
         );
@@ -172,6 +172,26 @@ final class PdoUserRepository implements UserProviderInterface
         $statement->execute(
             array(
                 ':displayname' => $displayname,
+                ':name' => $user->getUsername()
+            )
+        );
+    }
+    
+    public function setEmailVerifiedStamp(User $user, $stamp)
+    {
+        if (!$user) {
+            throw new RuntimeException("User not specified");
+        }
+        
+        $statement = $this->pdo->prepare(
+            "UPDATE user SET
+            email_verified_at = :stamp
+            WHERE name=:name"
+        );
+        
+        $statement->execute(
+            array(
+                ':stamp' => $stamp,
                 ':name' => $user->getUsername()
             )
         );

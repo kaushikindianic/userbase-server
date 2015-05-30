@@ -26,17 +26,37 @@ signup_thankyou:
     pattern: /signup/thankyou
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupThankYouAction }
 
-password_reset:
-    pattern: /password/reset
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
-
 validate:
-    pattern: /validate/{username}/{token}
+    pattern: /validate/{username}/{stamp}/{token}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::validateAction }
 
 validate_success:
     pattern: /validate/success
     defaults:  { _controller: UserBase\Server\Controller\SiteController::validateSuccessAction }
+
+password_lost:
+    pattern: /password/lost
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordLostAction }
+
+password_reset_request:
+    pattern: /password/reset-request
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetRequestAction }
+
+password_reset:
+    pattern: /password/reset/{username}/{stamp}/{token}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
+
+password_reset_submit:
+    pattern: /password/reset-submit/{username}/{stamp}/{token}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSubmitAction }
+
+password_reset_sent:
+    pattern: /password/reset-sent
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSentAction }
+
+password_reset_success:
+    pattern: /password/reset-success
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSuccessAction }
 
 cp_index:
     pattern: /cp
@@ -53,6 +73,11 @@ api_v1_user_list:
 api_v1_user_view:
     pattern: /api/v1/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
+
+
+
+
+
 
 
 admin_index:

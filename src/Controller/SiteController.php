@@ -13,7 +13,7 @@ class SiteController
     public function indexAction(Application $app, Request $request)
     {
         
-        if (isset($app['user'])) {
+        if (isset($app['currentuser'])) {
             //return $app->redirect("/cp");
         }
         $data = array();
@@ -28,7 +28,7 @@ class SiteController
     
     public function loginAction(Application $app, Request $request)
     {
-        if (isset($app['user'])) {
+        if (isset($app['currentuser'])) {
             return $app->redirect($app['url_generator']->generate('cp_index'));
         }
         
@@ -78,9 +78,11 @@ class SiteController
 
         $baseUrl = $app['userbase.baseurl'];
         
-        $validatetoken = sha1($user->getEmail() . 'somesalt');
+        $stamp = time();
+        $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+        $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
         $data = array();
-        $data['link'] = $baseUrl . '/validate/' . $user->getUsername() . '/' . $validatetoken;
+        $data['link'] = $link;
         $data['username'] = $username;
         $app['mailer']->sendTemplate('welcome', $user, $data);
         
@@ -112,9 +114,33 @@ class SiteController
         ));
     }
     
-    public function validateAction(Application $app, Request $request, $username, $token)
+    public function validateAction(Application $app, Request $request, $username, $stamp, $token)
     {
-        // TODO: verify token and update db
+        $repo = $app->getUserRepository();
+
+        $user = $repo->getByName($username);
+        if (!$user) {
+            // no such user
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E03');
+        }
+        $leeway = 60 * 10; // +/- 10 minutes
+        
+        if ($stamp > time() + $leeway) {
+            // expired - too early
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05');
+        }
+        if ($stamp < time() - $leeway) {
+            // expired - too late
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05');
+        }
+        
+        $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+        if ($test != $token) {
+            // invalid token
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E04');
+        }
+        
+        $repo->setEmailVerifiedStamp($user, $stamp);
         return $app->redirect($app['url_generator']->generate('validate_success'));
     }
 
@@ -126,5 +152,119 @@ class SiteController
             array($data)
         ));
     }
+    
+    
+    public function passwordLostAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'site/password_lost.html.twig',
+            array($data)
+        ));
+    }
 
+    public function passwordResetRequestAction(Application $app, Request $request)
+    {
+        $username = $request->request->get('_username');
+        
+        $repo = $app->getUserRepository();
+
+        $user = $repo->getByName($username);
+        if (!$user) {
+            // no such user
+            return $app->redirect($app['url_generator']->generate('password_lost') . '?errorcode=E06');
+        }
+
+        $baseUrl = $app['userbase.baseurl'];
+
+        $stamp = time();
+        $token = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+        $link = $baseUrl . '/password/reset/' . $user->getUsername() . '/' . $stamp . '/' . $token;
+
+        $data = array();
+        $data['link'] = $link;
+        $data['username'] = $username;
+
+        $app['mailer']->sendTemplate('password-reset', $user, $data);
+
+        return $app->redirect($app['url_generator']->generate('password_reset_sent'));
+    }
+    
+    public function passwordResetSentAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'site/password_reset_sent.html.twig',
+            $data
+        ));
+    }
+    
+
+    public function passwordResetAction(Application $app, Request $request, $username, $stamp, $token)
+    {
+        $data = array();
+        $data['stamp'] = $stamp;
+        $data['username'] = $username;
+        $data['token'] = $token;
+        return new Response($app['twig']->render(
+            'site/password_reset.html.twig',
+            $data
+        ));
+    }
+    public function passwordResetSubmitAction(Application $app, Request $request, $username, $stamp, $token)
+    {
+        $password = $request->request->get('_password');
+        $password2 = $request->request->get('_password2');
+        
+        $urldata = array(
+            'username' => $username,
+            'stamp' => $stamp,
+            'token' => $token
+        );
+        $repo = $app->getUserRepository();
+        $user = $repo->getByName($username);
+        if (!$user) {
+            // user does not exist
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E10');
+        }
+        
+        if ($password != $password2) {
+            // passwords not the same
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E11');
+        }
+        
+        
+        $leeway = 60 * 10; // +/- 10 minutes
+        
+        if ($stamp > time() + $leeway) {
+            // expired - too early
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E12');
+        }
+        if ($stamp < time() - $leeway) {
+            // expired - too late
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E12');
+        }
+        
+        $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+        if ($test != $token) {
+            // invalid token
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E14');
+        }
+        
+        $repo->setEmailVerifiedStamp($user, $stamp);
+        $repo->setPassword($user, $password);
+
+
+        return $app->redirect($app['url_generator']->generate('password_reset_success'));
+    }
+
+    public function passwordResetSuccessAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'site/password_reset_success.html.twig',
+            $data
+        ));
+    }
+    
 }

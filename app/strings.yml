@@ -8,6 +8,7 @@ common.action_controlpanel: Control Panel
 common.action_signup: Signup
 common.action_clickhere: Click here
 common.action_loginhere: Login here
+common.action_next: Next
 
 common.label_username: Username
 common.label_password: Password
@@ -28,6 +29,18 @@ logout.message: You have been successfully logged out. Thank you for using our s
 
 signup.header: Signup
 signup.thankyou: Thanks for signing up!
-signup.pleaseconfirm: Please confirm your signup by clicking on the link in the email we just sent to %email%
+signup.pleaseconfirm: Please confirm your signup by clicking on the link that we have just sent to you by e-mail.
 validate_success.header: Verification success
 validate_success.description: Thank you for the verification. Your account is now activated, and you can now login.
+
+password_lost.header: Lost password
+password_lost.description: Enter your username below, and we'll send you a password-reset link.
+
+password_reset_sent.header: Email sent
+password_reset_sent.description: We've sent you an e-mail containing the password-reset link associated with this account.
+
+password_reset.header: Password reset
+password_reset.description: Please choose a new password below:
+
+password_reset_success.header: Password updated
+password_reset_success.description: Your new password has been saved. Please use the link below to login with your new password.
