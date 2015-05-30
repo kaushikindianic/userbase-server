@@ -100,4 +100,23 @@ class AdminController
             $data
         ));
     }
+
+    public function groupListAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'admin/group_list.html.twig',
+            $data
+        ));
+    }
+    public function appListAction(Application $app, Request $request)
+    {
+        $data = array();
+        return new Response($app['twig']->render(
+            'admin/app_list.html.twig',
+            $data
+        ));
+    }
+
+
 }
