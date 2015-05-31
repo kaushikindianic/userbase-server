@@ -3,6 +3,13 @@
 use UserBase\Server\Application;
 use Symfony\Component\HttpFoundation\Request;
 
+$service = new \ServiceProvider\Provider(
+    __DIR__ . '/../config.yml',
+    __DIR__ . '/../services/*.php',
+    '/tmp/userbase.service.' . sha1(__DIR__) . '.php',
+    'Service'
+);
+
 $application = new Application();
 
 $application->before(function (Request $request) use ($application) {

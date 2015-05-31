@@ -19,7 +19,6 @@ use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
-use LinkORB\Component\DatabaseManager\DatabaseManager;
 use UserBase\Server\Repository\PdoUserRepository;
 use UserBase\Server\Repository\PdoAdminRepository;
 use UserBase\Server\Repository\PdoAppRepository;
@@ -27,8 +26,7 @@ use UserBase\Server\Repository\PdoAccountRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use RuntimeException;
-use Herald\Client\Client as HeraldClient;
-use UserBase\Server\Mailer\HeraldMailer;
+use Service;
 
 class Application extends SilexApplication
 {
@@ -87,12 +85,7 @@ class Application extends SilexApplication
 
         $this->register(new SilexSecurityServiceProvider(), array());
 
-
-        $dbname = $this->config['userbase']['dbname'];
-
-        $dm = new DatabaseManager();
-        $pdo = $dm->getPdo($dbname);
-        $this['pdo'] = $pdo;
+        $pdo = Service::pdo();
 
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
@@ -104,18 +97,8 @@ class Application extends SilexApplication
             $this->userRepository
         );
 
-        
-        $herald = new HeraldClient(
-            $this->config['herald']['username'],
-            $this->config['herald']['password'],
-            $this->config['herald']['baseurl'],
-            $this->config['herald']['transport']
-        );
-        $herald->setTemplateNamePrefix($this->config['herald']['prefix']);
+        $mailer = Service::mailer();
 
-        $this['herald'] = $herald;
-
-        $mailer = new HeraldMailer($herald);
         $this['mailer'] = $mailer;
     }
 

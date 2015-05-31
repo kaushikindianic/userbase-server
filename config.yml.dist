@@ -1,5 +1,4 @@
 userbase:
-    dbname: userbase
     baseurl: http://localhost:8888
     title: My Site Name
     postfix: "*userbase.web"
@@ -8,7 +7,12 @@ userbase:
     strings:
         - app/strings.yml
     layout: layout/default
-    
+
+pdo:
+    dsn: mysql:host=localhost;dbname=userbase
+    username: my_username
+    password: my_password
+
 herald:
     username: my_herald_username
     password: my_herald_password
