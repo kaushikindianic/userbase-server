@@ -1,81 +1,81 @@
 index:
-    pattern: /
+    path: /
     defaults:  { _controller: UserBase\Server\Controller\SiteController::indexAction }
 
 login:
-    pattern: /login
+    path: /login
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
 
 login/success:
-    pattern: /login/success
+    path: /login/success
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginSuccessAction }
 
 logout/success:
-    pattern: /logout/success
+    path: /logout/success
     defaults:  { _controller: UserBase\Server\Controller\SiteController::logoutSuccessAction }
 
 signup:
-    pattern: /signup
+    path: /signup
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupAction }
 
 signup_submit:
-    pattern: /signup/submit
+    path: /signup/submit
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupSubmitAction }
 
 signup_thankyou:
-    pattern: /signup/thankyou
+    path: /signup/thankyou
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupThankYouAction }
 
 validate:
-    pattern: /validate/{username}/{stamp}/{token}
+    path: /validate/{username}/{stamp}/{token}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::validateAction }
 
 validate_success:
-    pattern: /validate/success
+    path: /validate/success
     defaults:  { _controller: UserBase\Server\Controller\SiteController::validateSuccessAction }
 
 password_lost:
-    pattern: /password/lost
+    path: /password/lost
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordLostAction }
 
 password_reset_request:
-    pattern: /password/reset-request
+    path: /password/reset-request
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetRequestAction }
 
 password_reset:
-    pattern: /password/reset/{username}/{stamp}/{token}
+    path: /password/reset/{username}/{stamp}/{token}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
 
 password_reset_submit:
-    pattern: /password/reset-submit/{username}/{stamp}/{token}
+    path: /password/reset-submit/{username}/{stamp}/{token}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSubmitAction }
 
 password_reset_sent:
-    pattern: /password/reset-sent
+    path: /password/reset-sent
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSentAction }
 
 password_reset_success:
-    pattern: /password/reset-success
+    path: /password/reset-success
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSuccessAction }
 
 cp_index:
-    pattern: /cp
+    path: /cp
     defaults:  { _controller: UserBase\Server\Controller\CpController::indexAction }
 
 cp_app_login:
-    pattern: /cp/applogin/{appname}
+    path: /cp/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\CpController::appLoginAction }
 
 api_v1_root:
-    pattern: /api/v1
+    path: /api/v1
     defaults:  { _controller: UserBase\Server\Controller\ApiController::indexAction }
 
 api_v1_user_list:
-    pattern: /api/v1/users
+    path: /api/v1/users
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userListAction }
     
 api_v1_user_view:
-    pattern: /api/v1/users/{username}
+    path: /api/v1/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
 
 
@@ -85,46 +85,46 @@ api_v1_user_view:
 
 
 admin_index:
-    pattern: /admin
+    path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
 
 admin_user_list:
-    pattern: /admin/users
+    path: /admin/users
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userListAction }
 
 admin_user_view:
-    pattern: /admin/users/{username}
+    path: /admin/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userViewAction }
 
 admin_user_tools:
-    pattern: /admin/users/{username}/tools
+    path: /admin/users/{username}/tools
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userToolsAction }
 
 admin_user_update_password:
-    pattern: /admin/users/{username}/updatepassword
+    path: /admin/users/{username}/updatepassword
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdatePasswordAction }
 
 admin_user_update_email:
-    pattern: /admin/users/{username}/updateemail
+    path: /admin/users/{username}/updateemail
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateEmailAction }
 
 admin_user_update_displayname:
-    pattern: /admin/users/{username}/updatedisplayname
+    path: /admin/users/{username}/updatedisplayname
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateDisplayNameAction }
 
 admin_log_list:
-    pattern: /admin/logs
+    path: /admin/logs
     defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
 
 
 admin_groups_list:
-    pattern: /admin/groups
+    path: /admin/groups
     defaults:  { _controller: UserBase\Server\Controller\AdminController::groupListAction }
 
 admin_apps_list:
-    pattern: /admin/apps
+    path: /admin/apps
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
     
 admin_app_view:
-    pattern: /admin/apps/{appname}
+    path: /admin/apps/{appname}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
