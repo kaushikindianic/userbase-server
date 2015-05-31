@@ -5,6 +5,9 @@ userbase:
     postfix: "*userbase.web"
     logourl: http://www.epifaniasolar.cl/images/member1.jpg
     salt: some_random_salt
+    strings:
+        - app/strings.yml
+    layout: layout/default
     
 herald:
     username: my_herald_username

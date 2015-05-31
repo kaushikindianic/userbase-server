@@ -104,7 +104,7 @@ class Application extends SilexApplication
             $this->userRepository
         );
 
-
+        
         $herald = new HeraldClient(
             $this->config['herald']['username'],
             $this->config['herald']['password'],
@@ -135,7 +135,17 @@ class Application extends SilexApplication
 
     private function configureStrings()
     {
-        $this->loadStrings(__DIR__ . '/../app/strings.yml');
+        if (!isset($this->config['userbase']['strings'])) {
+            //default
+            $this->config['userbase']['strings'] = array('app/strings.yml');
+        }
+        
+        foreach ($this->config['userbase']['strings'] as $filename) {
+            if ($filename[0] != '') {
+                $filename = __DIR__ . '/../' . $filename;
+            }
+            $this->loadStrings($filename);
+        }
 
         $this['translator.domains'] = array(
             'messages' => array(
@@ -159,6 +169,15 @@ class Application extends SilexApplication
                 __DIR__.'/Resources/views/',
             ),
         ));
+        
+        if (!isset($this->config['userbase']['layout'])) {
+            $this->config['userbase']['layout'] = 'app/default';
+        }
+        $layoutPath = $this->config['userbase']['layout'];
+        $this['twig.loader.filesystem']->addPath(
+            __DIR__ . '/../layout/default',
+            'Layout'
+        );
     }
 
     private function configureSecurity()

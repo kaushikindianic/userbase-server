@@ -1,23 +1,3 @@
-site.title: My UserDB
-site.subtitle: Ye-hah
-site.powered_by: ©2015 Powered by UserBase
-
-common.action_login: L0gin
-common.action_signup: S1gnUpz
-common.action_clickhere: Cl1ck H3re!
-common.action_loginhere: L0g1n H3re!
-
-common.label_username: Us3rN4m3
-common.label_password: p4zwrd
-common.label_passwordrepeat: p4zwrd (r3p34t)
-common.label_noaccountyet: Don't have an account yet?
-common.label_lostpassword: Forgot your password?
-common.label_alreadyhaveanaccount: Already have an account?
-
-common.error_incorrectcredentials: Incorrect username / password
-
-index.pleaselogin: Plz L0g1n!
-index.welcome_username: Yo, %username%
-
-login.header: Log1n
-signup.header: S1gnUp!
+site.title: Custom Title
+site.subtitle: Custom Sub-title
+site.powered_by: ©2015 Powered by Unicorns
