@@ -20,7 +20,7 @@ class CpController
         $accountRepo = $app->getAccountRepository();
         $data['accounts'] = $accountRepo->getByUsername($user->getName());
         return new Response($app['twig']->render(
-            'site/cp/index.html.twig',
+            'cp/index.html.twig',
             $data
         ));
     }
