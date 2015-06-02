@@ -20,6 +20,7 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use UserBase\Server\Repository\PdoUserRepository;
+use UserBase\Server\Repository\PdoGroupRepository;
 use UserBase\Server\Repository\PdoAdminRepository;
 use UserBase\Server\Repository\PdoAppRepository;
 use UserBase\Server\Repository\PdoAccountRepository;
@@ -33,6 +34,7 @@ class Application extends SilexApplication
     private $config;
     private $strings = array();
     private $userRepository;
+    private $groupRepository;
     private $adminRepository;
 
     public function __construct(array $values = array())
@@ -89,6 +91,7 @@ class Application extends SilexApplication
 
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
+        $this->groupRepository = new PdoGroupRepository($pdo);
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
         $this->accountRepository = new PdoAccountRepository(
@@ -122,7 +125,7 @@ class Application extends SilexApplication
             //default
             $this->config['userbase']['strings'] = array('app/strings.yml');
         }
-        
+
         foreach ($this->config['userbase']['strings'] as $filename) {
             if ($filename[0] != '') {
                 $filename = __DIR__ . '/../' . $filename;
@@ -152,7 +155,7 @@ class Application extends SilexApplication
                 __DIR__.'/Resources/views/',
             ),
         ));
-        
+
         if (!isset($this->config['userbase']['layout'])) {
             $this->config['userbase']['layout'] = 'app/default';
         }
@@ -212,17 +215,22 @@ class Application extends SilexApplication
     {
         return $this->userRepository;
     }
-    
+
+    public function getGroupRepository()
+    {
+        return $this->groupRepository;
+    }
+
     public function getAdminRepository()
     {
         return $this->adminRepository;
     }
-    
+
     public function getAppRepository()
     {
         return $this->appRepository;
     }
-    
+
     public function getAccountRepository()
     {
         return $this->accountRepository;
