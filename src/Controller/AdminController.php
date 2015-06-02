@@ -37,7 +37,7 @@ class AdminController
         $data = array();
         $userRepo = $app->getUserRepository();
         $accountRepo = $app->getAccountRepository();
-        
+
         $viewuser = $userRepo->getByName($username);
         $data['username'] = $username;
         $data['viewuser'] = $viewuser;
@@ -68,7 +68,7 @@ class AdminController
         $repo = $app->getUserRepository();
         $viewuser = $repo->getByName($username);
         $repo->setPassword($viewuser, $newPassword);
-        
+
         return $app->redirect($app['url_generator']->generate('admin_user_view', array('username' => $viewuser->getUsername())));
     }
 
@@ -80,10 +80,10 @@ class AdminController
         $repo = $app->getUserRepository();
         $viewuser = $repo->getByName($username);
         $repo->setEmail($viewuser, $newEmail);
-        
+
         return $app->redirect($app['url_generator']->generate('admin_user_view', array('username' => $viewuser->getUsername())));
     }
-    
+
     public function userUpdateDisplayNameAction(Application $app, Request $request, $username)
     {
         $newDisplayName = $request->request->get('_displayname');
@@ -91,10 +91,10 @@ class AdminController
         $repo = $app->getUserRepository();
         $viewuser = $repo->getByName($username);
         $repo->setDisplayName($viewuser, $newDisplayName);
-        
+
         return $app->redirect($app['url_generator']->generate('admin_user_view', array('username' => $viewuser->getUsername())));
     }
-    
+
     public function logListAction(Application $app, Request $request)
     {
         $data = array();
@@ -106,12 +106,14 @@ class AdminController
 
     public function groupListAction(Application $app, Request $request)
     {
-        $data = array();
         return new Response($app['twig']->render(
             'admin/group_list.html.twig',
-            $data
+            array(
+                'groups' => $app->getGroupRepository()->getAll(),
+            )
         ));
     }
+
     public function appListAction(Application $app, Request $request)
     {
         $data = array();
@@ -125,6 +127,4 @@ class AdminController
             $data
         ));
     }
-
-
 }

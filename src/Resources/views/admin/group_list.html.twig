@@ -1,6 +1,24 @@
 {% extends "admin/layout.html.twig" %}
 
 {% block content %}
+
 <h2>Groups</h2>
-TODO
+<table class="table">
+    <tr>
+        <th>Group</th>
+        <th style="width: 100px; text-align: center">Created</th>
+    </tr>
+    {% for g in groups %}
+    <tr>
+        <td>
+            <a href="{{ path("admin_user_view", {"username": g.getUsername() })}}">
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ g.getPictureUrl() }}" />
+            </a>: {{ g.getDisplayName() }}
+        </td>
+        <td style="text-align: center">{{ g.getCreatedAt()|mydate }}</td>
+
+    </tr>
+    {% endfor %}
+</table>
+
 {% endblock %}
