@@ -1,0 +1,35 @@
+{% extends "admin/layout.html.twig" %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{% block content %}
+<h1>Group detail</h1>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        The name already exists
+    </div>
+{% endif %}
+
+<form action="#" method="post" >
+    {{ form_widget(form) }}
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-server"></i>
+            Save
+        </button>
+        <a href="{{ path('admin_groups_list') }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+        {% if group != null %}
+        <a href="{{ path('admin_group_delete', {'groupname': group.getName()}) }}"
+         class="btn btn-danger" role="button" onclick="return confirm('Are you sure?')">
+            <i class="fa fa-trash"></i>
+            Delete
+        </a>
+        {% endif %}
+    </div>
+</form>
+{% endblock %}

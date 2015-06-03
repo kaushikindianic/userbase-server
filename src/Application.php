@@ -74,10 +74,9 @@ class Application extends SilexApplication
         );
         //  'translation.class_path' =>  __DIR__.'/../vendor/symfony/src',
 
-        /*
         // the form service
         $this->register(new FormServiceProvider());
-        */
+
         $this->register(new RoutingServiceProvider());
 
         // *** Setup Sessions ***

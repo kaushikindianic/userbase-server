@@ -21,6 +21,13 @@ class Group
         $this->setCreatedAt(time())->name = $name;
     }
 
+    public function setId($id)
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
     public function getName()
     {
         return $this->name;
@@ -48,6 +55,11 @@ class Group
         $this->displayName = $name;
 
         return $this;
+    }
+
+    public function getRawDisplayName()
+    {
+        return $this->displayName;
     }
 
     public function getPictureUrl($size = null)
