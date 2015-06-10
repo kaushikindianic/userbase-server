@@ -128,3 +128,11 @@ admin_apps_list:
 admin_app_view:
     path: /admin/apps/{appname}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
+
+authorize_confirm:
+    path: /authorize/confirm/{provider}
+    defaults: { _controller: UserBase\Server\Controller\OAuth2Controller::confirmAction }
+
+authorize:
+    path: /authorize/{provider}
+    defaults: { _controller: UserBase\Server\Controller\OAuth2Controller::authorizeAction }

@@ -15,10 +15,12 @@ final class PdoUserRepository implements UserProviderInterface
 {
     private $pdo;
     private $encoderFactory;
+    private $oauth;
 
-    public function __construct(PDO $pdo, $encoderFactory)
+    public function __construct(PDO $pdo, $oauth, $encoderFactory)
     {
         $this->pdo = $pdo;
+        $this->oauth = $oauth;
         $this->encoderFactory = $encoderFactory;
     }
     
@@ -99,6 +101,8 @@ final class PdoUserRepository implements UserProviderInterface
         
         //$nodeId = $this->pdo->lastInsertId();
         
+        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
         $statement = $this->pdo->prepare(
             "INSERT INTO user(name, email, created_at) VALUES (:name, :email, :stamp)"
         );
@@ -109,8 +113,12 @@ final class PdoUserRepository implements UserProviderInterface
                 ':stamp' => time()
             )
         );
+
+        $userObj = $this->getByName($name);
+
+        $this->oauth->registerUser($userObj);
         
-        return $this->getByName($name);
+        return $userObj;
     }
 
     

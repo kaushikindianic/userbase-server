@@ -48,10 +48,10 @@ class SiteController
 
     public function signupAction(Application $app, Request $request)
     {
-        $data = array();
+        $data = $app->getOAuthrepository()->getQueueData($app);
         return new Response($app['twig']->render(
             'site/signup.html.twig',
-            array($data)
+            $data
         ));
     }
 
@@ -70,6 +70,7 @@ class SiteController
         try {
             $user = $repo->register($username, $email);
         } catch (Exception $e) {
+            var_dump($e);exit;
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E01');
         }
         $user = $repo->getByName($username);

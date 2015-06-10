@@ -1,0 +1,128 @@
+<?xml version="1.0"?>
+<schema>
+  <table name="account">
+    <column name="id" type="INT"/>
+    <column name="app_name" type="VARCHAR(128)"/>
+    <column name="user_name" type="VARCHAR(128)"/>
+    <column name="meta_data" type="LONGTEXT"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="id"/>
+    </index>
+  </table>
+  <table name="app">
+    <column name="id" type="INT"/>
+    <column name="name" type="VARCHAR(128)"/>
+    <column name="display_name" type="VARCHAR(128)"/>
+    <column name="base_url" type="VARCHAR(128)"/>
+    <column name="about" type="LONGTEXT"/>
+    <column name="picture_url" type="VARCHAR(128)"/>
+    <column name="created_at" type="INT"/>
+    <column name="deleted_at" type="INT"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="id"/>
+    </index>
+  </table>
+  <table name="group">
+    <column name="id" type="INT"/>
+    <column name="name" type="VARCHAR(128)"/>
+    <column name="display_name" type="VARCHAR(128)"/>
+    <column name="about" type="LONGTEXT"/>
+    <column name="picture_url" type="VARCHAR(128)"/>
+    <column name="created_at" type="INT"/>
+    <column name="deleted_at" type="INT"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="id"/>
+    </index>
+  </table>
+  <table name="group_user">
+    <column name="id" type="INT"/>
+    <column name="group_name" type="VARCHAR(128)"/>
+    <column name="user_name" type="VARCHAR(128)"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="id"/>
+    </index>
+  </table>
+  <table name="oauth_access_tokens">
+    <column name="access_token" type="TEXT"/>
+    <column name="client_id" type="TEXT"/>
+    <column name="user_id" type="TEXT"/>
+    <column name="expires" type="DATETIME"/>
+    <column name="scope" type="TEXT"/>
+  </table>
+  <table name="oauth_authorization_codes">
+    <column name="authorization_code" type="TEXT"/>
+    <column name="client_id" type="TEXT"/>
+    <column name="user_id" type="TEXT"/>
+    <column name="redirect_uri" type="TEXT"/>
+    <column name="expires" type="DATETIME"/>
+    <column name="scope" type="TEXT"/>
+    <column name="id_token" type="TEXT"/>
+  </table>
+  <table name="oauth_client_tokens">
+    <column name="user_id" type="INT"/>
+    <column name="service" type="VARCHAR(50)"/>
+    <column name="access_token" type="TEXT"/>
+    <column name="expires" type="DATETIME"/>
+    <column name="refresh_token" type="TEXT"/>
+    <column name="provider_uid" type="VARCHAR(250)"/>
+  </table>
+  <table name="oauth_clients">
+    <column name="client_id" type="TEXT"/>
+    <column name="client_secret" type="TEXT"/>
+    <column name="redirect_uri" type="TEXT"/>
+  </table>
+  <table name="oauth_public_keys">
+    <column name="client_id" type="VARCHAR(80)"/>
+    <column name="public_key" type="VARCHAR(8000)"/>
+    <column name="private_key" type="VARCHAR(8000)"/>
+    <column name="encryption_algorithm" type="VARCHAR(80)"/>
+  </table>
+  <table name="oauth_refresh_tokens">
+    <column name="refresh_token" type="TEXT"/>
+    <column name="client_id" type="TEXT"/>
+    <column name="user_id" type="TEXT"/>
+    <column name="expires" type="DATETIME"/>
+    <column name="scope" type="TEXT"/>
+  </table>
+  <table name="oauth_scopes">
+    <column name="scope" type="TEXT"/>
+    <column name="is_default" type="TINYINT(1)"/>
+  </table>
+  <table name="oauth_users">
+    <column name="username" type="VARCHAR(255)"/>
+    <column name="password" type="VARCHAR(2000)"/>
+    <column name="first_name" type="VARCHAR(255)"/>
+    <column name="last_name" type="VARCHAR(255)"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="username"/>
+    </index>
+  </table>
+  <table name="user">
+    <column name="id" type="INT"/>
+    <column name="name" type="VARCHAR(128)"/>
+    <column name="display_name" type="VARCHAR(128)"/>
+    <column name="password" type="VARCHAR(128)"/>
+    <column name="email" type="VARCHAR(128)"/>
+    <column name="email_verified_at" type="INT"/>
+    <column name="about" type="LONGTEXT"/>
+    <column name="created_at" type="INT"/>
+    <column name="deleted_at" type="INT"/>
+    <column name="password_updated_at" type="INT"/>
+    <column name="last_seen_at" type="INT"/>
+    <column name="is_admin" type="INT"/>
+    <column name="picture_url" type="VARCHAR(128)"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="id"/>
+    </index>
+  </table>
+  <table name="user_event">
+    <column name="id" type="INT"/>
+    <column name="user_name" type="VARCHAR(128)"/>
+    <column name="event_name" type="VARCHAR(128)"/>
+    <column name="occured_at" type="INT"/>
+    <column name="data" type="LONGTEXT"/>
+    <index name="PRIMARY" primary="primary" unique="unique">
+      <column name="id"/>
+    </index>
+  </table>
+</schema>

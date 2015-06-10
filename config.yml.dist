@@ -19,3 +19,14 @@ herald:
     baseurl: my_herald_baseurl
     transport: my_herald_transport
     prefix: "my_herald_prefix/"
+
+oauth2:
+    return_url: '/oauth2/confirm'
+    scopes: [email]
+    services:
+        twitter:
+            clientId: Wp6uj4uiLFRYxAxP7AuOG4No8BM
+            clientSecret: ft4WnFqyDLifpbJHVEnMR7GcikXVLN7Sn5OIZVIKoTMviJYUx4
+        facebook:
+            clientId: '690155217797560'
+            secretSecret: 'd348df05211c75d93daaa8827e161caa' 
