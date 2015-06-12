@@ -7,6 +7,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
+use Silex\Application;
 use UserBase\Server\Model\User;
 use RuntimeException;
 use PDO;
@@ -92,7 +93,7 @@ final class PdoUserRepository implements UserProviderInterface
         return $user;
     }
     
-    public function register($name, $email)
+    public function register(Application $app, $name, $email)
     {
         $user = $this->getByName($name);
         if ($user) {
@@ -116,7 +117,7 @@ final class PdoUserRepository implements UserProviderInterface
 
         $userObj = $this->getByName($name);
 
-        $this->oauth->registerUser($userObj);
+        $this->oauth->registerUser($app, $userObj);
         
         return $userObj;
     }

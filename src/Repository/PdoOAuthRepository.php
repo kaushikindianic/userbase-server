@@ -15,9 +15,44 @@ final class PdoOAuthRepository
         $this->pdo = $pdo;
     }
 
-    public function registerUser($user)
+    public function registerUser(Application $app, $user)
     {
-        var_dump($user);exit;
+        $queued = $app['session']->get('oauth');
+        if ($queued) {
+            $this->addIdentity($user, $queued['userDetails'], $queued['token']);
+            // forget!
+            $app['session']->set('oauth', null);
+        }
+    }
+
+    protected function insert($table, Array $data)
+    {
+        $columns = array_keys($data);
+        $fields = implode(",", $columns);
+        $placeholders = ':' . implode(",:", $columns);
+        $this->pdo
+            ->prepare("INSERT INTO $table ($fields) VALUES($placeholders)")
+            ->execute($data);
+        
+        return $this->pdo->lastInsertId();
+    }
+
+    public function addIdentity($user, $userDetails, $token)
+    {
+        $urls = $userDetails->urls;
+        return $this->insert('identities', array(
+            'user_name' => $user->name,
+            'service' => key($urls),
+            'access_token' => $token->accessToken,
+            'expires' => $token->expires,
+            'refresh_token' => $token->refreshToken,
+            'identity_uid' => $userDetails->uid,
+            'identity_avatar' => $userDetails->imageUrl,
+            'identity_email' => $userDetails->email,
+            'identity_first_name' => $userDetails->firstName,
+            'identity_last_name' => $userDetails->lastName,
+            'identity_object' => json_encode($userDetails->getArrayCopy()),
+        ));
     }
 
     public function getQueueData(Application $app)
@@ -39,5 +74,11 @@ final class PdoOAuthRepository
             $app['session']->set('oauth', compact('userDetails', 'token'));
             return $app->redirect($app['url_generator']->generate('signup'));
         }
+
+        // user does have a valid session, we store their identity
+        // and redirect them to somewhere
+        $this->addIdentity($user, $userDetails, $token);
+
+        return $app->redirect('...');
     }
 }
