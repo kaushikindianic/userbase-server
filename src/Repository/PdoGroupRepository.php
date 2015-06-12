@@ -18,7 +18,7 @@ class PdoGroupRepository
     public function getById($id)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM group WHERE id=:id AND deleted_at IS NULL LIMIT 1"
+            "SELECT * FROM `group` WHERE id=:id AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
         );
         $statement->execute(array('id' => $id));
         $row = $statement->fetch();
@@ -29,18 +29,28 @@ class PdoGroupRepository
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM group WHERE name=:name AND deleted_at IS NULL LIMIT 1"
+            "SELECT * FROM `group` WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
         );
         $statement->execute(array('name' => $name));
         $row = $statement->fetch();
 
-        return $row ? $this->row2user($row) : null;
+        return $row ? $this->row2group($row) : null;
+    }
+
+    private function userExistsByName($name)
+    {
+        $statement = $this->pdo->prepare(
+            "SELECT name FROM user WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+        );
+        $statement->execute(array('name' => $name));
+
+        return !!$statement->fetch();
     }
 
     public function getAll($limit = 10)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM group WHERE deleted_at IS NULL ORDER BY id DESC"
+            "SELECT * FROM `group` WHERE (deleted_at IS NULL OR deleted_at=0) ORDER BY id DESC"
         );
         $statement->execute();
         $rows = $statement->fetchAll();
@@ -58,52 +68,49 @@ class PdoGroupRepository
     {
         $group = new Group($row['name']);
 
-        return $group->setCreatedAt($row['created_at'])
+        return $group->setId($row['id'])
+            ->setCreatedAt($row['created_at'])
             ->setDeletedAt($row['deleted_at'])
-            ->setAboutl($row['about'])
-            ->setPicturUrl($row['picture_url'])
+            ->setAbout($row['about'])
+            ->setPictureUrl($row['picture_url'])
             ->setDisplayName($row['display_name']);
     }
 
-    public function update($username, $data)
+    public function add(Group $group)
     {
-        if (isset($data['displayname'])) {
+        $exists = $this->getByName($group->getName()) || $this->userExistsByName($group->getName());
+        if ($exists === null) {
             $statement = $this->pdo->prepare(
-                "UPDATE user SET displayname = :displayname WHERE name=:name"
+                'INSERT INTO `group` (name, created_at) VALUES (:name, :created_at)'
             );
-
             $statement->execute(
                 array(
-                    ':displayname' => $data['displayname'],
-                    ':name' => $username
+                    'name' => $group->getName(),
+                    'created_at' => time(),
                 )
             );
+            $this->update($group);
+
+            return true;
+        } else {
+            return false;
         }
+    }
 
-        if (isset($data['bio'])) {
-            $statement = $this->pdo->prepare(
-                "UPDATE user SET bio = :bio WHERE name=:name"
-            );
-
-            $statement->execute(
-                array(
-                    ':bio' => $data['bio'],
-                    ':name' => $username
-                )
-            );
-        }
-
-        if (isset($data['pictureurl'])) {
-            $statement = $this->pdo->prepare(
-                "UPDATE user SET pictureurl = :pictureurl WHERE name=:name"
-            );
-
-            $statement->execute(
-                array(
-                    ':pictureurl' => $data['pictureurl'],
-                    ':name' => $username
-                )
-            );
-        }
+    public function update(Group $group)
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE `group`
+             SET display_name=:display_name, about=:about, picture_url=:picture_url
+             WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
+        );
+        $statement->execute(
+            array(
+                'name' => $group->getName(),
+                'display_name' => $group->getDisplayName(),
+                'about' => $group->getAbout(),
+                'picture_url' => $group->getPictureUrl(),
+            )
+        );
     }
 }

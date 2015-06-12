@@ -73,7 +73,7 @@ api_v1_root:
 api_v1_user_list:
     path: /api/v1/users
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userListAction }
-    
+
 api_v1_user_view:
     path: /api/v1/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
@@ -120,11 +120,20 @@ admin_log_list:
 admin_groups_list:
     path: /admin/groups
     defaults:  { _controller: UserBase\Server\Controller\AdminController::groupListAction }
+admin_group_add:
+    path: /admin/group/add
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupAddAction }
+admin_group_edit:
+    path: /admin/group/edit/{groupname}
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupEditAction }
+admin_group_delete:
+    path: /admin/group/delete/{groupname}
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupDeleteAction }
 
 admin_apps_list:
     path: /admin/apps
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
-    
+
 admin_app_view:
     path: /admin/apps/{appname}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
