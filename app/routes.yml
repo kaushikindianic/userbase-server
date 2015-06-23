@@ -133,9 +133,14 @@ authorize_confirm:
     path: /authorize/confirm/{provider}
     defaults: { _controller: UserBase\Server\Controller\OAuth2Controller::confirmAction }
 
-oauth2_server_authorisze:
+oauth2_server_authorize:
     path: /oauth2/authorize
     defaults: { _controller: UserBase\Server\Controller\OAuth2ServerController::authorize }
+
+oauth2_server_code:
+    path: /oauth2/code
+    defaults: { _controller: UserBase\Server\Controller\OAuth2ServerController::code }
+
 
 oauth2_server_api:
     path: /oauth2/api

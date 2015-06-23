@@ -1,0 +1,15 @@
+{% extends "cp/layout.html.twig" %}
+
+{% block content %}
+<h1>Welcome {{ currentuser.getDisplayName() }}</h1>
+
+<div style="text-align: left;">
+    <h3>My account</h3>
+
+        <form method="post">
+          <label>Do You Authorize TestClient?</label><br />
+            <input type="submit" name="authorized" value="yes">
+              <input type="submit" name="authorized" value="no">
+              </form>
+</div>
+{% endblock %}

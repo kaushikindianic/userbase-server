@@ -11,6 +11,14 @@ use Service;
 
 class OAuth2ServerController
 {
+
+    public function code(Application $app, Request $req)
+    {
+        $server = Service::get('oauth2-server');
+        $server->handleTokenRequest(OAuth2\Request::createFromGlobals())->send();
+        exit;
+    }
+
     public function authorize(Application $app, Request $req)
     {
         $server = Service::get('oauth2-server');
@@ -29,9 +37,16 @@ class OAuth2ServerController
                 $app['session']->set('next', $req->getUri());
                 return $app->redirect($app['url_generator']->generate('login'));
             }
-            die('confirmation dialog');
+
+            return new Response($app['twig']->render(
+                'oauth2/authorize.html.twig',
+                array()
+            ));
         }
 
+        $is_authorized = ($_POST['authorized'] === 'yes');
+        $server->handleAuthorizeRequest($request, $response, $is_authorized);
+        $response->send();
         exit;
     }
 
