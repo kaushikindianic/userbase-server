@@ -54,7 +54,7 @@ class Application extends SilexApplication
         $parser = new YamlParser();
         $this->config = $parser->parse(file_get_contents(__DIR__.'/../config.yml'));
         if (isset($this->config['debug'])) {
-            $this['debug'] = true;
+            $this['debug'] = !!$this->config['debug'];
         }
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
