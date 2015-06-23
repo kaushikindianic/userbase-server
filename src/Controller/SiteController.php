@@ -27,7 +27,7 @@ class SiteController
     }
     
     public function loginAction(Application $app, Request $request)
-    {   
+    {
         if (isset($app['currentuser'])) {
             return $app->redirect($app['url_generator']->generate('cp_index'));
         }

@@ -139,13 +139,13 @@ admin_app_add:
     defaults: { _controller: UserBase\Server\Controller\AdminController::appAddAction }    
 
 admin_app_edit:
-    path: /admin/apps/edit/{appname}
+    path: /admin/apps/{appname}/edit
     defaults: { _controller: UserBase\Server\Controller\AdminController::appEditAction } 
       
 admin_app_view:
     path: /admin/apps/{appname}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
 admin_app_delete:
-    path: /admin/apps/delete/{appname}
+    path: /admin/apps/{appname}/delete
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }   
    
