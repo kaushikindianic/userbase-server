@@ -17,6 +17,8 @@
     <a href="{{ path('login') }}" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</a><br />
     <br />
     <a href="{{ path('signup') }}" class="btn btn-default btn-lg">{{ "common.action_signup"|trans }}</a><br />
+
+    <a href="{{ path('oauth2', {"provider":'facebook'}) }}" class="btn btn-default btn-lg">{{ "Facebook"|trans }}</a><br />
 {% endif %}
 
 {% endblock %}

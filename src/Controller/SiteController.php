@@ -103,7 +103,8 @@ class SiteController
 
     public function loginSuccessAction(Application $app, Request $request)
     {
-        return $app->redirect($app['url_generator']->generate('index'));
+        $next = $app['session']->get('next');
+        return $app->redirect($next ?: $app['url_generator']->generate('index'));
     }
 
     public function logoutSuccessAction(Application $app, Request $request)
