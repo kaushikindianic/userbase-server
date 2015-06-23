@@ -56,6 +56,7 @@ final class PdoAppRepository
         $statement = $this->pdo->prepare(
             "SELECT a.*
             FROM app AS a
+        	WHERE deleted_at = 0	
             ORDER BY id DESC"
         );
         $statement->execute();
@@ -67,6 +68,79 @@ final class PdoAppRepository
         return $apps;
     }
     
+    public function add(App $apps)
+    {	
+    	$exists = $this->getByName($apps->getName());
+    	if ($exists === null) {
+    		$statement = $this->pdo->prepare(
+    				'INSERT INTO `app` (name, display_name, base_url, about, picture_url, created_at) 
+    				 VALUES (:name, :display_name, :base_url, :about, :picture_url, :created_at)'
+    				);
+    		
+    	$statement->execute(
+    				array(
+    						':name' => $apps->getName(),
+    						':display_name'=> $apps->getDisplayName(),
+    						':base_url' =>   $apps->getBaseUrl(),
+    						':about' => $apps->getAbout(),
+    						':picture_url' => $apps->getPictureUrl(),
+    						':created_at' => time(),
+    	           )
+            );
+        
+    		return true;
+    	} else {
+    		return false;
+    	}
+    } 
+    
+    public function update(App $apps)
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE `app`
+             SET display_name = :display_name, 
+                base_url = :base_url,
+        		about = :about,
+        		picture_url = :picture_url
+             WHERE name=:name'
+        );
+        $statement->execute(
+            array(
+                    ':name' => $apps->getName(),
+    				':display_name'=> $apps->getDisplayName(),
+    				':base_url' =>   $apps->getBaseUrl(),
+    				':about' => $apps->getAbout(),
+    				':picture_url' => $apps->getPictureUrl(),
+    	         )
+        );
+    }
+    
+    public function delete($name)
+    {
+    	if (!$name) {
+    		throw new RuntimeException("apps not specified");
+    	}
+    	
+    	$statement = $this->pdo->prepare("UPDATE app SET deleted_at = :deleted_at WHERE name=:name");
+    	
+    	$statement->execute(
+    			array(
+    					':deleted_at' => '1',
+    					':name' => $name
+    			)
+    	);    	
+    }
+    
+    private function userExistsByName($name)
+    {
+    	$statement = $this->pdo->prepare(
+    			"SELECT name FROM user WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+    			);
+    	$statement->execute(array('name' => $name));
+    
+    	return !!$statement->fetch();
+    }    
+    
     private function row2app($row)
     {
         $app = new App();
@@ -76,6 +150,7 @@ final class PdoAppRepository
         $app->setPictureUrl($row['picture_url']);
         $app->setCreatedAt($row['created_at']);
         $app->setDeletedAt($row['deleted_at']);
+        $app->setAbout($row['about']);
         return $app;
     }
 }

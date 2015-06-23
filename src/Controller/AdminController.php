@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use UserBase\Server\Model\Group;
 use Exception;
+use UserBase\Server\Model\App;
 
 class AdminController
 {
@@ -118,6 +119,41 @@ class AdminController
             $data
         ));
     }
+    
+    public function appAddAction(Application $app, Request $request )
+    {
+        return $this->appsEditForm($app, $request, null);
+    	
+    }
+    
+    public function appEditAction(Application $app, Request $request, $appname)
+    {
+    	return $this->appsEditForm($app, $request, $appname);    	
+    }
+
+    public function appDeleteAction(Application $app, Request $request, $appname)
+    {
+        $appRepo = $app->getAppRepository();
+        $appRepo->delete($appname);
+        
+        return $app->redirect(
+                    $app['url_generator']->generate('admin_apps_list')
+        		);
+        
+    }    
+    
+    public function appViewAction(Application $app, Request $request, $appname)
+    {
+        $data = array();
+        $appRepo  = $app->getAppRepository();
+        $viewapp = $appRepo->getByName($appname);
+        $data['viewapp'] = $viewapp;
+        
+        return new Response($app['twig']->render(
+            'admin/app_view.html.twig',
+            $data
+        ));
+    }
 
     public function groupListAction(Application $app, Request $request)
     {
@@ -140,7 +176,7 @@ class AdminController
     {
         return $this->groupEditForm($app, $request, $groupname);
     }
-
+   
     private function groupEditForm(Application $app, Request $request, $groupname)
     {
         $error = $request->query->get('error');
@@ -211,4 +247,79 @@ class AdminController
             )
         ));
     }
+    
+    private function appsEditForm(Application $app, Request $request, $appname)
+    {
+    	$error = $request->query->get('error');
+    	$repo = $app->getAppRepository();
+    	$add = false;    	
+    	$apps = $repo->getByName($appname);
+    	
+    	if (!$apps && is_numeric($appname)) {
+    		$apps = $repo->getById($appname);
+    	}
+    	
+    	if ($apps === null) {
+    		$defaults = null;
+    		$nameParam = array();
+    		$add = true;
+    	} else {
+    		$defaults = array(
+    				'name' => $apps->getName(),
+    				'displayname' => $apps->getDisplayName(),
+    				'about' => $apps->getAbout(),
+    				'pictureurl' => $apps->getPictureUrl(),
+    				'baseurl' => $apps->getBaseUrl(),
+    				'createdat' => $apps->getCreatedAt(),
+    				'deletedat' => $apps->getDeletedAt(),
+    		);
+    		$nameParam = array('read_only' => true);
+    	}
+    	
+    	$form = $app['form.factory']->createBuilder('form', $defaults)
+    	    ->add('name', 'text', $nameParam)
+    	    ->add('displayname', 'text', array('required' => false, 'label' => 'Display name'))
+    	    ->add('about', 'text', array('required' => false))
+    	    ->add('pictureurl', 'url', array('required' => false, 'label' => 'Picture URL'))
+    	    ->add('baseurl', 'url', array('required' => false, 'label' => 'Baseurl URL'))
+    	    ->getForm();
+    	
+    	// handle form submission
+    	$form->handleRequest($request);
+    	if ($form->isValid()) {
+    		$data = $form->getData();
+    		
+    		if ($add) {
+    			$apps = new App(); 
+    		}
+    		$apps->setName($data['name']);
+    		$apps->setDisplayName($data['displayname']);
+    		$apps->setAbout($data['about']);
+    		$apps->setPictureUrl($data['pictureurl']);
+    		$apps->setBaseUrl($data['baseurl']);
+    		
+    		
+    		if ($add) { 
+    			if (!$repo->add($apps)) {
+    				return $app->redirect(
+    						$app['url_generator']->generate('admin_app_add', array('error' => 'Name exists'))
+    					);
+    			}
+    		} else {
+    			$repo->update($apps);
+    		}
+    	
+            return $app->redirect($app['url_generator']->generate('admin_apps_list'));
+    	}
+    	
+    	return new Response($app['twig']->render(
+    			'admin/app_edit.html.twig',
+    			array(
+    					'form' => $form->createView(),
+    					'apps' => $apps,
+    					'error' => $error,
+    			)
+    			));    	
+    }
+    
 }
