@@ -10,6 +10,7 @@ class App
     private $pictureUrl;
     private $createdAt;
     private $deletedAt;
+    private $about;
     
     public function getName()
     {
@@ -71,5 +72,16 @@ class App
         $this->deletedAt = $deletedAt;
     }
     
+    public function getAbout()
+    {
+        return $this->about;
+    }
+
+    public function setAbout($about)
+    {
+        $this->about = $about;
+
+        return $this;
+    }
     
 }

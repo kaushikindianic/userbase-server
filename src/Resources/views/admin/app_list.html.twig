@@ -12,10 +12,20 @@
         <td>
             <a href="{{ path("admin_app_view", {"appname": app.getName() })}}">
                 <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ app.getPictureUrl() }}" />
+             </a>
+             <a href="{{ path("admin_app_edit", {"appname": app.getName() })}}">   
                 {{ app.getName() }}</a>: {{ app.getDisplayName() }}<br />
                 <i>{{ app.getBaseUrl() }}</i>
         </td>
     </tr>
     {% endfor %}
 </table>
+
+<div class="buttonbox">
+    <a href="{{ path('admin_app_add') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Add
+    </a>
+</div>
+
 {% endblock %}
