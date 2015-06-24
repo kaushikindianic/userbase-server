@@ -3,7 +3,7 @@
 namespace UserBase\Server\Repository;
 
 use PDO;
-
+use Symfony\Component\Security\Core\Authentication\Token\UsernamePasswordToken;
 use Silex\Application;
 
 final class PdoOAuthRepository
@@ -68,17 +68,46 @@ final class PdoOAuthRepository
         return $data;
     }
 
+    /**
+     *  Attempt to Login
+     *
+     *  This method check is the 3rd-party account is not already associated with 
+     *  any account, if so, we log them in otherwise we show the sign-up form.
+     *
+     *
+     */
+    protected function attemptToLogin(Application $app, $userDetails, $token, &$return)
+    {
+        $urls    = $userDetails->urls;
+        $service = key($urls);
+        $query = $this->pdo->prepare("SELECT user_name FROM identities WHERE service = ? and identity_uid = ?");
+        $query->execute(array($service, $userDetails->uid));
+        $user_id = $query->fetch();
+        if (empty($user_id) || !($user = $app->getuserrepository()->getbyname($user_id['user_name']))) {
+            /* No user :-( */
+            return false;
+        }
+
+        $token = new UsernamePasswordToken($user, $user->getPassword(), "default", $user->getRoles());
+        $app['security']->setToken($token);
+        $return = $app->redirect("/");
+        return true;
+    }
+
     public function save(Application $app, $userDetails, $token)
     {
         if (empty($app['currentuser'])) {
+            if ($this->attemptToLogin($app, $userDetails, $token, $return)) {
+                return $return;
+            }
             $app['session']->set('oauth', compact('userDetails', 'token'));
             return $app->redirect($app['url_generator']->generate('signup'));
         }
 
         // user does have a valid session, we store their identity
         // and redirect them to somewhere
-        $this->addIdentity($user, $userDetails, $token);
+        $this->addIdentity($app['currentuser'], $userDetails, $token);
 
-        return $app->redirect('...');
+        return $app->redirect('/');
     }
 }
