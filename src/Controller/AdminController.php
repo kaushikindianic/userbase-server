@@ -205,8 +205,7 @@ class AdminController
             'error' => $error
         )));
     }    
-    
-//------------ ACCOUNT SECTION ------------//    
+  
     public function accountListAction(Application $app, Request $request)
     { 
         $account = $app->getAccountRepository()->getAll(); 
