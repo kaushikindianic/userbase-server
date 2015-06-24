@@ -16,6 +16,7 @@
         "symfony/console": "2.6.*",
         "symfony/config": "2.6.*",
         "symfony/yaml": "2.6.*",
+        "symfony/form": "~2.6",
         "symfony/security": "2.6.*",
         "silex/silex": "2.0.*@dev",
         "crodas/service-provider": "~0.1",
@@ -39,6 +40,6 @@
     "autoload": {
         "psr-4": {
             "UserBase\\Server\\": "src/"
-        } 
+        }
     }
 }

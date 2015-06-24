@@ -33,7 +33,7 @@ If you're using Herald as a Mailer, configure it in the `herald` section of the 
 
 ## Starting the server
 
-    php -S 0.0.0.0:8888
+    php -S 0.0.0.0:8888 -t web/
 
 Now open this link in your browser: [http://127.0.0.1:8888](http://127.0.0.1)
 

@@ -35,6 +35,7 @@ class Application extends SilexApplication
     private $strings = array();
     private $userRepository;
     private $oauthRepository;
+    private $accountRepository;
     private $adminRepository;
 
     public function __construct(array $values = array())
@@ -54,7 +55,7 @@ class Application extends SilexApplication
         $parser = new YamlParser();
         $this->config = $parser->parse(file_get_contents(__DIR__.'/../config.yml'));
         if (isset($this->config['debug'])) {
-            $this['debug'] = true;
+            $this['debug'] = !!$this->config['debug'];
         }
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
@@ -74,10 +75,9 @@ class Application extends SilexApplication
         );
         //  'translation.class_path' =>  __DIR__.'/../vendor/symfony/src',
 
-        /*
         // the form service
         $this->register(new FormServiceProvider());
-        */
+
         $this->register(new RoutingServiceProvider());
 
         // *** Setup Sessions ***
@@ -92,14 +92,10 @@ class Application extends SilexApplication
         $factory = $this['security.encoder_factory'];
         $this->oauthRepository = new PdoOAuthRepository($pdo);
         $this->userRepository = new PdoUserRepository($pdo, $this->oauthRepository, $factory);
+        $this->accountRepository = new PdoAccountRepository($pdo);
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
-        $this->accountRepository = new PdoAccountRepository(
-            $pdo,
-            $this->appRepository,
-            $this->userRepository
-        );
-
+        
         $mailer = Service::mailer();
 
         $this['mailer'] = $mailer;
@@ -125,7 +121,7 @@ class Application extends SilexApplication
             //default
             $this->config['userbase']['strings'] = array('app/strings.yml');
         }
-        
+
         foreach ($this->config['userbase']['strings'] as $filename) {
             if ($filename[0] != '') {
                 $filename = __DIR__ . '/../' . $filename;
@@ -155,7 +151,7 @@ class Application extends SilexApplication
                 __DIR__.'/Resources/views/',
             ),
         ));
-        
+
         if (!isset($this->config['userbase']['layout'])) {
             $this->config['userbase']['layout'] = 'app/default';
         }
@@ -225,12 +221,12 @@ class Application extends SilexApplication
     {
         return $this->adminRepository;
     }
-    
+
     public function getAppRepository()
     {
         return $this->appRepository;
     }
-    
+
     public function getAccountRepository()
     {
         return $this->accountRepository;

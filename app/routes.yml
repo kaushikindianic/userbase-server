@@ -73,14 +73,10 @@ api_v1_root:
 api_v1_user_list:
     path: /api/v1/users
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userListAction }
-    
+
 api_v1_user_view:
     path: /api/v1/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
-
-
-
-
 
 
 
@@ -117,13 +113,34 @@ admin_log_list:
     defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
 
 
-admin_groups_list:
-    path: /admin/groups
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupListAction }
+admin_account_list:
+    path: /admin/account
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountListAction }
+
+admin_account_add:
+    path: /admin/account/add
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountAddAction }
+
+admin_account_edit:
+    path: /admin/account/{accountname}/edit
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountEditAction }
+
+admin_account_delete:
+    path: /admin/account/{accountname}/delete
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountDeleteAction }
+
 
 admin_apps_list:
     path: /admin/apps
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
+
+admin_app_add:
+    path: /admin/apps/add
+    defaults: { _controller: UserBase\Server\Controller\AdminController::appAddAction }    
+
+admin_app_edit:
+    path: /admin/apps/{appname}/edit
+    defaults: { _controller: UserBase\Server\Controller\AdminController::appEditAction } 
     
 admin_app_view:
     path: /admin/apps/{appname}
@@ -149,3 +166,8 @@ oauth2_server_api:
 oauth2:
     path: /authorize/{provider}
     defaults: { _controller: UserBase\Server\Controller\OAuth2Controller::authorizeAction }
+
+admin_app_delete:
+    path: /admin/apps/{appname}/delete
+    defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }   
+   
