@@ -36,3 +36,16 @@ If you're using Herald as a Mailer, configure it in the `herald` section of the 
     php -S 0.0.0.0:8888
 
 Now open this link in your browser: [http://127.0.0.1:8888](http://127.0.0.1)
+
+## Setup - OAuth server
+
+1. Install database `app/schema-v2.xml`
+2. Create an oauth-client
+
+    ```sql
+    INSERT INTO oauth_clients (client_id, client_secret, redirect_uri) VALUES ("testclient", "testpass", "http://fake/");
+    ```
+3. Use any OAuth2 client
+    1. localhost:8888/oauth2/authorize?response_type=code&client_id=testclient&state=xyz
+    2. curl -u testclient:testpass http://localhost:8888/oauth2/code -d 'grant_type=authorization_code&code=72a1c6741a650ea6950fa1b9898ce3fd4bac1a51' -v
+    3. curl http://localhost:8888/oauth2/api -d 'access_token=4da361a665cbf4fd81ce1271bcf2f12c1158b9a6' -v
