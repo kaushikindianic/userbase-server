@@ -80,10 +80,6 @@ api_v1_user_view:
 
 
 
-
-
-
-
 admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
@@ -117,18 +113,22 @@ admin_log_list:
     defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
 
 
-admin_groups_list:
-    path: /admin/groups
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupListAction }
-admin_group_add:
-    path: /admin/group/add
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupAddAction }
-admin_group_edit:
-    path: /admin/group/edit/{groupname}
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupEditAction }
-admin_group_delete:
-    path: /admin/group/delete/{groupname}
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::groupDeleteAction }
+admin_account_list:
+    path: /admin/account
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountListAction }
+
+admin_account_add:
+    path: /admin/account/add
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountAddAction }
+
+admin_account_edit:
+    path: /admin/account/{accountname}/edit
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountEditAction }
+
+admin_account_delete:
+    path: /admin/account/{accountname}/delete
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountDeleteAction }
+
 
 admin_apps_list:
     path: /admin/apps
@@ -141,10 +141,11 @@ admin_app_add:
 admin_app_edit:
     path: /admin/apps/{appname}/edit
     defaults: { _controller: UserBase\Server\Controller\AdminController::appEditAction } 
-      
+    
 admin_app_view:
     path: /admin/apps/{appname}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
+
 admin_app_delete:
     path: /admin/apps/{appname}/delete
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }   

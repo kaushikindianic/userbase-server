@@ -2,7 +2,7 @@
 
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block content %}
-<h1>Group detail</h1>
+<h1>Account detail</h1>
 
 {% if error != null %}
     <div class="alert alert-danger" role="alert">
@@ -19,12 +19,12 @@
             <i class="fa fa-server"></i>
             Save
         </button>
-        <a href="{{ path('admin_groups_list') }}" class="btn btn-default" role="button">
+        <a href="{{ path('admin_account_list') }}" class="btn btn-default" role="button">
             <i class="fa fa-arrow-left"></i>
             Back
         </a>
-        {% if group != null %}
-        <a href="{{ path('admin_group_delete', {'groupname': group.getName()}) }}"
+        {% if account != null %}
+        <a href="{{ path('admin_account_delete', {'accountname': account.getName()}) }}"
          class="btn btn-danger" role="button" onclick="return confirm('Are you sure?')">
             <i class="fa fa-trash"></i>
             Delete

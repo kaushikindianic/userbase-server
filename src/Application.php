@@ -20,7 +20,6 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use UserBase\Server\Repository\PdoUserRepository;
-use UserBase\Server\Repository\PdoGroupRepository;
 use UserBase\Server\Repository\PdoAdminRepository;
 use UserBase\Server\Repository\PdoAppRepository;
 use UserBase\Server\Repository\PdoAccountRepository;
@@ -34,7 +33,7 @@ class Application extends SilexApplication
     private $config;
     private $strings = array();
     private $userRepository;
-    private $groupRepository;
+    private $accountRepository;
     private $adminRepository;
 
     public function __construct(array $values = array())
@@ -90,15 +89,10 @@ class Application extends SilexApplication
 
         $factory = $this['security.encoder_factory'];
         $this->userRepository = new PdoUserRepository($pdo, $factory);
-        $this->groupRepository = new PdoGroupRepository($pdo);
+        $this->accountRepository = new PdoAccountRepository($pdo);
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
-        $this->accountRepository = new PdoAccountRepository(
-            $pdo,
-            $this->appRepository,
-            $this->userRepository
-        );
-
+        
         $mailer = Service::mailer();
 
         $this['mailer'] = $mailer;
@@ -214,12 +208,7 @@ class Application extends SilexApplication
     {
         return $this->userRepository;
     }
-
-    public function getGroupRepository()
-    {
-        return $this->groupRepository;
-    }
-
+  
     public function getAdminRepository()
     {
         return $this->adminRepository;
