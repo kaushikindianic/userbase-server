@@ -24,8 +24,8 @@
     </table>
 
 
-    <!-- think of groups as github organizations.. a place to share resources -->
-    <table name="group">
+    <!-- think of account as github organizations.. a place to share resources -->
+    <table name="account">
         <column name="name" type="varchar(128)" />
         <column name="display_name" type="varchar(128)" />
         <column name="about" type="text" />
@@ -34,10 +34,10 @@
         <column name="deleted_at" type="integer" />
     </table>
 
-    <table name="group_user">
-        <column name="group_name" type="varchar(128)" />
+    <table name="account_user">
+        <column name="account_name" type="varchar(128)" />
         <column name="user_name" type="varchar(128)" />
-        <!-- store group specific user data here, like roles, join-status, etc -->
+        <!-- store account specific user data here, like roles, join-status, etc -->
     </table>
     
     <table name="app">
@@ -50,12 +50,12 @@
         <column name="deleted_at" type="integer" />
         <!-- describe app-types here for SSO -->
     </table>
-
+	 <!--	
     <table name="account">
         <column name="app_name" type="varchar(128)" />
         <column name="user_name" type="varchar(128)" />
         <column name="meta_data" type="text" />
-        <!-- store app specific user data like preferences and roles here -->
-    </table>
+         store app specific user data like preferences and roles here
+    </table> -->
     
 </schema>

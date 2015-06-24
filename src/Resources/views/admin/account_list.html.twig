@@ -1,0 +1,35 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+
+<h2>Account: {{ accountCount }}</h2>
+<table class="table">
+    <tr>
+        <th></th>
+        <th>Created</th>
+        <th></th>
+    </tr>
+    {% for ac in account %}
+    <tr>
+        <td>
+            <a href="{{ path("admin_account_edit", {"accountname": ac.getName() })}}">
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ ac.getPictureUrl() }}" />
+                {{ ac.getName() }}: {{ ac.getDisplayName() }}
+            </a>
+        </td>
+        <td>
+            {{ ac.getCreatedAt()|mydate }}
+        </td>
+        <td></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="buttonbox">
+    <a href="{{ path('admin_account_add') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Add
+    </a>
+</div>
+
+{% endblock %}

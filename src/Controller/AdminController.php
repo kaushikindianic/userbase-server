@@ -4,9 +4,9 @@ namespace UserBase\Server\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use UserBase\Server\Model\Group;
 use Exception;
 use UserBase\Server\Model\App;
+use UserBase\Server\Model\Account;
 
 class AdminController
 {
@@ -133,108 +133,18 @@ class AdminController
         
         return new Response($app['twig']->render('admin/app_view.html.twig', $data));
     }
-
-    public function groupListAction(Application $app, Request $request)
-    {
-        $groups = $app->getGroupRepository()->getAll();
-        return new Response($app['twig']->render('admin/group_list.html.twig', array(
-            'groups' => $groups,
-            'groupCount' => count($groups)
-        )));
-    }
-
-    public function groupAddAction(Application $app, Request $request)
-    {
-        return $this->groupEditForm($app, $request, null);
-    }
-
-    public function groupEditAction(Application $app, Request $request, $groupname)
-    {
-        return $this->groupEditForm($app, $request, $groupname);
-    }
-
-    private function groupEditForm(Application $app, Request $request, $groupname)
-    {
-        $error = $request->query->get('error');
-        $repo = $app->getGroupRepository();
-        $add = false;
-        
-        $group = $repo->getByName($groupname);
-        // also support getting template by id
-        if (! $group && is_numeric($groupname)) {
-            $group = $repo->getById($groupname);
-        }
-        
-        if ($group === null) {
-            $defaults = null;
-            $nameParam = array();
-            $add = true;
-        } else {
-            $defaults = array(
-                'name' => $group->getName(),
-                'displayname' => $group->getRawDisplayName(),
-                'about' => $group->getAbout(),
-                'pictureurl' => $group->getPictureUrl()
-            )
-            // 'createdat' => $group->getCreatedAt(),
-            // 'deletedat' => $group->getDeletedAt(),
-            ;
-            $nameParam = array(
-                'read_only' => true
-            );
-        }
-        
-        $form = $app['form.factory']->createBuilder('form', $defaults)
-                ->add('name', 'text', $nameParam)
-                ->add('displayname', 'text', array('required' => false, 'label' => 'Display name'))
-                ->add('about', 'text', array('required' => false))
-                ->add('pictureurl', 'url', array('required' => false, 'label' => 'Picture URL'))
-                ->getForm();
-        
-        // handle form submission
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $data = $form->getData();
-            
-            if ($add) {
-                $group = new Group($data['name']);
-            }
-            
-            $group->setDisplayName($data['displayname'])
-                ->setAbout($data['about'])
-                ->setPictureUrl($data['pictureurl']);
-            
-            if ($add) {
-                if (! $repo->add($group)) {
-                    return $app->redirect($app['url_generator']->generate('admin_group_add', array(
-                        'error' => 'Name exists'
-                    )));
-                }
-            } else {
-                $repo->update($group);
-            }
-            
-            return $app->redirect($app['url_generator']->generate('admin_groups_list'));
-        }
-        
-        return new Response($app['twig']->render('admin/group_edit.html.twig', array(
-            'form' => $form->createView(),
-            'group' => $group,
-            'error' => $error
-        )));
-    }
-
+    
     private function appsEditForm(Application $app, Request $request, $appname)
     {
         $error = $request->query->get('error');
         $repo = $app->getAppRepository();
         $add = false;
         $apps = $repo->getByName($appname);
-        
+    
         if (! $apps && is_numeric($appname)) {
             $apps = $repo->getById($appname);
         }
-        
+    
         if ($apps === null) {
             $defaults = null;
             $nameParam = array();
@@ -253,20 +163,20 @@ class AdminController
                 'read_only' => true
             );
         }
-        
+    
         $form = $app['form.factory']->createBuilder('form', $defaults)
-                ->add('name', 'text', $nameParam)
-                ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
-                ->add('about', 'text', array('required' => false))
-                ->add('pictureUrl', 'url', array('required' => false, 'label' => 'Picture URL'))
-                ->add('baseUrl', 'url', array('required' => false,'label' => 'Baseurl URL'))
-                ->getForm();
-        
+        ->add('name', 'text', $nameParam)
+        ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
+        ->add('about', 'text', array('required' => false))
+        ->add('pictureUrl', 'url', array('required' => false, 'label' => 'Picture URL'))
+        ->add('baseUrl', 'url', array('required' => false,'label' => 'Baseurl URL'))
+        ->getForm();
+    
         // handle form submission
         $form->handleRequest($request);
         if ($form->isValid()) {
             $data = $form->getData();
-            
+    
             if ($add) {
                 $apps = new App();
             }
@@ -275,7 +185,7 @@ class AdminController
             $apps->setAbout($data['about']);
             $apps->setPictureUrl($data['pictureUrl']);
             $apps->setBaseUrl($data['baseUrl']);
-            
+    
             if ($add) {
                 if (! $repo->add($apps)) {
                     return $app->redirect($app['url_generator']->generate('admin_app_add', array(
@@ -285,14 +195,112 @@ class AdminController
             } else {
                 $repo->update($apps);
             }
-            
+    
             return $app->redirect($app['url_generator']->generate('admin_apps_list'));
         }
-        
+    
         return new Response($app['twig']->render('admin/app_edit.html.twig', array(
             'form' => $form->createView(),
             'apps' => $apps,
             'error' => $error
         )));
+    }    
+    
+//------------ ACCOUNT SECTION ------------//    
+    public function accountListAction(Application $app, Request $request)
+    { 
+        $account = $app->getAccountRepository()->getAll(); 
+        return new Response($app['twig']->render('admin/account_list.html.twig', array(
+            'account' => $account,
+            'accountCount' => count($account)
+        )));
     }
+    
+    public function accountDeleteAction(Application $app, Request $request, $accountname)
+    {
+        $repo = $app->getAccountRepository();
+        $repo->delete($accountname);
+    
+        return $app->redirect($app['url_generator']->generate('admin_account_list'));
+    }
+    public function accountAddAction(Application $app, Request $request)
+    {
+        return $this->accountEditForm($app, $request, null);
+    }
+
+    public function accountEditAction(Application $app, Request $request, $accountname)
+    {
+        return $this->accountEditForm($app, $request, $accountname);
+    }
+
+    private function accountEditForm(Application $app, Request $request, $accountname)
+    {
+        $error = $request->query->get('error');
+        $repo = $app->getAccountRepository();
+        $add = false;
+        
+        $account = $repo->getByName($accountname);
+        // also support getting template by id
+        if (! $account && is_numeric($accountname)) {
+            $account = $repo->getById($accountname);
+        }
+        
+        if ($account === null) {
+            $defaults = null;
+            $nameParam = array();
+            $add = true;
+        } else {
+            $defaults = array(
+                'name' => $account->getName(),
+                'displayName' => $account->getRawDisplayName(),
+                'about' => $account->getAbout(),
+                'pictureUrl' => $account->getPictureUrl()
+            );
+            
+            $nameParam = array(
+                'read_only' => true
+            );
+        }
+        
+        $form = $app['form.factory']->createBuilder('form', $defaults)
+                ->add('name', 'text', $nameParam)
+                ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
+                ->add('about', 'text', array('required' => false))
+                ->add('pictureUrl', 'url', array('required' => false, 'label' => 'Picture URL'))
+                ->getForm();
+        
+        // handle form submission
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+            
+            if ($add) {
+                $account = new Account($data['name']);
+            }
+            
+            $account->setDisplayName($data['displayName'])
+                    ->setAbout($data['about'])
+                   ->setPictureUrl($data['pictureUrl']);
+            
+            if ($add) {
+                if (! $repo->add($account)) {
+                    return $app->redirect($app['url_generator']->generate('admin_account_add', array(
+                        'error' => 'Name exists'
+                    )));
+                }
+            } else {
+                $repo->update($account);
+            }
+            
+            return $app->redirect($app['url_generator']->generate('admin_account_list'));
+        }
+        
+        return new Response($app['twig']->render('admin/account_edit.html.twig', array(
+            'form' => $form->createView(),
+            'account' => $account,
+            'error' => $error
+        )));
+    }
+
+
 }
