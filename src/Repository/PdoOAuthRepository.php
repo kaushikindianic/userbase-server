@@ -110,4 +110,12 @@ final class PdoOAuthRepository
 
         return $app->redirect('/');
     }
+
+    public function getClientName($clientId)
+    {
+        $q = $this->pdo->prepare("SELECT client_name FROM oauth_clients WHERE client_id = ?");
+        $q->execute(array($clientId));
+        $row = $q->fetch();
+        return $row ? $row['client_name'] : '';
+    }
 }

@@ -37,9 +37,11 @@ class OAuth2ServerController
                 return $app->redirect($app['url_generator']->generate('login'));
             }
 
+            $clientName = $app->getOAuthRepository()->getClientName($req->get('client_id'));
+
             return new Response($app['twig']->render(
                 'oauth2/authorize.html.twig',
-                array()
+                compact('clientName')
             ));
         }
 

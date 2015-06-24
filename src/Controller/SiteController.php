@@ -70,7 +70,6 @@ class SiteController
         try {
             $user = $repo->register($app, $username, $email);
         } catch (Exception $e) {
-            var_dump($e);exit;
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E01');
         }
         $user = $repo->getByName($username);
