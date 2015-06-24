@@ -44,7 +44,7 @@ class OAuth2ServerController
         }
 
         $is_authorized = ($_POST['authorized'] === 'yes');
-        $server->handleAuthorizeRequest($request, $response, $is_authorized);
+        $server->handleAuthorizeRequest($request, $response, $is_authorized, $app['currentuser']->getName());
         return $response;
     }
 
@@ -55,7 +55,9 @@ class OAuth2ServerController
         if (!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals(), $response)) {
             return $response;
         }
+        $token = $server->getResourceController()->getToken();
+        $user  = $app->getUserRepository()->getByName($token['user_id']);
         
-        return $app->json(array('success' => true, 'message' => 'You accessed my APIs!'));
+        return $app->json(array('success' => true, 'message' => 'You accessed my API, I am ' . $user->getName()));
     }
 }

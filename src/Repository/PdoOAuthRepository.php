@@ -83,7 +83,7 @@ final class PdoOAuthRepository
         $query = $this->pdo->prepare("SELECT user_name FROM identities WHERE service = ? and identity_uid = ?");
         $query->execute(array($service, $userDetails->uid));
         $user_id = $query->fetch();
-        if (empty($user_id) || !($user = $app->getuserrepository()->getbyname($user_id['user_name']))) {
+        if (empty($user_id) || !($user = $app->getUserRepository()->getByName($user_id['user_name']))) {
             /* No user :-( */
             return false;
         }
