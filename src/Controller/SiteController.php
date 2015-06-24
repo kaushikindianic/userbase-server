@@ -5,6 +5,7 @@ namespace UserBase\Server\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Service;
 use Exception;
 
 class SiteController
@@ -16,7 +17,9 @@ class SiteController
         if (isset($app['currentuser'])) {
             //return $app->redirect("/cp");
         }
-        $data = array();
+        $data = array(
+            'services' => array_keys((array)Service::oauth2()),
+        );
         
         $error = $app['security.last_error']($request);
         

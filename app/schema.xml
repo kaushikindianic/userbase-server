@@ -86,6 +86,7 @@
   <table name="oauth_clients">
     <column name="client_id" type="TEXT"/>
     <column name="client_secret" type="TEXT"/>
+    <column name="client_name" type="VARCHAR(250)"/>
     <column name="redirect_uri" type="TEXT"/>
   </table>
   <table name="oauth_public_keys">

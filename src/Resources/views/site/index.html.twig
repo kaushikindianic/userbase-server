@@ -18,7 +18,9 @@
     <br />
     <a href="{{ path('signup') }}" class="btn btn-default btn-lg">{{ "common.action_signup"|trans }}</a><br />
 
-    <a href="{{ path('oauth2', {"provider":'facebook'}) }}" class="btn btn-default btn-lg">{{ "Facebook"|trans }}</a><br />
+    {% for service in services %}
+        <a href="{{ path('oauth2', {"provider":service}) }}" class="btn btn-default btn-lg">{{ service|title }}</a><br />
+    {% endfor %}
 {% endif %}
 
 {% endblock %}
