@@ -139,25 +139,25 @@ class AdminController
         $error = $request->query->get('error');
         $repo = $app->getAppRepository();
         $add = false;
-        $apps = $repo->getByName($appname);
-    
-        if (! $apps && is_numeric($appname)) {
-            $apps = $repo->getById($appname);
+        $oApp = $repo->getByName($appname);
+        
+        if (!  $oApp && is_numeric($appname)) {
+             $oApp = $repo->getById($appname);
         }
     
-        if ($apps === null) {
+        if ( $oApp === null) {
             $defaults = null;
             $nameParam = array();
             $add = true;
         } else {
             $defaults = array(
-                'name' => $apps->getName(),
-                'displayName' => $apps->getDisplayName(),
-                'about' => $apps->getAbout(),
-                'pictureUrl' => $apps->getPictureUrl(),
-                'baseUrl' => $apps->getBaseUrl(),
-                'createdAt' => $apps->getCreatedAt(),
-                'deletedAt' => $apps->getDeletedAt()
+                'name' =>  $oApp->getName(),
+                'displayName' =>  $oApp->getDisplayName(),
+                'about' =>  $oApp->getAbout(),
+                'pictureUrl' =>  $oApp->getPictureUrl(),
+                'baseUrl' =>  $oApp->getBaseUrl(),
+                'createdAt' =>  $oApp->getCreatedAt(),
+                'deletedAt' =>  $oApp->getDeletedAt()
             );
             $nameParam = array(
                 'read_only' => true
@@ -178,22 +178,22 @@ class AdminController
             $data = $form->getData();
     
             if ($add) {
-                $apps = new App();
+                $oApp = new App();
             }
-            $apps->setName($data['name']);
-            $apps->setDisplayName($data['displayName']);
-            $apps->setAbout($data['about']);
-            $apps->setPictureUrl($data['pictureUrl']);
-            $apps->setBaseUrl($data['baseUrl']);
+            $oApp->setName($data['name']);
+            $oApp->setDisplayName($data['displayName']);
+            $oApp->setAbout($data['about']);
+            $oApp->setPictureUrl($data['pictureUrl']);
+            $oApp->setBaseUrl($data['baseUrl']);
     
             if ($add) {
-                if (! $repo->add($apps)) {
+                if (! $repo->add($oApp)) {
                     return $app->redirect($app['url_generator']->generate('admin_app_add', array(
                         'error' => 'Name exists'
                     )));
                 }
             } else {
-                $repo->update($apps);
+                $repo->update($oApp);
             }
     
             return $app->redirect($app['url_generator']->generate('admin_apps_list'));
@@ -201,17 +201,17 @@ class AdminController
     
         return new Response($app['twig']->render('admin/app_edit.html.twig', array(
             'form' => $form->createView(),
-            'apps' => $apps,
+            'apps' => $oApp,
             'error' => $error
         )));
     }    
   
     public function accountListAction(Application $app, Request $request)
     { 
-        $account = $app->getAccountRepository()->getAll(); 
+        $accounts = $app->getAccountRepository()->getAll(); 
         return new Response($app['twig']->render('admin/account_list.html.twig', array(
-            'account' => $account,
-            'accountCount' => count($account)
+            'accounts' => $accounts,
+            'accountCount' => count($accounts)
         )));
     }
     

@@ -122,11 +122,11 @@ admin_account_add:
     defaults:  { _controller: UserBase\Server\Controller\AdminController::accountAddAction }
 
 admin_account_edit:
-    path: /admin/account/{accountname}/edit/
+    path: /admin/account/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\AdminController::accountEditAction }
 
 admin_account_delete:
-    path: /admin/account/{accountname}/delete/
+    path: /admin/account/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AdminController::accountDeleteAction }
 
 

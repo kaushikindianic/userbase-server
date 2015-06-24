@@ -9,16 +9,16 @@
         <th>Created</th>
         <th></th>
     </tr>
-    {% for ac in account %}
+    {% for account in accounts %}
     <tr>
         <td>
-            <a href="{{ path("admin_account_edit", {"accountname": ac.getName() })}}">
-                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ ac.getPictureUrl() }}" />
-                {{ ac.getName() }}: {{ ac.getDisplayName() }}
+            <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{account.getPictureUrl() }}" />
+                {{ account.getName() }}: {{ account.getDisplayName() }}
             </a>
         </td>
         <td>
-            {{ ac.getCreatedAt()|mydate }}
+            {{ account.getCreatedAt()|mydate }}
         </td>
         <td></td>
     </tr>
