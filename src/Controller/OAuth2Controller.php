@@ -19,11 +19,8 @@ class OAuth2Controller
         $provider = $oauth2->$provider;
 
         $token = $provider->getAccessToken('authorization_code', ['code' => $req->get('code')]);
-        try {
-            $userDetails = $provider->getUserDetails($token);
-            return $app->getOAuthrepository()->save($app, $userDetails, $token);
-        } catch (\Exception $e) {
-        }
+        $userDetails = $provider->getUserDetails($token);
+        return $app->getOAuthrepository()->save($app, $userDetails, $token);
     }
 
     public function authorizeAction(Application $app, Request $req, $provider)
@@ -33,13 +30,8 @@ class OAuth2Controller
             return new Response('', 404);
         }
 
-        if (!$req->get('code')) {
-            $authUrl = $oauth2->$provider->getAuthorizationUrl();
-            $app['session']->set('oauth2_state', $oauth2->$provider->state);
-            return $app->redirect($authUrl);
-        } else {
-        }
-
-        return Response('hi there');
+        $authUrl = $oauth2->$provider->getAuthorizationUrl();
+        $app['session']->set('oauth2_state', $oauth2->$provider->state);
+        return $app->redirect($authUrl);
     }
 }
