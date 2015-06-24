@@ -29,7 +29,8 @@
         "symfony/translation": "~2.6",
         "firebase/php-jwt": "~2.0",
         "bshaffer/oauth2-server-php": "^1.7",
-        "league/oauth2-client": "^0.11.0"
+        "league/oauth2-client": "^0.11.0",
+        "bshaffer/oauth2-server-httpfoundation-bridge": "^1.0"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",

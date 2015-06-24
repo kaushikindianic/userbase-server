@@ -3,6 +3,7 @@
 namespace UserBase\Server\Controller;
 
 use Silex\Application;
+use OAuth2\HttpFoundationBridge\Response as BridgeResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,20 +16,18 @@ class OAuth2ServerController
     public function code(Application $app, Request $req)
     {
         $server = Service::get('oauth2-server');
-        $server->handleTokenRequest(OAuth2\Request::createFromGlobals())->send();
-        exit;
+        return $server->handleTokenRequest(OAuth2\Request::createFromGlobals(), new BridgeResponse);
     }
 
     public function authorize(Application $app, Request $req)
     {
         $server = Service::get('oauth2-server');
         $request = OAuth2\Request::createFromGlobals();
-        $response = new OAuth2\Response();
+        $response = new BridgeResponse;
 
         // validate the authorize request
         if (!$server->validateAuthorizeRequest($request, $response)) {
-            $response->send();
-            die;
+            return $response;
         }
 
         if (empty($_POST)) {
@@ -46,18 +45,17 @@ class OAuth2ServerController
 
         $is_authorized = ($_POST['authorized'] === 'yes');
         $server->handleAuthorizeRequest($request, $response, $is_authorized);
-        $response->send();
-        exit;
+        return $response;
     }
 
     public function api(Application $app, Request $req)
     {
         $server = Service::get('oauth2-server');
-        if (!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals())) {
-            $server->getResponse()->send();
-            die;
+        $response = new BridgeResponse;
+        if (!$server->verifyResourceRequest(OAuth2\Request::createFromGlobals(), $response)) {
+            return $response;
         }
-        echo json_encode(array('success' => true, 'message' => 'You accessed my APIs!'));
-        exit;
+        
+        return $app->json(array('success' => true, 'message' => 'You accessed my APIs!'));
     }
 }
