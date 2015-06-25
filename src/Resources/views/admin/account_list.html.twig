@@ -7,7 +7,7 @@
     <tr>
         <th></th>
         <th>Created</th>
-        <th></th>
+        <th>Users</th>
     </tr>
     {% for account in accounts %}
     <tr>
@@ -20,7 +20,7 @@
         <td>
             {{ account.getCreatedAt()|mydate }}
         </td>
-        <td></td>
+        <td> <a href="{{ path('admin_account_users', {"accountname": account.getName()}) }}" ><span class="fa fa-group"></span></a></td> 
     </tr>
     {% endfor %}
 </table>

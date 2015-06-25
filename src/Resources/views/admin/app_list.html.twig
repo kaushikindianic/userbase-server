@@ -1,11 +1,12 @@
 {% extends "admin/layout.html.twig" %}
 
 {% block content %}
-<h2>Apps: {{ apps|length }}</h2>
+<h2>Application: {{ apps|length }}</h2>
 
 <table class="table">
     <tr>
         <th>App</th>
+        <th>Users</th>
     </tr>
     {% for app in apps %}
     <tr>
@@ -17,6 +18,7 @@
                 {{ app.getName() }}</a>: {{ app.getDisplayName() }}<br />
                 <i>{{ app.getBaseUrl() }}</i>
         </td>
+        <td> <a href="{{ path('admin_app_users', {"appname": app.getName()}) }}" ><span class="fa fa-group"></span></a></td> 
     </tr>
     {% endfor %}
 </table>

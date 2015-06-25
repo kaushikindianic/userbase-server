@@ -50,6 +50,13 @@
         <column name="deleted_at" type="integer" />
         <!-- describe app-types here for SSO -->
     </table>
+    
+     <table name="app_user">
+        <column name="app_name" type="varchar(128)" />
+        <column name="user_name" type="varchar(128)" />
+        <!-- store account specific user data here, like roles, join-status, etc -->
+    </table
+    
 	 <!--	
     <table name="account">
         <column name="app_name" type="varchar(128)" />

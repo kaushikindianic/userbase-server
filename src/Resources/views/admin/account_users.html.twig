@@ -1,0 +1,29 @@
+{% extends "admin/layout.html.twig" %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{% block content %}
+<h2>Account: {{ accountname }}</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        The name already exists
+    </div>
+{% endif %}
+
+<form action="#" method="post" >
+    {{ form_widget(form) }}
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-server"></i>
+            Save
+        </button>
+        <a href="{{ path('admin_account_list') }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+        
+    </div>
+</form>
+{% endblock %}
