@@ -1,6 +1,5 @@
 <?xml version="1.0"?>
 <schema>
-<<<<<<< HEAD
 
     <!-- think of account as github organizations.. a place to share resources -->
     <table name="account">
@@ -26,17 +25,6 @@
          store app specific user data like preferences and roles here
     </table> -->
 
-=======
-  <table name="account">
-    <column name="id" type="INT"/>
-    <column name="app_name" type="VARCHAR(128)"/>
-    <column name="user_name" type="VARCHAR(128)"/>
-    <column name="meta_data" type="LONGTEXT"/>
-    <index name="PRIMARY" primary="primary" unique="unique">
-      <column name="id"/>
-    </index>
-  </table>
->>>>>>> upstream/master
   <table name="app">
     <column name="id" type="INT"/>
     <column name="name" type="VARCHAR(128)"/>
@@ -50,7 +38,6 @@
       <column name="id"/>
     </index>
   </table>
-<<<<<<< HEAD
    
    <table name="app_user">
         <column name="app_name" type="varchar(128)" />
@@ -58,28 +45,6 @@
         <!-- store account specific user data here, like roles, join-status, etc -->
     </table>
 
-=======
-  <table name="group">
-    <column name="id" type="INT"/>
-    <column name="name" type="VARCHAR(128)"/>
-    <column name="display_name" type="VARCHAR(128)"/>
-    <column name="about" type="LONGTEXT"/>
-    <column name="picture_url" type="VARCHAR(128)"/>
-    <column name="created_at" type="INT"/>
-    <column name="deleted_at" type="INT"/>
-    <index name="PRIMARY" primary="primary" unique="unique">
-      <column name="id"/>
-    </index>
-  </table>
-  <table name="group_user">
-    <column name="id" type="INT"/>
-    <column name="group_name" type="VARCHAR(128)"/>
-    <column name="user_name" type="VARCHAR(128)"/>
-    <index name="PRIMARY" primary="primary" unique="unique">
-      <column name="id"/>
-    </index>
-  </table>
->>>>>>> upstream/master
   <table name="identities">
     <column name="identity_id" type="BIGINT"/>
     <column name="user_name" type="VARCHAR(128)"/>
