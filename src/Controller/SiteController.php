@@ -5,6 +5,7 @@ namespace UserBase\Server\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Service;
 use Exception;
 
 class SiteController
@@ -16,7 +17,9 @@ class SiteController
         if (isset($app['currentuser'])) {
             //return $app->redirect("/cp");
         }
-        $data = array();
+        $data = array(
+            'services' => array_keys((array)Service::oauth2()),
+        );
         
         $error = $app['security.last_error']($request);
         
@@ -48,10 +51,10 @@ class SiteController
 
     public function signupAction(Application $app, Request $request)
     {
-        $data = array();
+        $data = $app->getOAuthrepository()->getQueueData($app);
         return new Response($app['twig']->render(
             'site/signup.html.twig',
-            array($data)
+            $data
         ));
     }
 
@@ -68,7 +71,7 @@ class SiteController
 
         $repo = $app->getUserRepository();
         try {
-            $user = $repo->register($username, $email);
+            $user = $repo->register($app, $username, $email);
         } catch (Exception $e) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E01');
         }
@@ -102,7 +105,8 @@ class SiteController
 
     public function loginSuccessAction(Application $app, Request $request)
     {
-        return $app->redirect($app['url_generator']->generate('index'));
+        $next = $app['session']->get('next');
+        return $app->redirect($next ?: $app['url_generator']->generate('index'));
     }
 
     public function logoutSuccessAction(Application $app, Request $request)

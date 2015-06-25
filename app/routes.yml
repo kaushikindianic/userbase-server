@@ -150,12 +150,33 @@ admin_app_view:
     path: /admin/apps/{appname}
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
 
+authorize_confirm:
+    path: /authorize/confirm/{provider}
+    defaults: { _controller: UserBase\Server\Controller\OAuth2Controller::confirmAction }
+
+oauth2_server_authorize:
+    path: /oauth2/authorize
+    defaults: { _controller: UserBase\Server\Controller\OAuth2ServerController::authorize }
+
+oauth2_server_code:
+    path: /oauth2/code
+    defaults: { _controller: UserBase\Server\Controller\OAuth2ServerController::code }
+
+
+oauth2_server_api:
+    path: /oauth2/api
+    defaults: { _controller: UserBase\Server\Controller\OAuth2ServerController::api }
+
+oauth2:
+    path: /authorize/{provider}
+    defaults: { _controller: UserBase\Server\Controller\OAuth2Controller::authorizeAction }
+
 admin_app_delete:
     path: /admin/apps/{appname}/delete
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }
     
 admin_app_users:
     path: /admin/apps/{appname}/users
-    defaults: {_controller:  UserBase\Server\Controller\AdminController::appUsersAction }  
- 
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::appUsersAction }   
    
+
