@@ -17,6 +17,10 @@
     <a href="{{ path('login') }}" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</a><br />
     <br />
     <a href="{{ path('signup') }}" class="btn btn-default btn-lg">{{ "common.action_signup"|trans }}</a><br />
+
+    {% for service in services %}
+        <a href="{{ path('oauth2', {"provider":service}) }}" class="btn btn-default btn-lg">{{ service|title }}</a><br />
+    {% endfor %}
 {% endif %}
 
 {% endblock %}

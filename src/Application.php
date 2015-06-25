@@ -23,6 +23,7 @@ use UserBase\Server\Repository\PdoUserRepository;
 use UserBase\Server\Repository\PdoAdminRepository;
 use UserBase\Server\Repository\PdoAppRepository;
 use UserBase\Server\Repository\PdoAccountRepository;
+use UserBase\Server\Repository\PdoOAuthRepository;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use RuntimeException;
@@ -33,6 +34,7 @@ class Application extends SilexApplication
     private $config;
     private $strings = array();
     private $userRepository;
+    private $oauthRepository;
     private $accountRepository;
     private $adminRepository;
 
@@ -88,7 +90,8 @@ class Application extends SilexApplication
         $pdo = Service::pdo();
 
         $factory = $this['security.encoder_factory'];
-        $this->userRepository = new PdoUserRepository($pdo, $factory);
+        $this->oauthRepository = new PdoOAuthRepository($pdo);
+        $this->userRepository = new PdoUserRepository($pdo, $this->oauthRepository, $factory);
         $this->accountRepository = new PdoAccountRepository($pdo);
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
@@ -208,7 +211,12 @@ class Application extends SilexApplication
     {
         return $this->userRepository;
     }
-  
+
+    public function getOAuthRepository()
+    {
+        return $this->oauthRepository;
+    }
+
     public function getAdminRepository()
     {
         return $this->adminRepository;

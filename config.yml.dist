@@ -20,3 +20,14 @@ herald:
     baseurl: my_herald_baseurl
     transport: my_herald_transport
     prefix: "my_herald_prefix/"
+
+oauth2:
+    return_url: '/oauth2/confirm'
+    scopes: [email]
+    services:
+        twitter:
+            clientId: <twitterClientId>
+            clientSecret: <secret>
+        facebook:
+            clientId: <facebookClientId>
+            secretSecret: <secret>
