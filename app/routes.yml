@@ -129,6 +129,10 @@ admin_account_delete:
     path: /admin/account/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AdminController::accountDeleteAction }
 
+admin_account_users:
+    path: /admin/account/{accountname}/users
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountUsersAction }  
+    
 
 admin_apps_list:
     path: /admin/apps
@@ -169,5 +173,14 @@ oauth2:
 
 admin_app_delete:
     path: /admin/apps/{appname}/delete
+<<<<<<< HEAD
+    defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }
+    
+admin_app_users:
+    path: /admin/apps/{appname}/users
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::appUsersAction }   
+
+=======
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }   
    
+>>>>>>> upstream/master

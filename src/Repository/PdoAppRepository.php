@@ -116,7 +116,7 @@ final class PdoAppRepository
         $statement->execute(array(
             ':deleted_at' => time(),
             ':name' => $name
-        ));
+        )); 
     }    
 
     private function rowToApp($row)
@@ -131,4 +131,33 @@ final class PdoAppRepository
         $app->setAbout($row['about']);
         return $app;
     }
+    
+    public function getAppUsers($appname)
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM app_user WHERE app_name = :app_name ORDER BY user_name ASC");
+        $statement->execute(array(':app_name' => $appname));
+        $rows = $statement->fetchAll();
+    
+        $aUsers = array();
+    
+        foreach ($rows as $row) {
+            $aUsers[] = $row['user_name'];
+        }
+        return $aUsers;
+    }
+    
+    public function delAppUsers($appname)
+    {
+        $statement = $this->pdo->prepare('Delete From app_user WHERE app_name = :app_name');
+        $statement->execute(array(':app_name' => $appname));
+    }
+    
+    public function  addAppUser($appname, $username)
+    {
+        $statement = $this->pdo->prepare(
+            'INSERT INTO app_user (app_name, user_name) VALUES (:app_name, :user_name)'
+            );
+        $statement->execute(array(':app_name' => $appname, ':user_name' => $username));
+        return true;
+    }    
 }

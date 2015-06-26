@@ -1,3 +1,7 @@
 vendor/*
 config.yml
 composer.phar
+/sample.test
+/.settings
+.buildpath
+.project

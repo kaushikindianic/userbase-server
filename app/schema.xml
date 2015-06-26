@@ -1,5 +1,32 @@
 <?xml version="1.0"?>
 <schema>
+<<<<<<< HEAD
+
+    <!-- think of account as github organizations.. a place to share resources -->
+    <table name="account">
+        <column name="name" type="varchar(128)" />
+        <column name="display_name" type="varchar(128)" />
+        <column name="about" type="text" />
+        <column name="picture_url" type="varchar(128)" />
+        <column name="created_at" type="integer" />
+        <column name="deleted_at" type="integer" />
+    </table>
+
+    <table name="account_user">
+        <column name="account_name" type="varchar(128)" />
+        <column name="user_name" type="varchar(128)" />
+        <!-- store account specific user data here, like roles, join-status, etc -->
+    </table>
+    
+    <!--	
+    <table name="account">
+        <column name="app_name" type="varchar(128)" />
+        <column name="user_name" type="varchar(128)" />
+        <column name="meta_data" type="text" />
+         store app specific user data like preferences and roles here
+    </table> -->
+
+=======
   <table name="account">
     <column name="id" type="INT"/>
     <column name="app_name" type="VARCHAR(128)"/>
@@ -9,6 +36,7 @@
       <column name="id"/>
     </index>
   </table>
+>>>>>>> upstream/master
   <table name="app">
     <column name="id" type="INT"/>
     <column name="name" type="VARCHAR(128)"/>
@@ -22,6 +50,15 @@
       <column name="id"/>
     </index>
   </table>
+<<<<<<< HEAD
+   
+   <table name="app_user">
+        <column name="app_name" type="varchar(128)" />
+        <column name="user_name" type="varchar(128)" />
+        <!-- store account specific user data here, like roles, join-status, etc -->
+    </table>
+
+=======
   <table name="group">
     <column name="id" type="INT"/>
     <column name="name" type="VARCHAR(128)"/>
@@ -42,6 +79,7 @@
       <column name="id"/>
     </index>
   </table>
+>>>>>>> upstream/master
   <table name="identities">
     <column name="identity_id" type="BIGINT"/>
     <column name="user_name" type="VARCHAR(128)"/>

@@ -131,5 +131,35 @@ class PdoAccountRepository
             ':deleted_at' => time(),
             ':name' => $name
         ));
-    }    
+    }
+    
+    public function getAccountUsers($accountname)
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM account_user WHERE  account_name = :account_name ORDER BY user_name ASC");
+        $statement->execute(array(':account_name' => $accountname));
+        $rows = $statement->fetchAll();
+        
+        $aUsers = array();
+        
+        foreach ($rows as $row) {
+            $aUsers[] = $row['user_name'];
+        }
+        return $aUsers;        
+    }
+    
+    public function delAccUsers($accountname)
+    {
+        $statement = $this->pdo->prepare('Delete From account_user WHERE account_name = :account_name');
+        $statement->execute(array(':account_name' => $accountname));
+    }
+    
+    public function  addAccUser($accountname, $username)
+    {
+        $statement = $this->pdo->prepare(
+                'INSERT INTO account_user (account_name, user_name) VALUES (:account_name, :user_name)'
+            );
+        $statement->execute(array(':account_name' => $accountname, ':user_name' => $username));
+        return true;
+    }
+    
 }

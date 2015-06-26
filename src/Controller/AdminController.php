@@ -134,6 +134,52 @@ class AdminController
         return new Response($app['twig']->render('admin/app_view.html.twig', $data));
     }
     
+    public function appUsersAction(Application $app, Request $request, $appname)
+    {
+        $error = $request->query->get('error');
+        $oUserRepo  = $app->getUserRepository();
+        $aUsers = $oUserRepo->getAll();
+        $tmpUsers = array();
+        
+        foreach ($aUsers AS $user) {
+            $tmpUsers[$user->name] = $user->name;
+        }
+        $oAppRepo  = $app->getAppRepository();
+        $aAppUsers = $oAppRepo->getAppUsers($appname);
+        
+        $form = $app['form.factory']->createBuilder('form')
+        ->add('users', 'choice', array(
+            'choices' => $tmpUsers,
+            'multiple' => true,
+            'expanded' => true,
+            'data' => $aAppUsers
+        ))->getForm();
+        
+        // FORM POST
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+        
+            if (!empty($data['users'])) {
+        
+                $oAppRepo->delAppUsers($appname);
+        
+                foreach ($data['users'] as  $key => $val ) {
+                    $oAppRepo->addAppUser($appname, $val);
+                }
+            }
+            return $app->redirect($app['url_generator']->generate('admin_apps_list'));
+        }
+        
+        return new Response($app['twig']->render('admin/app_users.html.twig', array(
+            'form' => $form->createView(),
+            'appname' => $appname,
+            //     'aUsers' => $aUsers,
+            //     'aAccUsers' => $aAccUsers,
+            'error' => $error
+        )));        
+    }
+    
     private function appsEditForm(Application $app, Request $request, $appname)
     {
         $error = $request->query->get('error');
@@ -231,7 +277,60 @@ class AdminController
     {
         return $this->accountEditForm($app, $request, $accountname);
     }
-
+    
+    /**
+     * 
+     * @param Application $app
+     * @param Request $request
+     * @param unknown $accountname
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function accountUsersAction(Application $app, Request $request, $accountname)
+    {   
+        $error = $request->query->get('error');
+        $oUserRepo  = $app->getUserRepository();
+        $aUsers = $oUserRepo->getAll();
+        $tmpUsers = array();
+        
+        foreach ($aUsers AS $user) {
+            $tmpUsers[$user->name] = $user->name;
+        }
+        $oAccRepo  = $app->getAccountRepository();
+        $aAccUsers = $oAccRepo->getAccountUsers($accountname);
+        
+        $form = $app['form.factory']->createBuilder('form')
+                ->add('users', 'choice', array(
+                'choices' => $tmpUsers,
+                'multiple' => true,
+                'expanded' => true,
+                'data' => $aAccUsers
+                ))->getForm();
+                
+         // FORM POST       
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+            
+            if (!empty($data['users'])) {
+                
+                $oAccRepo->delAccUsers($accountname);
+                
+                foreach ($data['users'] as  $key => $val ) {
+                    $oAccRepo->addAccUser($accountname, $val);
+                }
+            }
+            return $app->redirect($app['url_generator']->generate('admin_account_list'));
+        }
+        
+        return new Response($app['twig']->render('admin/account_users.html.twig', array(
+            'form' => $form->createView(),
+            'accountname' => $accountname,
+       //     'aUsers' => $aUsers,
+       //     'aAccUsers' => $aAccUsers,
+            'error' => $error
+        )));
+    }
+    
     private function accountEditForm(Application $app, Request $request, $accountname)
     {
         $error = $request->query->get('error');
