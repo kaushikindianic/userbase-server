@@ -2,6 +2,9 @@ index:
     path: /
     defaults:  { _controller: UserBase\Server\Controller\SiteController::indexAction }
 
+js:
+    path: /js
+
 login:
     path: /login
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
