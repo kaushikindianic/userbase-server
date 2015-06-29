@@ -1,0 +1,12 @@
+{% if(aUsers) %}
+<table class="table">
+    {% for aUser in aUsers %}
+        <tr>
+            <td>{{ aUser.name }} ( {{ aUser.email }})</td>
+            <td> <a href="#" class="jsAdduser" data-username="{{ aUser.name }}"  ><span class="fa fa-plus"></span></a></td> 
+        </tr>
+    {% endfor %}
+</table>
+{% else %}
+    <div>No Result Found</div>
+{% endif %}

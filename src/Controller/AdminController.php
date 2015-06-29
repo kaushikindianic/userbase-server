@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use UserBase\Server\Model\App;
 use UserBase\Server\Model\Account;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AdminController
 {
@@ -277,58 +278,56 @@ class AdminController
     {
         return $this->accountEditForm($app, $request, $accountname);
     }
-    
-    /**
-     * 
-     * @param Application $app
-     * @param Request $request
-     * @param unknown $accountname
-     * @return \Symfony\Component\HttpFoundation\Response
-     */
+
     public function accountUsersAction(Application $app, Request $request, $accountname)
-    {   
+    {
         $error = $request->query->get('error');
-        $oUserRepo  = $app->getUserRepository();
-        $aUsers = $oUserRepo->getAll();
-        $tmpUsers = array();
+        $oAccRepo = $app->getAccountRepository();
         
-        foreach ($aUsers AS $user) {
-            $tmpUsers[$user->name] = $user->name;
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('delAssignUser');
+            
+            if ($userName) {
+                $oAccRepo->delAccUsers($accountname, $userName);
+                
+                return $app->redirect($app['url_generator']->generate('admin_account_users', array(
+                    'accountname' => $accountname
+                )));
+            }
         }
-        $oAccRepo  = $app->getAccountRepository();
         $aAccUsers = $oAccRepo->getAccountUsers($accountname);
         
-        $form = $app['form.factory']->createBuilder('form')
-                ->add('users', 'choice', array(
-                'choices' => $tmpUsers,
-                'multiple' => true,
-                'expanded' => true,
-                'data' => $aAccUsers
-                ))->getForm();
-                
-         // FORM POST       
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $data = $form->getData();
-            
-            if (!empty($data['users'])) {
-                
-                $oAccRepo->delAccUsers($accountname);
-                
-                foreach ($data['users'] as  $key => $val ) {
-                    $oAccRepo->addAccUser($accountname, $val);
-                }
-            }
-            return $app->redirect($app['url_generator']->generate('admin_account_list'));
-        }
-        
         return new Response($app['twig']->render('admin/account_users.html.twig', array(
-            'form' => $form->createView(),
-            'accountname' => $accountname,
-       //     'aUsers' => $aUsers,
-       //     'aAccUsers' => $aAccUsers,
+            'accountName' => $accountname,
+            'aAccUsers' => $aAccUsers,
             'error' => $error
         )));
+    }
+
+    public function accountSearchUserAction(Application $app, Request $request, $accountname)
+    {
+        $searchUser = $request->get('searchUser');
+        $oAccRepo = $app->getAccountRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('userName');
+            if ($userName) {
+                $oAccRepo->addAccUser($accountname, $userName);
+                return new JsonResponse(array(
+                    'success' => true
+                ));
+            }
+        }
+        $oUserRepo = $app->getUserRepository();
+        $aUsers = $oUserRepo->getSearchUsers($searchUser);
+        
+        $oRes = new Response($app['twig']->render('admin/account_search_users.html.twig', array(
+            'aUsers' => $aUsers
+        )));
+        
+        return new JsonResponse(array(
+            'html' => $oRes->getContent()
+        ));
     }
     
     private function accountEditForm(Application $app, Request $request, $accountname)

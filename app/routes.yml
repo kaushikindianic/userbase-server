@@ -133,7 +133,7 @@ admin_account_users:
     path: /admin/account/{accountname}/users
     defaults: {_controller:  UserBase\Server\Controller\AdminController::accountUsersAction }  
     
-
+ 
 admin_apps_list:
     path: /admin/apps
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
@@ -179,3 +179,6 @@ admin_app_users:
     path: /admin/apps/{appname}/users
     defaults: {_controller:  UserBase\Server\Controller\AdminController::appUsersAction }   
 
+admin_account_searchuser:
+    path: /admin/account/{accountname}/searchuser
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountSearchUserAction }  
