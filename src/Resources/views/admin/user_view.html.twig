@@ -28,24 +28,16 @@
     <a class="btn btn-default" href="{{ path("admin_user_tools", { "username": username } ) }}">Tools</a>
 </div>
 
+<h3>Accounts (#)</h3>
+//TODO: List all the `account` objects linked to this `user_name` by the `account_user` table
 
-<h3>Accounts: {{ accounts|length }}</h2>
+<h3>Apps (#)</h3>
+//TODO: List all the `app` objects linked to this `user_name` by the `app_user` table
 
-<table class="table">
-    <tr>
-        <th>Accounts</th>
-    </tr>
-    {% for account in accounts %}
-    <tr>
-        <td>
-            <a href="{{ path("admin_app_view", {"appname": account.getApp().getName() })}}">
-                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ account.getApp().getPictureUrl() }}" />
-                {{ account.getApp().getName() }}</a>: {{ account.getApp().getDisplayName() }}<br />
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+<h3>Identities (#)</h3>
+//TODO: List all the `identities` objects linked to this `user_name`
 
-<h3>Event log</h3>
+<h3>Events (#)</h3>
+//TODO: List all the `user_event` objects linked to this `user_name`
 
 {% endblock %}
