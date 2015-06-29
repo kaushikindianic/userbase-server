@@ -14,7 +14,11 @@
     <table name="account_user">
         <column name="account_name" type="varchar(128)" />
         <column name="user_name" type="varchar(128)" />
-        <!-- store account specific user data here, like roles, join-status, etc -->
+        <index name="unique_account_user"  unique="unique">
+      		<column name="account_name"/>
+      		<column name="user_name"/>
+    	</index>
+        <!-- store account specific user data here, like roles, join-status, etc -->        
     </table>
     
     <!--	

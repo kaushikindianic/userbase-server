@@ -147,16 +147,16 @@ class PdoAccountRepository
         return $aUsers;        
     }
     
-    public function delAccUsers($accountname)
+    public function delAccUsers($accountName, $userName)
     {
-        $statement = $this->pdo->prepare('Delete From account_user WHERE account_name = :account_name');
-        $statement->execute(array(':account_name' => $accountname));
+        $statement = $this->pdo->prepare('Delete From account_user WHERE account_name = :account_name AND user_name = :user_name');
+        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
     }
     
     public function  addAccUser($accountname, $username)
     {
         $statement = $this->pdo->prepare(
-                'INSERT INTO account_user (account_name, user_name) VALUES (:account_name, :user_name)'
+                'INSERT IGNORE INTO account_user (account_name, user_name) VALUES (:account_name, :user_name)'
             );
         $statement->execute(array(':account_name' => $accountname, ':user_name' => $username));
         return true;
