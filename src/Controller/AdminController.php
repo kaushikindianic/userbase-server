@@ -37,7 +37,6 @@ class AdminController
         $viewuser = $userRepo->getByName($username);
         $data['username'] = $username;
         $data['viewuser'] = $viewuser;
-        $data['accounts'] = $accountRepo->getByUsername($username);
         return new Response($app['twig']->render('admin/user_view.html.twig', $data));
     }
 
