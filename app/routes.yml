@@ -90,6 +90,15 @@ admin_index:
 admin_user_list:
     path: /admin/users
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userListAction }
+    
+admin_user_add:
+    path: /admin/users/add
+    defaults: { _controller: UserBase\Server\Controller\AdminController::userAddAction }
+
+admin_user_check:
+    path: /admin/users/check
+    defaults: { _controller: UserBase\Server\Controller\AdminController::chkUserNameAction }
+
 
 admin_user_view:
     path: /admin/users/{username}

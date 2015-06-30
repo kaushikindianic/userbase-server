@@ -39,6 +39,74 @@ class AdminController
         $data['viewuser'] = $viewuser;
         return new Response($app['twig']->render('admin/user_view.html.twig', $data));
     }
+    
+    public function userAddAction(Application $app, Request $request)
+    {
+        $oUserRepo = $app->getUserRepository();
+        $error = $request->query->get('error');
+        
+        if ($request->isMethod('POST')) {
+            $username = $request->request->get('_username');
+            $email = $request->request->get('_email');
+            $password = $request->request->get('_password');
+            $password2 = $request->request->get('_password2');
+            
+            
+            if ($oUserRepo->getByName($username)) {
+                $error .= 'username already exist'.'<br/>';
+            }
+            
+            if ($password != $password2) {
+                $error .= 'Password not match.';
+                
+            } 
+            if (!$error) {
+                $user = $oUserRepo->register($app, $username, $email);
+                $user = $oUserRepo->getByName($username);
+                $oUserRepo->setPassword($user, $password);
+                
+                $baseUrl = $app['userbase.baseurl'];
+                
+                $stamp = time();
+                $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+                $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
+                $data = array();
+                $data['link'] = $link;
+                $data['username'] = $username;
+                $app['mailer']->sendTemplate('welcome', $user, $data);
+                
+                return $app->redirect($app['url_generator']->generate('admin_user_list'));
+            }
+        }        
+        
+        return new Response($app['twig']->render('admin/user_add.html.twig',
+            array(
+                'error' => $error
+            )));
+    }
+    
+    public function chkUserNameAction(Application $app, Request $request)
+    {
+        if ($request-> isXmlHttpRequest()) {
+            $username =  $request->request->get('username');
+            $oUserRepo = $app->getUserRepository();
+            
+            if ($oUserRepo->getByName($username)) {
+                return new JsonResponse(array(
+                    'success' => false,
+                    'html' => 'username already exist'
+                ));                
+            } else {
+                return new JsonResponse(array(
+                    'success' => true,
+                    'html' => null
+                ));
+            }
+            
+        } else {
+            return $app->redirect($app['url_generator']->generate('admin_user_list'));
+        }
+    }
 
     public function userToolsAction(Application $app, Request $request, $username)
     {
@@ -133,53 +201,7 @@ class AdminController
         
         return new Response($app['twig']->render('admin/app_view.html.twig', $data));
     }
-    /*
-    public function appUsersAction(Application $app, Request $request, $appname)
-    {
-        $error = $request->query->get('error');
-        $oUserRepo  = $app->getUserRepository();
-        $aUsers = $oUserRepo->getAll();
-        $tmpUsers = array();
-        
-        foreach ($aUsers AS $user) {
-            $tmpUsers[$user->name] = $user->name;
-        }
-        $oAppRepo  = $app->getAppRepository();
-        $aAppUsers = $oAppRepo->getAppUsers($appname);
-        
-        $form = $app['form.factory']->createBuilder('form')
-        ->add('users', 'choice', array(
-            'choices' => $tmpUsers,
-            'multiple' => true,
-            'expanded' => true,
-            'data' => $aAppUsers
-        ))->getForm();
-        
-        // FORM POST
-        $form->handleRequest($request);
-        if ($form->isValid()) {
-            $data = $form->getData();
-        
-            if (!empty($data['users'])) {
-        
-                $oAppRepo->delAppUsers($appname);
-        
-                foreach ($data['users'] as  $key => $val ) {
-                    $oAppRepo->addAppUser($appname, $val);
-                }
-            }
-            return $app->redirect($app['url_generator']->generate('admin_apps_list'));
-        }
-        
-        return new Response($app['twig']->render('admin/app_users.html.twig', array(
-            'form' => $form->createView(),
-            'appname' => $appname,
-            //     'aUsers' => $aUsers,
-            //     'aAccUsers' => $aAccUsers,
-            'error' => $error
-        )));        
-    }
-    */
+
     public function appUsersAction(Application $app, Request $request, $appname)
     {
         $error = $request->query->get('error');

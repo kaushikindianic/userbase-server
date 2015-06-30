@@ -128,7 +128,45 @@ $(function() {
     });
     $('#popUpAppAssignUser').on('shown.bs.modal', function(e) {
         // do something...  
-        $('#searchAppUser').val('');
+        $( '#searchAppUser' ).val('');
     });
 
+});
+
+//-- USER SECTION/MODULE //
+
+$(function() {
+   $('#_username').blur(function() {
+       
+       if ( $(this).val() != '') {
+           
+           var data = 'username=' + $(this).val();
+           $.ajax({
+               async : false,
+               url : window.checkUser.url,
+               type : 'post',
+               dataType : 'json',
+               data : data,
+               beforeSend : '',
+               success : function(dataReturn) {
+                      
+                      if(!dataReturn.success) { 
+                          $( '#chkUserExist' ).html(dataReturn.html).addClass('alert alert-danger').slideDown( "slow" );
+                          $('#btnSubmit').attr('disabled', 'disabled');
+                      } else {
+                          $( '#chkUserExist' ).html(dataReturn.html).slideUp( "slow" ).removeClass('alert alert-danger');
+                          $( '#btnSubmit' ).prop('disabled', false);
+                      }
+                      
+               },
+               complete : function() {
+                   
+               },
+           });           
+       } else {
+           $( '#chkUserExist' ).html('').slideUp( "slow" );
+           $( '#btnSubmit' ).prop('disabled', false);
+       }
+       
+   }) ;
 });
