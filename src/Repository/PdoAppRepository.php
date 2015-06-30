@@ -146,16 +146,16 @@ final class PdoAppRepository
         return $aUsers;
     }
     
-    public function delAppUsers($appname)
+    public function delAppUser($appname, $userName)
     {
-        $statement = $this->pdo->prepare('Delete From app_user WHERE app_name = :app_name');
-        $statement->execute(array(':app_name' => $appname));
+        $statement = $this->pdo->prepare('Delete From app_user WHERE app_name = :app_name AND user_name = :user_name');
+        $statement->execute(array(':app_name' => $appname, ':user_name' => $userName));
     }
     
     public function  addAppUser($appname, $username)
     {
         $statement = $this->pdo->prepare(
-            'INSERT INTO app_user (app_name, user_name) VALUES (:app_name, :user_name)'
+            'INSERT IGNORE INTO app_user (app_name, user_name) VALUES (:app_name, :user_name)'
             );
         $statement->execute(array(':app_name' => $appname, ':user_name' => $username));
         return true;

@@ -133,7 +133,7 @@ class AdminController
         
         return new Response($app['twig']->render('admin/app_view.html.twig', $data));
     }
-    
+    /*
     public function appUsersAction(Application $app, Request $request, $appname)
     {
         $error = $request->query->get('error');
@@ -179,6 +179,58 @@ class AdminController
             'error' => $error
         )));        
     }
+    */
+    public function appUsersAction(Application $app, Request $request, $appname)
+    {
+        $error = $request->query->get('error');
+        $oAppRepo  = $app->getAppRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('delAssignUser');
+        
+            if ($userName) {
+                $oAppRepo->delAppUser($appname, $userName);
+        
+                return $app->redirect($app['url_generator']->generate('admin_app_users', array(
+                    'appname' => $appname
+                )));
+            }
+        }
+        $aAppUsers = $oAppRepo->getAppUsers($appname);
+        
+        return new Response($app['twig']->render('admin/app_users.html.twig', array(
+            'appName' => $appname,
+            'aAppUsers' => $aAppUsers,
+            'error' => $error
+        )));                
+    }
+    
+    public function appSearchUserAction(Application $app, Request $request, $appname)
+    {
+        $searchUser = $request->get('searchAppUser');
+        $oAppRepo = $app->getAppRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('userName');
+            if ($userName) {
+                $oAppRepo->addAppUser($appname, $userName);
+                return new JsonResponse(array(
+                    'success' => true
+                ));
+            }
+        }
+        $oUserRepo = $app->getUserRepository();
+        $aUsers = $oUserRepo->getSearchUsers($searchUser);
+        
+        $oRes = new Response($app['twig']->render('admin/app_search_users.html.twig', array(
+            'aUsers' => $aUsers
+        )));
+        
+        return new JsonResponse(array(
+            'html' => $oRes->getContent()
+        ));        
+    }
+    
     
     private function appsEditForm(Application $app, Request $request, $appname)
     {
@@ -305,7 +357,7 @@ class AdminController
 
     public function accountSearchUserAction(Application $app, Request $request, $accountname)
     {
-        $searchUser = $request->get('searchUser');
+        $searchUser = $request->get('searchAccUser');
         $oAccRepo = $app->getAccountRepository();
         
         if ($request->isMethod('POST')) {
