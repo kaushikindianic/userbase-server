@@ -184,4 +184,8 @@ admin_app_users:
 
 admin_account_searchuser:
     path: /admin/account/{accountname}/searchuser
-    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountSearchUserAction }  
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountSearchUserAction } 
+    
+admin_app_searchuser:
+   path: /admin/apps/{appname}/searchuser
+   defaults: {_controller:  UserBase\Server\Controller\AdminController::appSearchUserAction }    
