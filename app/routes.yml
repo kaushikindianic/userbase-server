@@ -2,6 +2,9 @@ index:
     path: /
     defaults:  { _controller: UserBase\Server\Controller\SiteController::indexAction }
 
+js:
+    path: /js
+
 login:
     path: /login
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
@@ -87,6 +90,15 @@ admin_index:
 admin_user_list:
     path: /admin/users
     defaults:  { _controller: UserBase\Server\Controller\AdminController::userListAction }
+    
+admin_user_add:
+    path: /admin/users/add
+    defaults: { _controller: UserBase\Server\Controller\AdminController::userAddAction }
+
+admin_user_check:
+    path: /admin/users/check
+    defaults: { _controller: UserBase\Server\Controller\AdminController::chkUserNameAction }
+
 
 admin_user_view:
     path: /admin/users/{username}
@@ -129,7 +141,11 @@ admin_account_delete:
     path: /admin/account/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AdminController::accountDeleteAction }
 
-
+admin_account_users:
+    path: /admin/account/{accountname}/users
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountUsersAction }  
+    
+ 
 admin_apps_list:
     path: /admin/apps
     defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
@@ -169,5 +185,16 @@ oauth2:
 
 admin_app_delete:
     path: /admin/apps/{appname}/delete
-    defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }   
-   
+    defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }
+    
+admin_app_users:
+    path: /admin/apps/{appname}/users
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::appUsersAction }   
+
+admin_account_searchuser:
+    path: /admin/account/{accountname}/searchuser
+    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountSearchUserAction } 
+    
+admin_app_searchuser:
+   path: /admin/apps/{appname}/searchuser
+   defaults: {_controller:  UserBase\Server\Controller\AdminController::appSearchUserAction }    

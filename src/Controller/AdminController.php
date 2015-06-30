@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use UserBase\Server\Model\App;
 use UserBase\Server\Model\Account;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class AdminController
 {
@@ -36,8 +37,75 @@ class AdminController
         $viewuser = $userRepo->getByName($username);
         $data['username'] = $username;
         $data['viewuser'] = $viewuser;
-        $data['accounts'] = $accountRepo->getByUsername($username);
         return new Response($app['twig']->render('admin/user_view.html.twig', $data));
+    }
+    
+    public function userAddAction(Application $app, Request $request)
+    {
+        $oUserRepo = $app->getUserRepository();
+        $error = $request->query->get('error');
+        
+        if ($request->isMethod('POST')) {
+            $username = $request->request->get('_username');
+            $email = $request->request->get('_email');
+            $password = $request->request->get('_password');
+            $password2 = $request->request->get('_password2');
+            
+            
+            if ($oUserRepo->getByName($username)) {
+                $error .= 'username already exist'.'<br/>';
+            }
+            
+            if ($password != $password2) {
+                $error .= 'Password not match.';
+                
+            } 
+            if (!$error) {
+                $user = $oUserRepo->register($app, $username, $email);
+                $user = $oUserRepo->getByName($username);
+                $oUserRepo->setPassword($user, $password);
+                
+                $baseUrl = $app['userbase.baseurl'];
+                
+                $stamp = time();
+                $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+                $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
+                $data = array();
+                $data['link'] = $link;
+                $data['username'] = $username;
+                $app['mailer']->sendTemplate('welcome', $user, $data);
+                
+                return $app->redirect($app['url_generator']->generate('admin_user_list'));
+            }
+        }        
+        
+        return new Response($app['twig']->render('admin/user_add.html.twig',
+            array(
+                'error' => $error
+            )));
+    }
+    
+    public function chkUserNameAction(Application $app, Request $request)
+    {
+        if ($request-> isXmlHttpRequest()) {
+            $username =  $request->request->get('username');
+            $oUserRepo = $app->getUserRepository();
+            
+            if ($oUserRepo->getByName($username)) {
+                return new JsonResponse(array(
+                    'success' => false,
+                    'html' => 'username already exist'
+                ));                
+            } else {
+                return new JsonResponse(array(
+                    'success' => true,
+                    'html' => null
+                ));
+            }
+            
+        } else {
+            return $app->redirect($app['url_generator']->generate('admin_user_list'));
+        }
     }
 
     public function userToolsAction(Application $app, Request $request, $username)
@@ -133,6 +201,58 @@ class AdminController
         
         return new Response($app['twig']->render('admin/app_view.html.twig', $data));
     }
+
+    public function appUsersAction(Application $app, Request $request, $appname)
+    {
+        $error = $request->query->get('error');
+        $oAppRepo  = $app->getAppRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('delAssignUser');
+        
+            if ($userName) {
+                $oAppRepo->delAppUser($appname, $userName);
+        
+                return $app->redirect($app['url_generator']->generate('admin_app_users', array(
+                    'appname' => $appname
+                )));
+            }
+        }
+        $aAppUsers = $oAppRepo->getAppUsers($appname);
+        
+        return new Response($app['twig']->render('admin/app_users.html.twig', array(
+            'appName' => $appname,
+            'aAppUsers' => $aAppUsers,
+            'error' => $error
+        )));                
+    }
+    
+    public function appSearchUserAction(Application $app, Request $request, $appname)
+    {
+        $searchUser = $request->get('searchAppUser');
+        $oAppRepo = $app->getAppRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('userName');
+            if ($userName) {
+                $oAppRepo->addAppUser($appname, $userName);
+                return new JsonResponse(array(
+                    'success' => true
+                ));
+            }
+        }
+        $oUserRepo = $app->getUserRepository();
+        $aUsers = $oUserRepo->getSearchUsers($searchUser);
+        
+        $oRes = new Response($app['twig']->render('admin/app_search_users.html.twig', array(
+            'aUsers' => $aUsers
+        )));
+        
+        return new JsonResponse(array(
+            'html' => $oRes->getContent()
+        ));        
+    }
+    
     
     private function appsEditForm(Application $app, Request $request, $appname)
     {
@@ -232,6 +352,57 @@ class AdminController
         return $this->accountEditForm($app, $request, $accountname);
     }
 
+    public function accountUsersAction(Application $app, Request $request, $accountname)
+    {
+        $error = $request->query->get('error');
+        $oAccRepo = $app->getAccountRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('delAssignUser');
+            
+            if ($userName) {
+                $oAccRepo->delAccUsers($accountname, $userName);
+                
+                return $app->redirect($app['url_generator']->generate('admin_account_users', array(
+                    'accountname' => $accountname
+                )));
+            }
+        }
+        $aAccUsers = $oAccRepo->getAccountUsers($accountname);
+        
+        return new Response($app['twig']->render('admin/account_users.html.twig', array(
+            'accountName' => $accountname,
+            'aAccUsers' => $aAccUsers,
+            'error' => $error
+        )));
+    }
+
+    public function accountSearchUserAction(Application $app, Request $request, $accountname)
+    {
+        $searchUser = $request->get('searchAccUser');
+        $oAccRepo = $app->getAccountRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('userName');
+            if ($userName) {
+                $oAccRepo->addAccUser($accountname, $userName);
+                return new JsonResponse(array(
+                    'success' => true
+                ));
+            }
+        }
+        $oUserRepo = $app->getUserRepository();
+        $aUsers = $oUserRepo->getSearchUsers($searchUser);
+        
+        $oRes = new Response($app['twig']->render('admin/account_search_users.html.twig', array(
+            'aUsers' => $aUsers
+        )));
+        
+        return new JsonResponse(array(
+            'html' => $oRes->getContent()
+        ));
+    }
+    
     private function accountEditForm(Application $app, Request $request, $accountname)
     {
         $error = $request->query->get('error');
