@@ -13,10 +13,9 @@ $service = new \ServiceProvider\Provider(
 $application = new Application();
 
 $application->before(function (Request $request) use ($application) {
-    $token = $application['security']->getToken();
+    $token = isset($application['security']) ? $application['security']->getToken() : null;
     if ($token) {
         if ($request->getRequestUri()!='/login') {
-
             if ($token->getUser() == 'anon.') {
                 //exit('anon!');
                 //return $app->redirect('/login');
@@ -32,7 +31,7 @@ $application->before(function (Request $request) use ($application) {
             $application['twig']->addGlobal('postfix', $postfix);
         }
         $application['twig']->addGlobal('logourl', $application['userbase.logourl']);
-        
+
         $filter = new Twig_SimpleFilter('mydate', function ($value) {
             if ($value>0) {
                 return date('d/M/Y');

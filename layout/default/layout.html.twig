@@ -19,11 +19,11 @@
         .buttonbox, .right {
             text-align: right;
         }
-        
+
         body {
             background-color: #e0e0e0;
         }
-        
+
         #screen {
             margin-top: 50px;
             background-color: #202020;
@@ -33,7 +33,7 @@
             text-align: center;
             box-shadow: 0px 3px 20px 0px rgba(0,0,0,0.75);
         }
-        
+
         #content {
             margin-top: 20px;
             padding: 20px;
@@ -41,7 +41,7 @@
             background-color: #ffffff;
             border-radius: 5px;
         }
-        
+
         #content h1 {
             color: #808080;
             line-height: 1;
@@ -50,7 +50,7 @@
         }
         #header {
         }
-        
+
         #header .logo {
             margin-top: 20px;
             width: 100px;
@@ -62,19 +62,19 @@
             color: #808080;
             font-style: italic;
         }
-        
+
         .poweredby {
             margin-top: 10px;
             color: #808080;
         }
-        
+
         button.btn, a.btn {
             width: 100%;
         }
         .fa-star {
             margin-right: 5px;
         }
-        
+
         a {
             color: #008000;
         }
@@ -87,7 +87,7 @@
 </head>
 
 <body>
-    
+
     <div class="container">
         <div class="row">
             <div class="col-md-4">
@@ -95,7 +95,9 @@
             <div class="col-md-4">
                 <div id="screen">
                     <div id="header">
+                        {% if logourl is defined %}
                         <img class="logo" src="{{ logourl }}" />
+                        {% endif %}
                         <h1>{{ "site.title"|trans }}</h1>
                         <p class="description">{{ "site.subtitle"|trans }}</p>
                     </div>

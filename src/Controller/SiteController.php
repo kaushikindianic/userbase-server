@@ -13,36 +13,36 @@ class SiteController
 
     public function indexAction(Application $app, Request $request)
     {
-        
+
         if (isset($app['currentuser'])) {
             //return $app->redirect("/cp");
         }
         $data = array(
             'services' => array_keys((array)Service::oauth2()),
         );
-        
+
         $error = $app['security.last_error']($request);
-        
+
         return new Response($app['twig']->render(
             'site/index.html.twig',
             $data
         ));
     }
-    
+
     public function loginAction(Application $app, Request $request)
     {
         if (isset($app['currentuser'])) {
             return $app->redirect($app['url_generator']->generate('cp_index'));
         }
-        
+
         $data = array();
         //echo $error;
-        
+
         $error = $app['security.last_error']($request);
         if ($error == 'Bad credentials.') {
             $data['errormessage'] = $app['translator']->trans('common.error_incorrectcredentials');
         }
-        
+
         return new Response($app['twig']->render(
             'site/login.html.twig',
             $data
@@ -64,7 +64,7 @@ class SiteController
         $email = $request->request->get('_email');
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
-        
+
         if ($password != $password2) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E02');
         }
@@ -76,11 +76,11 @@ class SiteController
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E01');
         }
         $user = $repo->getByName($username);
-        
+
         $repo->setPassword($user, $password);
 
         $baseUrl = $app['userbase.baseurl'];
-        
+
         $stamp = time();
         $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
         $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
@@ -88,11 +88,11 @@ class SiteController
         $data['link'] = $link;
         $data['username'] = $username;
         $app['mailer']->sendTemplate('welcome', $user, $data);
-        
+
         return $app->redirect($app['url_generator']->generate('signup_thankyou'));
 
     }
-    
+
     public function signupThankYouAction(Application $app, Request $request)
     {
         $data = array();
@@ -117,7 +117,7 @@ class SiteController
             $data
         ));
     }
-    
+
     public function validateAction(Application $app, Request $request, $username, $stamp, $token)
     {
         $repo = $app->getUserRepository();
@@ -128,7 +128,7 @@ class SiteController
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E03');
         }
         $leeway = 60 * 10; // +/- 10 minutes
-        
+
         if ($stamp > time() + $leeway) {
             // expired - too early
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05');
@@ -137,13 +137,13 @@ class SiteController
             // expired - too late
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05');
         }
-        
+
         $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E04');
         }
-        
+
         $repo->setEmailVerifiedStamp($user, $stamp);
         return $app->redirect($app['url_generator']->generate('validate_success'));
     }
@@ -156,8 +156,8 @@ class SiteController
             array($data)
         ));
     }
-    
-    
+
+
     public function passwordLostAction(Application $app, Request $request)
     {
         $data = array();
@@ -170,7 +170,7 @@ class SiteController
     public function passwordResetRequestAction(Application $app, Request $request)
     {
         $username = $request->request->get('_username');
-        
+
         $repo = $app->getUserRepository();
 
         $user = $repo->getByName($username);
@@ -193,7 +193,7 @@ class SiteController
 
         return $app->redirect($app['url_generator']->generate('password_reset_sent'));
     }
-    
+
     public function passwordResetSentAction(Application $app, Request $request)
     {
         $data = array();
@@ -202,7 +202,7 @@ class SiteController
             $data
         ));
     }
-    
+
 
     public function passwordResetAction(Application $app, Request $request, $username, $stamp, $token)
     {
@@ -219,7 +219,7 @@ class SiteController
     {
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
-        
+
         $urldata = array(
             'username' => $username,
             'stamp' => $stamp,
@@ -231,15 +231,15 @@ class SiteController
             // user does not exist
             return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E10');
         }
-        
+
         if ($password != $password2) {
             // passwords not the same
             return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E11');
         }
-        
-        
+
+
         $leeway = 60 * 10; // +/- 10 minutes
-        
+
         if ($stamp > time() + $leeway) {
             // expired - too early
             return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E12');
@@ -248,13 +248,13 @@ class SiteController
             // expired - too late
             return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E12');
         }
-        
+
         $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
             return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E14');
         }
-        
+
         $repo->setEmailVerifiedStamp($user, $stamp);
         $repo->setPassword($user, $password);
 
@@ -270,5 +270,4 @@ class SiteController
             $data
         ));
     }
-    
 }
