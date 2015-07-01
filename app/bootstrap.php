@@ -24,31 +24,29 @@ $application->before(function (Request $request) use ($application) {
                 $application['twig']->addGlobal('currentuser', $token->getUser());
             }
         }
-
-
-        $postfix = $application['userbase.postfix'];
-        if ($postfix) {
-            $application['twig']->addGlobal('postfix', $postfix);
-        }
-        $application['twig']->addGlobal('logourl', $application['userbase.logourl']);
-
-        $filter = new Twig_SimpleFilter('mydate', function ($value) {
-            if ($value>0) {
-                return date('d/M/Y');
-            } else {
-                return '-';
-            }
-        });
-        $application['twig']->addFilter($filter);
-
-        $filter = new Twig_SimpleFilter('star', function ($value) {
-            $value = str_replace('*', '<i class="fa fa-star"></i>', $value);
-            return $value;
-        });
-        $application['twig']->addFilter($filter);
-
-
     }
+
+    $postfix = $application['userbase.postfix'];
+    if ($postfix) {
+        $application['twig']->addGlobal('postfix', $postfix);
+    }
+    $application['twig']->addGlobal('logourl', $application['userbase.logourl']);
+
+    $filter = new Twig_SimpleFilter('mydate', function ($value) {
+        if ($value>0) {
+            return date('d/M/Y');
+        } else {
+            return '-';
+        }
+    });
+    $application['twig']->addFilter($filter);
+
+    $filter = new Twig_SimpleFilter('star', function ($value) {
+        $value = str_replace('*', '<i class="fa fa-star"></i>', $value);
+        return $value;
+    });
+    $application['twig']->addFilter($filter);
+
     //$application['twig']->addGlobal('site', $application['site']);
 });
 
