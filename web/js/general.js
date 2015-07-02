@@ -138,9 +138,10 @@ $(function() {
 $(function() {
    $('#_username').blur(function() {
        
-       if ( $(this).val() != '') {
+        var valUsername = $.trim( $(this).val());
+       if ( valUsername != '') {
            
-           var data = 'username=' + $(this).val();
+           var data = 'username=' + valUsername;
            $.ajax({
                async : false,
                url : window.checkUser.url,

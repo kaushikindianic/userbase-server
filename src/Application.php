@@ -28,6 +28,7 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use RuntimeException;
 use Service;
+use Silex\Provider\ValidatorServiceProvider;
 
 class Application extends SilexApplication
 {
@@ -79,6 +80,7 @@ class Application extends SilexApplication
         $this->register(new FormServiceProvider());
 
         $this->register(new RoutingServiceProvider());
+        $this->register(new ValidatorServiceProvider());
 
         // *** Setup Sessions ***
         $this->register(new \Silex\Provider\SessionServiceProvider(), array(

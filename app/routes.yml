@@ -81,86 +81,101 @@ api_v1_user_view:
     path: /api/v1/users/{username}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
 
-
-
 admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
-
-admin_user_list:
-    path: /admin/users
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::userListAction }
-    
-admin_user_add:
-    path: /admin/users/add
-    defaults: { _controller: UserBase\Server\Controller\AdminController::userAddAction }
-
-admin_user_check:
-    path: /admin/users/check
-    defaults: { _controller: UserBase\Server\Controller\AdminController::chkUserNameAction }
-
-
-admin_user_view:
-    path: /admin/users/{username}
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::userViewAction }
-
-admin_user_tools:
-    path: /admin/users/{username}/tools
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::userToolsAction }
-
-admin_user_update_password:
-    path: /admin/users/{username}/updatepassword
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdatePasswordAction }
-
-admin_user_update_email:
-    path: /admin/users/{username}/updateemail
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateEmailAction }
-
-admin_user_update_displayname:
-    path: /admin/users/{username}/updatedisplayname
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::userUpdateDisplayNameAction }
 
 admin_log_list:
     path: /admin/logs
     defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
 
 
+# USER MODULE
+admin_user_list:
+    path: /admin/users
+    defaults:  { _controller: UserBase\Server\Controller\UserAdminController::userListAction }
+    
+admin_user_add:
+    path: /admin/users/add
+    defaults: { _controller: UserBase\Server\Controller\UserAdminController::userAddAction }
+
+admin_user_check:
+    path: /admin/users/check
+    defaults: { _controller: UserBase\Server\Controller\UserAdminController::chkUserNameAction }
+
+
+admin_user_view:
+    path: /admin/users/{username}
+    defaults:  { _controller: UserBase\Server\Controller\UserAdminController::userViewAction }
+
+admin_user_tools:
+    path: /admin/users/{username}/tools
+    defaults:  { _controller: UserBase\Server\Controller\UserAdminController::userToolsAction }
+
+admin_user_update_password:
+    path: /admin/users/{username}/updatepassword
+    defaults:  { _controller: UserBase\Server\Controller\UserAdminController::userUpdatePasswordAction }
+
+admin_user_update_email:
+    path: /admin/users/{username}/updateemail
+    defaults:  { _controller: UserBase\Server\Controller\UserAdminController::userUpdateEmailAction }
+
+admin_user_update_displayname:
+    path: /admin/users/{username}/updatedisplayname
+    defaults:  { _controller: UserBase\Server\Controller\UserAdminController::userUpdateDisplayNameAction }
+
+# ACCOUNT MODULE
+
 admin_account_list:
     path: /admin/account
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountListAction }
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction }
 
 admin_account_add:
     path: /admin/account/add
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountAddAction }
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
 
 admin_account_edit:
     path: /admin/account/{accountname}/edit
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountEditAction }
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountEditAction }
 
 admin_account_delete:
     path: /admin/account/{accountname}/delete
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::accountDeleteAction }
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountDeleteAction }
 
 admin_account_users:
     path: /admin/account/{accountname}/users
-    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountUsersAction }  
+    defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountUsersAction }
+      
+admin_account_searchuser:
+    path: /admin/account/{accountname}/searchuser
+    defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountSearchUserAction }     
     
- 
+# APPLICATION MODULE 
+
 admin_apps_list:
     path: /admin/apps
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::appListAction }
+    defaults:  { _controller: UserBase\Server\Controller\AppAdminController::appListAction }
 
 admin_app_add:
     path: /admin/apps/add
-    defaults: { _controller: UserBase\Server\Controller\AdminController::appAddAction }    
+    defaults: { _controller: UserBase\Server\Controller\AppAdminController::appAddAction }    
 
 admin_app_edit:
     path: /admin/apps/{appname}/edit
-    defaults: { _controller: UserBase\Server\Controller\AdminController::appEditAction } 
+    defaults: { _controller: UserBase\Server\Controller\AppAdminController::appEditAction } 
     
 admin_app_view:
     path: /admin/apps/{appname}
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::appViewAction }
+    defaults:  { _controller: UserBase\Server\Controller\AppAdminController::appViewAction }
+
+admin_app_users:
+    path: /admin/apps/{appname}/users
+    defaults: {_controller:  UserBase\Server\Controller\AppAdminController::appUsersAction }   
+    
+admin_app_searchuser:
+   path: /admin/apps/{appname}/searchuser
+   defaults: {_controller:  UserBase\Server\Controller\AppAdminController::appSearchUserAction }     
+
 
 authorize_confirm:
     path: /authorize/confirm/{provider}
@@ -186,15 +201,5 @@ oauth2:
 admin_app_delete:
     path: /admin/apps/{appname}/delete
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }
-    
-admin_app_users:
-    path: /admin/apps/{appname}/users
-    defaults: {_controller:  UserBase\Server\Controller\AdminController::appUsersAction }   
+   
 
-admin_account_searchuser:
-    path: /admin/account/{accountname}/searchuser
-    defaults: {_controller:  UserBase\Server\Controller\AdminController::accountSearchUserAction } 
-    
-admin_app_searchuser:
-   path: /admin/apps/{appname}/searchuser
-   defaults: {_controller:  UserBase\Server\Controller\AdminController::appSearchUserAction }    
