@@ -26,12 +26,24 @@ class UserAdminController
     {
         $data = array();
         $userRepo = $app->getUserRepository();
-        $accountRepo = $app->getAccountRepository();
-    
+        $oAccRepo = $app->getAccountRepository();
+        $oAppRepo  = $app->getAppRepository();
+        $oIdentRepo = $app->getIdentityRepository();
+        
         $viewuser = $userRepo->getByName($username);
-        $data['username'] = $username;
-        $data['viewuser'] = $viewuser;
-        return new Response($app['twig']->render('admin/user_view.html.twig', $data));
+        $aUserAccounts = $oAccRepo->getByUserName($username);
+        $aUserApps =  $oAppRepo->getByUserName($username);
+        $aUserIdentities = $oIdentRepo->getByUserName($username);
+        
+        return new Response($app['twig']->render('admin/user_view.html.twig', 
+            array(
+                'username' => $username,
+                'viewuser' => $viewuser,
+                'aUserAccounts' => $aUserAccounts,
+                'aUserApps' => $aUserApps,
+                'aUserIdentities' => $aUserIdentities,
+            )
+        ));
     }
     
     public function userAddAction(Application $app, Request $request)
@@ -77,53 +89,53 @@ class UserAdminController
     
         // GENERATE FORM
         $form = $app['form.factory']->createBuilder('form')
-            ->add('_username', 'text', array(
-            'required' => true,
-            'label' => false,
-            'trim' => true,
-            'error_bubbling' => true,
-            'constraints' =>  new Assert\NotBlank(array('message' => 'Username value should not be blank.')),
-            'attr' => array(
-            'id' => '_username',
-            'placeholder' => 'Username',
-            'class' => 'form-control'
-                )
-            ))
-            ->add('_email', 'email', array(
-            'required' => true,
-            'label' => false,
-            'trim' => true,
-            'error_bubbling' => true,
-            'constraints' => array(
-            new Assert\NotBlank(array('message' => 'E-mail value should not be blank.')),
-            new Assert\Email()
-            ),
-            'attr' => array(
-            'placeholder' => 'E-mail',
-            'class' => 'form-control'
-                )
-            ))
-            ->add('_password', 'password', array(
-            'required' => true,
-            'label' => false,
-            'error_bubbling' => true,
-            'constraints' => new Assert\NotBlank(array('message' => 'Password value should not be blank.')),
-            'attr' => array(
-            'placeholder' => 'Password',
-            'class' => 'form-control'
-                )
-            ))
-            ->add('_password2', 'password', array(
-            'required' => true,
-            'label' => false,
-            'error_bubbling' => true,
-            'constraints' =>  new Assert\NotBlank(array('message' => 'Password (repeat) value should not be blank.')),
-            'attr' => array(
-            'placeholder' => 'Password (repeat)',
-            'class' => 'form-control'
-                )
-            ))
-            ->getForm();
+        ->add('_username', 'text', array(
+        'required' => true,
+        'label' => false,
+        'trim' => true,
+        'error_bubbling' => true,
+        'constraints' =>  new Assert\NotBlank(array('message' => 'Username value should not be blank.')),
+        'attr' => array(
+        'id' => '_username',
+        'placeholder' => 'Username',
+        'class' => 'form-control'
+            )
+        ))
+        ->add('_email', 'email', array(
+        'required' => true,
+        'label' => false,
+        'trim' => true,
+        'error_bubbling' => true,
+        'constraints' => array(
+        new Assert\NotBlank(array('message' => 'E-mail value should not be blank.')),
+        new Assert\Email()
+        ),
+        'attr' => array(
+        'placeholder' => 'E-mail',
+        'class' => 'form-control'
+            )
+        ))
+        ->add('_password', 'password', array(
+        'required' => true,
+        'label' => false,
+        'error_bubbling' => true,
+        'constraints' => new Assert\NotBlank(array('message' => 'Password value should not be blank.')),
+        'attr' => array(
+        'placeholder' => 'Password',
+        'class' => 'form-control'
+            )
+        ))
+        ->add('_password2', 'password', array(
+        'required' => true,
+        'label' => false,
+        'error_bubbling' => true,
+        'constraints' =>  new Assert\NotBlank(array('message' => 'Password (repeat) value should not be blank.')),
+        'attr' => array(
+        'placeholder' => 'Password (repeat)',
+        'class' => 'form-control'
+            )
+        ))
+        ->getForm();
          
         //-- HANDAL FORM SUBMIT --//
         $form->handleRequest($request);

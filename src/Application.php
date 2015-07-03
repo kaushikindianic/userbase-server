@@ -29,6 +29,7 @@ use Monolog\Logger;
 use RuntimeException;
 use Service;
 use Silex\Provider\ValidatorServiceProvider;
+use UserBase\Server\Repository\PdoIdentityRepository;
 
 class Application extends SilexApplication
 {
@@ -38,6 +39,7 @@ class Application extends SilexApplication
     private $oauthRepository;
     private $accountRepository;
     private $adminRepository;
+    private $identityRepository;
 
     public function __construct(array $values = array())
     {
@@ -97,6 +99,7 @@ class Application extends SilexApplication
         $this->accountRepository = new PdoAccountRepository($pdo);
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
+        $this->identityRepository = new PdoIdentityRepository($pdo);
         
         $mailer = Service::mailer();
 
@@ -232,5 +235,10 @@ class Application extends SilexApplication
     public function getAccountRepository()
     {
         return $this->accountRepository;
+    }
+    
+    public function getIdentityRepository()
+    {
+        return $this->identityRepository;
     }
 }

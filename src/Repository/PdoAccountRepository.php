@@ -133,10 +133,10 @@ class PdoAccountRepository
         ));
     }
     
-    public function getAccountUsers($accountname)
+    public function getAccountUsers($accountName)
     {
         $statement = $this->pdo->prepare("SELECT * FROM account_user WHERE  account_name = :account_name ORDER BY user_name ASC");
-        $statement->execute(array(':account_name' => $accountname));
+        $statement->execute(array(':account_name' => $accountName));
         $rows = $statement->fetchAll();
         
         $aUsers = array();
@@ -153,13 +153,22 @@ class PdoAccountRepository
         $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
     }
     
-    public function  addAccUser($accountname, $username)
+    public function  addAccUser($accountName, $userName)
     {
         $statement = $this->pdo->prepare(
                 'INSERT IGNORE INTO account_user (account_name, user_name) VALUES (:account_name, :user_name)'
             );
-        $statement->execute(array(':account_name' => $accountname, ':user_name' => $username));
+        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
         return true;
+    }
+    
+    public function getByUserName($userName)
+    {  
+        $statement = $this->pdo->prepare('SELECT account_name FROM account_user WHERE user_name = :user_name ORDER BY account_name ASC');
+        $statement->execute(array( ':user_name' => $userName));
+        $rows = $statement->fetchAll();
+        
+        return $rows;
     }
     
 }
