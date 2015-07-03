@@ -169,7 +169,13 @@ class PdoAccountRepository
     
     public function getByUserName($userName)
     {  
-        $statement = $this->pdo->prepare('SELECT account_name FROM account_user WHERE user_name = :user_name ORDER BY account_name ASC');
+        $statement = $this->pdo->prepare(
+                'SELECT  AU.account_name FROM account_user As AU
+                JOIN  account as A ON AU.account_name = A.name  
+                WHERE AU.user_name = :user_name 
+                AND  A.deleted_at = 0
+                ORDER BY AU.account_name ASC'
+               );
         $statement->execute(array( ':user_name' => $userName));
         $rows = $statement->fetchAll();
         
