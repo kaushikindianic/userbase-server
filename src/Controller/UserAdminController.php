@@ -13,12 +13,14 @@ class UserAdminController
 {
     
     public function userListAction(Application $app, Request $request)
-    {
+    {   
+        $search = $request->request->get('searchText');
         $data = array();
         $repo = $app->getUserRepository();
-        $users = $repo->getAll();
+        $users = $repo->getAll(10, $search);
         $data['usercount'] = count($users);
         $data['users'] = $users;
+        $data['searchText'] = $search;
         return new Response($app['twig']->render('admin/user_list.html.twig', $data));
     }
     

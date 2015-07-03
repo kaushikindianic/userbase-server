@@ -12,11 +12,13 @@ class AccountAdminController
 {
     
     public function accountListAction(Application $app, Request $request)
-    {
-        $accounts = $app->getAccountRepository()->getAll();
+    {   
+        $search = $request->request->get('searchText');
+        $accounts = $app->getAccountRepository()->getAll(10, $search);
         return new Response($app['twig']->render('admin/account_list.html.twig', array(
             'accounts' => $accounts,
-            'accountCount' => count($accounts)
+            'accountCount' => count($accounts),
+            'searchText' => $search
         )));
     }
     

@@ -47,20 +47,25 @@ class PdoAccountRepository
         return !!$statement->fetch();
     }
 
-    public function getAll($limit = 10)
-    {
-        $statement = $this->pdo->prepare(
-            "SELECT * FROM account WHERE (deleted_at IS NULL OR deleted_at=0) ORDER BY id DESC"
-        );
-        $statement->execute();
+    public function getAll($limit = 10, $search = '')
+    {   
+        $aVal = array();
+        $sql = 'SELECT * FROM account WHERE (deleted_at IS NULL OR deleted_at=0) ';
+        
+        if ($search) {
+            $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
+            $aVal[':search'] = "%".$search."%";
+        }
+        $sql .= '  ORDER BY id DESC';
+        
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($aVal);        
         $rows = $statement->fetchAll();
-
         $accounts = array();
 
         foreach ($rows as $row) {
             $accounts []= $this->rowToAccount($row);
         }
-
         return $accounts;
     }
 

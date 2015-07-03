@@ -3,26 +3,33 @@
 {% block content %}
 <h2>Application: {{ apps|length }}</h2>
 
-<table class="table">
-    <tr>
-        <th>App</th>
-        <th>Users</th>
-    </tr>
-    {% for app in apps %}
-    <tr>
-        <td>
-            <a href="{{ path("admin_app_view", {"appname": app.getName() })}}">
-                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ app.getPictureUrl() }}" />
-             </a>
-             <a href="{{ path("admin_app_edit", {"appname": app.getName() })}}">   
-                {{ app.getName() }}</a>: {{ app.getDisplayName() }}<br />
-                <i>{{ app.getBaseUrl() }}</i>
-        </td>
-        <td> <a href="{{ path('admin_app_users', {"appname": app.getName()}) }}" ><span class="fa fa-group"></span></a></td> 
-    </tr>
-    {% endfor %}
-</table>
-
+<form action ="" name="frmAppList" id="frmAppList" method="post" >
+    <div id="form">
+        <div class="form-group">                    
+            <input type="text" placeholder="Search" value="{{ searchText }}" id="searchText" name="searchText">
+            <button type="submit" ><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button>
+        </div>
+    </div>
+    <table class="table">
+        <tr>
+            <th>App</th>
+            <th>Users</th>
+        </tr>
+        {% for app in apps %}
+        <tr>
+            <td>
+                <a href="{{ path("admin_app_view", {"appname": app.getName() })}}">
+                    <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ app.getPictureUrl() }}" />
+                 </a>
+                 <a href="{{ path("admin_app_edit", {"appname": app.getName() })}}">   
+                    {{ app.getName() }}</a>: {{ app.getDisplayName() }}<br />
+                    <i>{{ app.getBaseUrl() }}</i>
+            </td>
+            <td> <a href="{{ path('admin_app_users', {"appname": app.getName()}) }}" ><span class="fa fa-group"></span></a></td> 
+        </tr>
+        {% endfor %}
+    </table>
+</form>
 <div class="buttonbox">
     <a href="{{ path('admin_app_add') }}" class="btn btn-primary" role="button">
         <i class="fa fa-plus"></i>
