@@ -152,12 +152,21 @@ final class PdoAppRepository
         $statement->execute(array(':app_name' => $appname, ':user_name' => $userName));
     }
     
-    public function  addAppUser($appname, $username)
+    public function  addAppUser($appname, $userName)
     {
         $statement = $this->pdo->prepare(
             'INSERT IGNORE INTO app_user (app_name, user_name) VALUES (:app_name, :user_name)'
             );
-        $statement->execute(array(':app_name' => $appname, ':user_name' => $username));
+        $statement->execute(array(':app_name' => $appname, ':user_name' => $userName));
         return true;
+    }
+    
+    public function getByUserName($userName)
+    {
+        $statement = $this->pdo->prepare('SELECT app_name FROM app_user WHERE user_name = :user_name ORDER BY app_name ASC');
+        $statement->execute(array( ':user_name' => $userName));
+        $rows = $statement->fetchAll();
+    
+        return $rows;
     }    
 }
