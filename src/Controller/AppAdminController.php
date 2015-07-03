@@ -35,8 +35,8 @@ class AppAdminController
     
     public function appDeleteAction(Application $app, Request $request, $appname)
     {
-        $appRepo = $app->getAppRepository();
-        $appRepo->delete($appname);
+        $oAppRepo = $app->getAppRepository();
+        $oAppRepo->delete($appname);
     
         return $app->redirect($app['url_generator']->generate('admin_apps_list'));
     }
@@ -44,8 +44,8 @@ class AppAdminController
     public function appViewAction(Application $app, Request $request, $appname)
     {
         $data = array();
-        $appRepo = $app->getAppRepository();
-        $viewapp = $appRepo->getByName($appname);
+        $oAppRepo = $app->getAppRepository();
+        $viewapp = $oAppRepo->getByName($appname);
         $data['viewapp'] = $viewapp;
     
         return new Response($app['twig']->render('admin/app_view.html.twig', $data));

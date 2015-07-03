@@ -29,13 +29,31 @@
 </div>
 
 <h3>Accounts (#)</h3>
-//TODO: List all the `account` objects linked to this `user_name` by the `account_user` table
+    {% if aUserAccounts %}
+        <ul>
+        {% for  aUserAccount  in aUserAccounts %}
+            <li>{{ aUserAccount.account_name }}</li>
+        {% endfor %}
+        </ul>
+    {% endif %}
 
 <h3>Apps (#)</h3>
-//TODO: List all the `app` objects linked to this `user_name` by the `app_user` table
+    {% if aUserApps %}
+        <ul>
+        {% for aUserApp in aUserApps %}
+            <li>{{ aUserApp.app_name }}</li>
+        {% endfor %}            
+        </ul>
+    {% endif %}
 
 <h3>Identities (#)</h3>
-//TODO: List all the `identities` objects linked to this `user_name`
+{% if aUserIdentities %}
+    <ul>
+        {% for  aUserIdentity in aUserIdentities %}
+            <li>{{ aUserIdentity.service }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
 
 <h3>Events (#)</h3>
 //TODO: List all the `user_event` objects linked to this `user_name`
