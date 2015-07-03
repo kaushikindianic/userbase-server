@@ -3,27 +3,33 @@
 {% block content %}
 <h2>Users: {{ usercount }}</h2>
 
-<table class="table">
-    <tr>
-        <th>User</th>
-        <th style="width: 100px; text-align: center">Last seen</th>
-        <th style="width: 100px; text-align: center">Registered</th>
-    </tr>
-    {% for user in users %}
-    <tr>
-        <td>
-            <a href="{{ path("admin_user_view", {"username": user.getUsername() })}}">
-                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ user.getPictureUrl() }}" />
-                {{ user.getUsername() }}</a>: {{ user.getDisplayName() }}<br />
-            <i>{{ user.getEmail() }}</i>
-        </td>
-        <td style="text-align: center">{{ user.getLastSeenAt()|mydate }}</td>
-        <td style="text-align: center">{{ user.getCreatedAt()|mydate }}</td>
-
-    </tr>
-    {% endfor %}
-</table>
-
+<form action ="" name="frmUserList" id="frmUserList" method="post" >
+    <div id="form">
+    	<div class="form-group">					
+			<input type="text" placeholder="Search" value="{{ searchText }}" id="searchText" name="searchText">
+			<button type="submit" ><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button>
+    	</div>
+    </div>    
+    <table class="table">
+        <tr>
+            <th>User</th>
+            <th style="width: 100px; text-align: center">Last seen</th>
+            <th style="width: 100px; text-align: center">Registered</th>
+        </tr>
+        {% for user in users %}
+        <tr>
+            <td>
+                <a href="{{ path("admin_user_view", {"username": user.getUsername() })}}">
+                    <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ user.getPictureUrl() }}" />
+                    {{ user.getUsername() }}</a>: {{ user.getDisplayName() }}<br />
+                <i>{{ user.getEmail() }}</i>
+            </td>
+            <td style="text-align: center">{{ user.getLastSeenAt()|mydate }}</td>
+            <td style="text-align: center">{{ user.getCreatedAt()|mydate }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
 <div class="buttonbox">
     <a href="{{ path('admin_user_add') }}" class="btn btn-primary" role="button">
         <i class="fa fa-plus"></i>

@@ -61,14 +61,20 @@ final class PdoUserRepository implements UserProviderInterface
         return $this->row2user($row);
     }
     
-    public function getAll($limit = 10)
+    public function getAll($limit = 10, $search = '')
     {
-        $statement = $this->pdo->prepare(
-            "SELECT u.*
-            FROM user AS u
-            ORDER BY id DESC"
-        );
-        $statement->execute();
+        $aVal = array();
+        $sql = 'SELECT * FROM user  WHERE 1 ';
+        
+        if ($search) {
+            $sql .= ' AND name LIKE  :search  OR  email LIKE :search ';
+            $aVal[':search'] = "%".$search."%";
+        }        
+        $sql .= ' ORDER BY id DESC';
+        
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($aVal);
+        
         $users = array();
         while ($row = $statement->fetch()) {
             $user = $this->row2user($row);

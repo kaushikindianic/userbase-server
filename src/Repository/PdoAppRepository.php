@@ -51,13 +51,20 @@ final class PdoAppRepository
         return $this->rowToApp($row);
     }
 
-    public function getAll($limit = 10)
+    public function getAll($limit = 10, $search = '')
     {
-        $statement = $this->pdo->prepare("SELECT a.*
-            FROM app AS a
-        	WHERE deleted_at = 0	
-            ORDER BY id DESC");
-        $statement->execute();
+        $aVal = array();
+        $sql = 'SELECT * FROM app WHERE deleted_at = 0 ';
+        
+        if ($search) {
+            $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
+            $aVal[':search'] = "%".$search."%";
+        }
+        $sql .= '  ORDER BY id DESC';
+        
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($aVal);        
+        
         $apps = array();
         while ($row = $statement->fetch()) {
             $app = $this->rowToApp($row);

@@ -28,25 +28,25 @@
     <a class="btn btn-default" href="{{ path("admin_user_tools", { "username": username } ) }}">Tools</a>
 </div>
 
-<h3>Accounts (#)</h3>
+<h3>Accounts ({{ aUserAccounts|length }})</h3>
     {% if aUserAccounts %}
         <ul>
         {% for  aUserAccount  in aUserAccounts %}
-            <li>{{ aUserAccount.account_name }}</li>
+            <li><a href="{{ path('admin_account_edit', {'accountname': aUserAccount.account_name }) }}" >{{ aUserAccount.account_name }}</a></li>
         {% endfor %}
         </ul>
     {% endif %}
 
-<h3>Apps (#)</h3>
+<h3>Apps ({{ aUserApps|length }})</h3>
     {% if aUserApps %}
         <ul>
         {% for aUserApp in aUserApps %}
-            <li>{{ aUserApp.app_name }}</li>
+            <li><a href="{{ path('admin_app_view', {'appname':aUserApp.app_name }) }}">{{ aUserApp.app_name }}</a></li>
         {% endfor %}            
         </ul>
     {% endif %}
 
-<h3>Identities (#)</h3>
+<h3>Identities ({{ aUserIdentities|length }})</h3>
 {% if aUserIdentities %}
     <ul>
         {% for  aUserIdentity in aUserIdentities %}

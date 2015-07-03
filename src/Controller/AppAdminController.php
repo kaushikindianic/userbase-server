@@ -13,13 +13,14 @@ class AppAdminController
 {
 
     public function appListAction(Application $app, Request $request)
-    {
+    {   
+        $search = $request->request->get('searchText');
         $data = array();
         $repo = $app->getAppRepository();
-        $apps = $repo->getAll();
+        $apps = $repo->getAll(10, $search);
         $data['usercount'] = count($apps);
         $data['apps'] = $apps;
-    
+        $data['searchText'] = $search;
         return new Response($app['twig']->render('admin/app_list.html.twig', $data));
     }
     
