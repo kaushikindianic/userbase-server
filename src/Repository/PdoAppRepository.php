@@ -170,7 +170,13 @@ final class PdoAppRepository
     
     public function getByUserName($userName)
     {
-        $statement = $this->pdo->prepare('SELECT app_name FROM app_user WHERE user_name = :user_name ORDER BY app_name ASC');
+        $statement = $this->pdo->prepare(
+                'SELECT AU.app_name FROM app_user AS AU
+                JOIN  app AS A ON AU.app_name = A.name
+                WHERE user_name = :user_name 
+                AND  A.deleted_at = 0
+                ORDER BY AU.app_name ASC');
+        
         $statement->execute(array( ':user_name' => $userName));
         $rows = $statement->fetchAll();
     
