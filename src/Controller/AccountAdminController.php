@@ -73,7 +73,7 @@ class AccountAdminController
         if ($request->isMethod('POST')) {
             $userName = $request->get('userName');
             if ($userName) {
-                $oAccRepo->addAccUser($accountname, $userName);
+                $oAccRepo->addAccUser($accountname, $userName, 'group');
                 return new JsonResponse(array(
                     'success' => true
                 ));

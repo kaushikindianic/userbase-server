@@ -158,12 +158,12 @@ class PdoAccountRepository
         $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
     }
     
-    public function  addAccUser($accountName, $userName)
+    public function  addAccUser($accountName, $userName, $accountType)
     {
         $statement = $this->pdo->prepare(
-                'INSERT IGNORE INTO account_user (account_name, user_name) VALUES (:account_name, :user_name)'
+                'INSERT IGNORE INTO account_user (account_name, user_name, account_type ) VALUES (:account_name, :user_name, :account_type)'
             );
-        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
+        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName, ':account_type' => $accountType ));
         return true;
     }
     
