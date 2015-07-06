@@ -7,6 +7,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Service;
 use Exception;
+use UserBase\Server\Model\Event;
+use UserBase\Server\Model\Account;
 
 class SiteController
 {
@@ -88,7 +90,32 @@ class SiteController
         $data['link'] = $link;
         $data['username'] = $username;
         $app['mailer']->sendTemplate('welcome', $user, $data);
-
+        
+        //--CREATE PRSONAL ACCOUNT--//
+        $oAccunt = new Account($user->getUsername());
+        $oAccunt->setDisplayName($user->getUsername())
+                ->setAbout('Personal account')
+                ->setPictureUrl('');
+        
+        $oAccRepo = $app->getAccountRepository();
+        if ($oAccRepo->add($oAccunt)) {
+            $oAccRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
+        }        
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode( array('username' => $user->getUsername(), 'email' => $user->getEmail(), 'time' => $time ));
+        
+        $oEvent = new Event();
+        $oEvent->setName($user->getUsername());
+        $oEvent->setEventName('user.create');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName('');
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        //-- END EVENT LOG --//        
+        
         return $app->redirect($app['url_generator']->generate('signup_thankyou'));
 
     }

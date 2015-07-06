@@ -30,6 +30,7 @@ use RuntimeException;
 use Service;
 use Silex\Provider\ValidatorServiceProvider;
 use UserBase\Server\Repository\PdoIdentityRepository;
+use Userbser\Server\Repository\PdoEventRepository;
 
 class Application extends SilexApplication
 {
@@ -40,6 +41,7 @@ class Application extends SilexApplication
     private $accountRepository;
     private $adminRepository;
     private $identityRepository;
+    private $eventRepository;
 
     public function __construct(array $values = array())
     {
@@ -100,6 +102,7 @@ class Application extends SilexApplication
         $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
         $this->identityRepository = new PdoIdentityRepository($pdo);
+        $this->eventRepository = new \UserBase\Server\Repository\PdoEventRepository($pdo);
         
         $mailer = Service::mailer();
 
@@ -241,4 +244,10 @@ class Application extends SilexApplication
     {
         return $this->identityRepository;
     }
+    
+    public function getEventRepository()
+    {
+        return $this->eventRepository;
+    }
+    
 }

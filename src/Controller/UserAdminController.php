@@ -8,6 +8,8 @@ use Exception;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Form\FormError;
+use UserBase\Server\Model\Event;
+use UserBase\Server\Model\Account;
 
 class UserAdminController
 {
@@ -52,43 +54,7 @@ class UserAdminController
     {
         $oUserRepo = $app->getUserRepository();
         $error = $request->query->get('error');
-    
-        /*
-         if ($request->isMethod('POST')) {
-         $username = $request->request->get('_username');
-         $email = $request->request->get('_email');
-         $password = $request->request->get('_password');
-         $password2 = $request->request->get('_password2');
-    
-    
-         if ($oUserRepo->getByName($username)) {
-         $error .= 'username already exist'.'<br/>';
-         }
-    
-         if ($password != $password2) {
-         $error .= 'Password not match.';
-    
-         }
-         if (!$error) {
-         $user = $oUserRepo->register($app, $username, $email);
-         $user = $oUserRepo->getByName($username);
-         $oUserRepo->setPassword($user, $password);
-    
-         $baseUrl = $app['userbase.baseurl'];
-    
-         $stamp = time();
-         $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
-         $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
-         $data = array();
-         $data['link'] = $link;
-         $data['username'] = $username;
-         $app['mailer']->sendTemplate('welcome', $user, $data);
-    
-         return $app->redirect($app['url_generator']->generate('admin_user_list'));
-         }
-         }
-         */
-    
+        
         // GENERATE FORM
         $form = $app['form.factory']->createBuilder('form')
         ->add('_username', 'text', array(
@@ -159,15 +125,41 @@ class UserAdminController
             $oUserRepo->setPassword($user, $formData['_password']);
     
             $baseUrl = $app['userbase.baseurl'];
-    
+            
             $stamp = time();
             $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
             $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
             $data = array();
             $data['link'] = $link;
-            $data['username'] = $username;
+            $data['username'] =$formData['_username'];
             $app['mailer']->sendTemplate('welcome', $user, $data);
-    
+            
+            //--CREATE PRSONAL ACCOUNT--//
+            $oAccunt = new Account($formData['_username']);
+            $oAccunt->setDisplayName($formData['_username'])
+                    ->setAbout('Personal account')
+                    ->setPictureUrl('');
+            
+            $oAccRepo = $app->getAccountRepository();
+            if ($oAccRepo->add($oAccunt)) {                                
+                $oAccRepo->addAccUser($formData['_username'], $formData['_username'], 'user');
+            }
+            
+            //--EVENT LOG --//
+            $time = time();
+            $sEventData = json_encode( array('username' => $formData['_username'], 'email' => $formData['_email'] , 'time' => $time ));
+            
+            $oEvent = new Event();            
+            $oEvent->setName($formData['_username']);
+            $oEvent->setEventName('user.create');
+            $oEvent->setOccuredAt($time);
+            $oEvent->setData($sEventData); 
+            $oEvent->setAdminName( $request->getUser());
+            
+            $oEventRepo = $app->getEventRepository();
+            $oEventRepo->add($oEvent);
+            //-- END EVENT LOG --//
+            
             return $app->redirect($app['url_generator']->generate('admin_user_list'));
         }
     
