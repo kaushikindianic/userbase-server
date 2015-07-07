@@ -5,11 +5,7 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
-use UserBase\Server\Model\App;
-use UserBase\Server\Model\Account;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Form\FormError;
+
 
 class AdminController
 {
@@ -22,7 +18,16 @@ class AdminController
 
     public function logListAction(Application $app, Request $request)
     {
+        
+        $oEventRepo = $app->getEventRepository();
+        
+        $aEvents = $oEventRepo->getAll();
+        
         $data = array();
-        return new Response($app['twig']->render('admin/log_list.html.twig', $data));
+        
+        
+        return new Response($app['twig']->render('admin/log_list.html.twig',
+                array( 'aEvents' => $aEvents )
+            ));
     }
 }
