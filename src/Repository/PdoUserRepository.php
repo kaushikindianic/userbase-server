@@ -25,24 +25,6 @@ final class PdoUserRepository implements UserProviderInterface
         $this->encoderFactory = $encoderFactory;
     }
     
-    public function getById($id)
-    {
-        $statement = $this->pdo->prepare(
-            "SELECT u.*
-            FROM user AS u
-            WHERE u.id=:id
-            LIMIT 1"
-        );
-        $statement->execute(array('id' => $id));
-        $row = $statement->fetch();
-
-        if (!$row) {
-            return null;
-        }
-
-        return $this->row2user($row);
-    }
-    
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
@@ -70,7 +52,7 @@ final class PdoUserRepository implements UserProviderInterface
             $sql .= ' AND name LIKE  :search  OR  email LIKE :search ';
             $aVal[':search'] = "%".$search."%";
         }        
-        $sql .= ' ORDER BY id DESC';
+        $sql .= ' ORDER BY name DESC';
         
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
@@ -105,9 +87,7 @@ final class PdoUserRepository implements UserProviderInterface
         if ($user) {
             throw new RuntimeException("Name already taken: " . $name);
         }
-        
-        //$nodeId = $this->pdo->lastInsertId();
-        
+                
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $statement = $this->pdo->prepare(
@@ -288,7 +268,7 @@ final class PdoUserRepository implements UserProviderInterface
     
     public function getSearchUsers($search = null)
     {   
-        $statement = $this->pdo->prepare("SELECT u.* FROM user AS u ".(($search)? ' WHERE name LIKE "%'.$search.'%"'  : '' )." ORDER BY id DESC");
+        $statement = $this->pdo->prepare("SELECT u.* FROM user AS u ".(($search)? ' WHERE name LIKE "%'.$search.'%"'  : '' )." ORDER BY name DESC");
         $statement->execute();
         $users = array();
         while ($row = $statement->fetch()) {

@@ -15,17 +15,6 @@ class PdoAccountRepository
         $this->pdo = $pdo;
     }
 
-    public function getById($id)
-    {
-        $statement = $this->pdo->prepare(
-            "SELECT * FROM account WHERE id=:id AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
-        );
-        $statement->execute(array('id' => $id));
-        $row = $statement->fetch();
-
-        return $row ? $this->rowToAccount($row) : null;
-    }
-
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
@@ -56,7 +45,7 @@ class PdoAccountRepository
             $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
             $aVal[':search'] = "%".$search."%";
         }
-        $sql .= '  ORDER BY id DESC';
+        $sql .= '  ORDER BY name DESC';
         
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);        
@@ -73,8 +62,7 @@ class PdoAccountRepository
     {
         $account = new Account($row['name']);
 
-        return $account->setId($row['id'])
-                ->setCreatedAt($row['created_at'])
+        return $account->setCreatedAt($row['created_at'])
                 ->setDeletedAt($row['deleted_at'])
                 ->setAbout($row['about'])
                 ->setPictureUrl($row['picture_url'])
