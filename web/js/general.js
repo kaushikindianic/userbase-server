@@ -171,3 +171,12 @@ $(function() {
        
    }) ;
 });
+
+// ADMIN LOG
+
+$(function(){
+    
+    $('.js-data-toggle').click(function(){
+        $(this).parent().next("tr").find('td').slideToggle("slow"); 
+    });
+});

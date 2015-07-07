@@ -29,5 +29,17 @@ class PdoEventRepository
         return true;
     }    
     
+    public function getAll()
+    {
+        $aVal = array();
+        $sql = 'SELECT * FROM event  WHERE 1 ';
+        $sql .= ' ORDER BY id DESC';
+        
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($aVal);
+        
+        $rows = $statement->fetchAll();
+        return $rows;        
+    }
     
 }
