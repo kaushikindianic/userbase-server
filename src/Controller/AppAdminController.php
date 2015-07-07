@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use UserBase\Server\Model\App;
 use Symfony\Component\HttpFoundation\JsonResponse;
-
+use UserBase\Server\Model\Event;
 
 class AppAdminController
 {
@@ -38,7 +38,21 @@ class AppAdminController
     {
         $oAppRepo = $app->getAppRepository();
         $oAppRepo->delete($appname);
-    
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode(array('appname' => $appname, 'time' => $time));
+        
+        $oEvent = new Event();
+        $oEvent->setName($appname);
+        $oEvent->setEventName('app.delete');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName( $request->getUser());
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        //-- END EVENT LOG --//    
+        
         return $app->redirect($app['url_generator']->generate('admin_apps_list'));
     }
     
@@ -62,6 +76,21 @@ class AppAdminController
     
             if ($userName) {
                 $oAppRepo->delAppUser($appname, $userName);
+                
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('appname' => $appname,'username' => $userName, 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($userName);
+                $oEvent->setEventName('user.unlinktoapp');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
     
                 return $app->redirect($app['url_generator']->generate('admin_app_users', array(
                     'appname' => $appname
@@ -86,6 +115,22 @@ class AppAdminController
             $userName = $request->get('userName');
             if ($userName) {
                 $oAppRepo->addAppUser($appname, $userName);
+                
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('appname' => $appname,'username' => $userName, 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($userName);
+                $oEvent->setEventName('user.linktoapp');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
+                
                 return new JsonResponse(array(
                     'success' => true
                 ));
@@ -157,13 +202,42 @@ class AppAdminController
             $oApp->setBaseUrl($data['baseUrl']);
     
             if ($add) {
+                    
                 if (! $repo->add($oApp)) {
                     return $app->redirect($app['url_generator']->generate('admin_app_add', array(
                         'error' => 'Name exists'
                     )));
                 }
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('appname' => $data['name'],'displayName' => $data['displayName'], 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($data['name']);
+                $oEvent->setEventName('app.create');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
             } else {
                 $repo->update($oApp);
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('appname' => $data['name'],'displayName' => $data['displayName'], 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($data['name']);
+                $oEvent->setEventName('app.update');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
             }
     
             return $app->redirect($app['url_generator']->generate('admin_apps_list'));

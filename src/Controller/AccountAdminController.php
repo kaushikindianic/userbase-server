@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use UserBase\Server\Model\Account;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use UserBase\Server\Model\Event;
 
 class AccountAdminController
 {
@@ -36,7 +37,22 @@ class AccountAdminController
     {
         $repo = $app->getAccountRepository();
         $repo->delete($accountname);
-    
+ 
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode(array('accountname' => $accountname, 'time' => $time));
+        
+        $oEvent = new Event();
+        $oEvent->setName($accountname);
+        $oEvent->setEventName('account.delete');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName( $request->getUser());
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        //-- END EVENT LOG --//        
+        
         return $app->redirect($app['url_generator']->generate('admin_account_list'));
     }    
     
@@ -50,7 +66,22 @@ class AccountAdminController
     
             if ($userName) {
                 $oAccRepo->delAccUsers($accountname, $userName);
-    
+
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('accountname' => $accountname, 'username' => $userName, 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($userName);
+                $oEvent->setEventName('user.unlinktoaccount');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//
+                
                 return $app->redirect($app['url_generator']->generate('admin_account_users', array(
                     'accountname' => $accountname
                 )));
@@ -74,6 +105,22 @@ class AccountAdminController
             $userName = $request->get('userName');
             if ($userName) {
                 $oAccRepo->addAccUser($accountname, $userName, 'group');
+
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('accountname' => $accountname, 'username' => $userName, 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($userName);
+                $oEvent->setEventName('user.linktoaccount');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
+                
                 return new JsonResponse(array(
                     'success' => true
                 ));
@@ -141,13 +188,43 @@ class AccountAdminController
             ->setPictureUrl($data['pictureUrl']);
     
             if ($add) {
-                if (! $repo->add($account)) {
+                if (! $repo->add($account)) {                 
                     return $app->redirect($app['url_generator']->generate('admin_account_add', array(
                         'error' => 'Name exists'
                     )));
                 }
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('accountname' => $data['name'],'displayName' => $data['displayName'], 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($data['name']);
+                $oEvent->setEventName('account.create');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
             } else {
                 $repo->update($account);
+                
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('accountname' => $data['name'],'displayName' => $data['displayName'], 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($data['name']);
+                $oEvent->setEventName('account.update');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//
+                
             }
     
             return $app->redirect($app['url_generator']->generate('admin_account_list'));

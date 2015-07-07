@@ -143,6 +143,36 @@ class UserAdminController
             $oAccRepo = $app->getAccountRepository();
             if ($oAccRepo->add($oAccunt)) {                                
                 $oAccRepo->addAccUser($formData['_username'], $formData['_username'], 'user');
+
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('accountname' => $formData['_username'],'displayName' => $formData['_username'], 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($formData['_username']);
+                $oEvent->setEventName('account.create');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
+                
+                //--EVENT LOG --//
+                $time = time();
+                $sEventData = json_encode(array('accountname' => $formData['_username'], 'username' =>$formData['_username'], 'time' => $time));
+                
+                $oEvent = new Event();
+                $oEvent->setName($formData['_username']);
+                $oEvent->setEventName('user.linktoaccount');
+                $oEvent->setOccuredAt($time);
+                $oEvent->setData($sEventData);
+                $oEvent->setAdminName( $request->getUser());
+                
+                $oEventRepo = $app->getEventRepository();
+                $oEventRepo->add($oEvent);
+                //-- END EVENT LOG --//                
             }
             
             //--EVENT LOG --//
@@ -210,7 +240,22 @@ class UserAdminController
         $repo = $app->getUserRepository();
         $viewuser = $repo->getByName($username);
         $repo->setPassword($viewuser, $newPassword);
-    
+        
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode( array('username' => $viewuser->getName(), 'email' => $viewuser->getEmail(), 'time' => $time ));
+        
+        $oEvent = new Event();
+        $oEvent->setName($viewuser->getName());
+        $oEvent->setEventName('user.update.password');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName( $request->getUser());
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        //-- END EVENT LOG --//
+        
         return $app->redirect($app['url_generator']->generate('admin_user_view', array(
             'username' => $viewuser->getUsername()
         )));
@@ -224,6 +269,21 @@ class UserAdminController
         $viewuser = $repo->getByName($username);
         $repo->setEmail($viewuser, $newEmail);
     
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode( array('username' => $viewuser->getName(), 'email' => $viewuser->getEmail(), 'newEmail' => $newEmail, 'time' => $time));
+        
+        $oEvent = new Event();
+        $oEvent->setName($viewuser->getName());
+        $oEvent->setEventName('user.update.email');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName( $request->getUser());
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        //-- END EVENT LOG --//    
+        
         return $app->redirect($app['url_generator']->generate('admin_user_view', array(
             'username' => $viewuser->getUsername()
         )));
@@ -236,7 +296,22 @@ class UserAdminController
         $repo = $app->getUserRepository();
         $viewuser = $repo->getByName($username);
         $repo->setDisplayName($viewuser, $newDisplayName);
-    
+        
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode(array('username' => $viewuser->getName(), 'email' => $viewuser->getEmail(),'newDisplayName' => $newDisplayName, 'time' => $time));
+        
+        $oEvent = new Event();
+        $oEvent->setName($viewuser->getName());
+        $oEvent->setEventName('user.update.displayname');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName( $request->getUser());
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        //-- END EVENT LOG --//
+        
         return $app->redirect($app['url_generator']->generate('admin_user_view', array(
             'username' => $viewuser->getUsername()
         )));
