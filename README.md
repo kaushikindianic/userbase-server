@@ -6,7 +6,7 @@
     
 ## Initializing the database
 
-    vendor/bin/database-manager database:loadschema userbase app/schema.xml --apply
+    vendor/bin/schema-loader schema:load app/schema.xml mysql://username:password@localhost/userbase
 
 ## Configuration
 
@@ -39,7 +39,7 @@ Now open this link in your browser: [http://127.0.0.1:8888](http://127.0.0.1)
 
 ## Setup - OAuth server
 
-1. Install database `app/schema-v2.xml`
+1. Install database `app/schema.xml`
 2. Create an oauth-client
 
     ```sql
