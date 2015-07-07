@@ -6,14 +6,14 @@
         <column name="display_name" type="varchar(128)" />
         <column name="about" type="text" />
         <column name="picture_url" type="varchar(128)" />
+        <column name="account_type" type="varchar(10)" />
         <column name="created_at" type="integer" />
         <column name="deleted_at" type="integer" />
     </table>
 
     <table name="account_user">
         <column name="account_name" type="varchar(128)" />
-        <column name="user_name" type="varchar(128)" />
-        <column name="account_type" type="varchar(10)" />
+        <column name="user_name" type="varchar(128)" />       
         <index name="unique_account_user"  unique="unique">
             <column name="account_name"/>
             <column name="user_name"/>
