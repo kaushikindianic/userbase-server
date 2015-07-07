@@ -76,7 +76,8 @@ class PdoAccountRepository
         
         if ($exists === null) {
             $statement = $this->pdo->prepare(
-                'INSERT INTO account (name, display_name, about, picture_url, created_at) VALUES (:name, :display_name, :about, :picture_url, :created_at)'
+                'INSERT INTO account (name, display_name, about, picture_url, created_at, account_type) 
+                    VALUES (:name, :display_name, :about, :picture_url, :created_at, :account_type)'
             );
             $statement->execute(
                 array(
@@ -85,6 +86,7 @@ class PdoAccountRepository
                     ':about' => $account->getAbout(),
                     ':picture_url' => $account->getPictureUrl(),
                     ':created_at' => time(),
+                    ':account_type' => $account->getaccountType(),
                 )
             );
             //$this->update($account);
@@ -146,12 +148,12 @@ class PdoAccountRepository
         $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
     }
     
-    public function  addAccUser($accountName, $userName, $accountType)
+    public function  addAccUser($accountName, $userName)
     {
         $statement = $this->pdo->prepare(
-                'INSERT IGNORE INTO account_user (account_name, user_name, account_type ) VALUES (:account_name, :user_name, :account_type)'
+                'INSERT IGNORE INTO account_user (account_name, user_name) VALUES (:account_name, :user_name )'
             );
-        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName, ':account_type' => $accountType ));
+        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
         return true;
     }
     

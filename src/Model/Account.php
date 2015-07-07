@@ -10,6 +10,7 @@ class Account
     private $pictureUrl;
     private $createdAt;
     private $deletedAt;
+    private $accountType;
 
     public function __construct($name)
     {
@@ -89,4 +90,15 @@ class Account
 
         return $this;
     }
+    public function setAccountType($accountType)
+    {
+        $this->accountType = $accountType;
+    
+        return $this;
+    }
+    
+    public function getAccountType()
+    {
+        return $this->accountType;
+    }    
 }
