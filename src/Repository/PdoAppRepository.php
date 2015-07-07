@@ -76,9 +76,10 @@ final class PdoAppRepository
     public function add(App $apps)
     {
         $exists = $this->getByName($apps->getName());
-        if ($exists === null) {
-            $statement = $this->pdo->prepare('INSERT INTO `app` (name, display_name, base_url, about, picture_url, created_at) 
-    				 VALUES (:name, :display_name, :base_url, :about, :picture_url, :created_at)');
+        
+        if ( is_null( $exists)) {
+            $statement = $this->pdo->prepare('INSERT INTO app (name, display_name, base_url, about, picture_url, created_at) 
+    				 VALUES (:name, :display_name, :base_url, :about, :picture_url, :created_at)' );
             
             $statement->execute(array(
                 ':name' => $apps->getName(),
@@ -86,9 +87,9 @@ final class PdoAppRepository
                 ':base_url' => $apps->getBaseUrl(),
                 ':about' => $apps->getAbout(),
                 ':picture_url' => $apps->getPictureUrl(),
-                ':created_at' => time()
+                ':created_at' => time(),
             ));
-            
+          
             return true;
         } else {
             return false;
