@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "922271f18c574e3871f8ab7dd36915f4",
+    "hash": "3758efe2e947483a1fbcbbc8db8c3ef5",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -209,16 +209,16 @@
         },
         {
             "name": "crodas/service-provider",
-            "version": "v0.1.30",
+            "version": "v0.1.31",
             "source": {
                 "type": "git",
                 "url": "https://github.com/crodas/ServiceProvider.git",
-                "reference": "7a5c385e9e402677cf21b757a98e98f5b42b48ba"
+                "reference": "ec6f0e0b852ac477f70469819d858a7f0cf9d8e1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crodas/ServiceProvider/zipball/7a5c385e9e402677cf21b757a98e98f5b42b48ba",
-                "reference": "7a5c385e9e402677cf21b757a98e98f5b42b48ba",
+                "url": "https://api.github.com/repos/crodas/ServiceProvider/zipball/ec6f0e0b852ac477f70469819d858a7f0cf9d8e1",
+                "reference": "ec6f0e0b852ac477f70469819d858a7f0cf9d8e1",
                 "shasum": ""
             },
             "require": {
@@ -246,7 +246,7 @@
                 }
             ],
             "description": "Little configuration manager and dependency injection",
-            "time": "2015-05-08 16:07:27"
+            "time": "2015-07-05 20:32:41"
         },
         {
             "name": "crodas/simple-view-engine",
@@ -990,12 +990,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "14dd741685c3b35573a14a92e871e499b49bb75d"
+                "reference": "35f73c1f4e8e28169bda39e37e149db49e9efb59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/14dd741685c3b35573a14a92e871e499b49bb75d",
-                "reference": "14dd741685c3b35573a14a92e871e499b49bb75d",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/35f73c1f4e8e28169bda39e37e149db49e9efb59",
+                "reference": "35f73c1f4e8e28169bda39e37e149db49e9efb59",
                 "shasum": ""
             },
             "require": {
@@ -1069,7 +1069,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2015-06-28 07:15:29"
+            "time": "2015-07-07 07:27:25"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2304,6 +2304,76 @@
     ],
     "packages-dev": [
         {
+            "name": "crodas/cli",
+            "version": "v0.1.6",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/crodas/cli.git",
+                "reference": "e7f57272375ff14355e45276f06bd75217c8d7f4"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/crodas/cli/zipball/e7f57272375ff14355e45276f06bd75217c8d7f4",
+                "reference": "e7f57272375ff14355e45276f06bd75217c8d7f4",
+                "shasum": ""
+            },
+            "require": {
+                "crodas/file-util": "^0.1.14",
+                "crodas/notoj": "^1.0.5",
+                "symfony/console": "^2.7"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "crodas": "lib/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-4-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "César D. Rodas",
+                    "email": "crodas@php.net"
+                }
+            ],
+            "description": "Simple and silly abstraction on top of symfony/console",
+            "time": "2015-06-23 02:09:59"
+        },
+        {
+            "name": "dbtk/schema-loader",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/dbtk/schema-loader.git",
+                "reference": "fdd2658029d186d56bc5420be06e20491661f303"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/dbtk/schema-loader/zipball/fdd2658029d186d56bc5420be06e20491661f303",
+                "reference": "fdd2658029d186d56bc5420be06e20491661f303",
+                "shasum": ""
+            },
+            "require": {
+                "crodas/cli": "*",
+                "doctrine/dbal": "*"
+            },
+            "bin": [
+                "bin/dbtk-schema-loader"
+            ],
+            "type": "library",
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Joost Faassen",
+                    "email": "j.faassen@linkorb.com"
+                }
+            ],
+            "description": "Load Database schema from XML",
+            "time": "2015-07-06 10:22:40"
+        },
+        {
             "name": "doctrine/annotations",
             "version": "v1.2.6",
             "source": {
@@ -2827,6 +2897,58 @@
             "time": "2014-09-09 13:34:57"
         },
         {
+            "name": "fzaninotto/faker",
+            "version": "v1.5.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/fzaninotto/Faker.git",
+                "reference": "d0190b156bcca848d401fb80f31f504f37141c8d"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/fzaninotto/Faker/zipball/d0190b156bcca848d401fb80f31f504f37141c8d",
+                "reference": "d0190b156bcca848d401fb80f31f504f37141c8d",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "~4.0",
+                "squizlabs/php_codesniffer": "~1.5"
+            },
+            "suggest": {
+                "ext-intl": "*"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "1.5.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Faker\\": "src/Faker/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "François Zaninotto"
+                }
+            ],
+            "description": "Faker is a PHP library that generates fake data for you.",
+            "keywords": [
+                "data",
+                "faker",
+                "fixtures"
+            ],
+            "time": "2015-05-29 06:29:14"
+        },
+        {
             "name": "linkorb/database-manager",
             "version": "dev-master",
             "source": {
@@ -2882,6 +3004,114 @@
                 "postgresql"
             ],
             "time": "2014-09-14 10:29:02"
+        },
+        {
+            "name": "linkorb/haigha",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/linkorb/haigha.git",
+                "reference": "19627f26df1f6f0eac6c419b82e84d61d08d6e6f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/linkorb/haigha/zipball/19627f26df1f6f0eac6c419b82e84d61d08d6e6f",
+                "reference": "19627f26df1f6f0eac6c419b82e84d61d08d6e6f",
+                "shasum": ""
+            },
+            "require": {
+                "linkorb/database-manager": "dev-master",
+                "nelmio/alice": "dev-master",
+                "ramsey/uuid": "~2.0",
+                "symfony/console": "~2.4"
+            },
+            "bin": [
+                "bin/haigha"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Haigha\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Joost Faassen",
+                    "email": "j.faassen@linkorb.com",
+                    "homepage": "http://www.linkorb.com",
+                    "role": "Developer"
+                }
+            ],
+            "description": "Alice fixtures for database tables",
+            "keywords": [
+                "alice",
+                "fixtures",
+                "march hare",
+                "wonderland"
+            ],
+            "time": "2015-07-05 12:30:18"
+        },
+        {
+            "name": "nelmio/alice",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/nelmio/alice.git",
+                "reference": "4a13b41bafc80f63a743c3ef5fa244f2f62fb67f"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/nelmio/alice/zipball/4a13b41bafc80f63a743c3ef5fa244f2f62fb67f",
+                "reference": "4a13b41bafc80f63a743c3ef5fa244f2f62fb67f",
+                "shasum": ""
+            },
+            "require": {
+                "fzaninotto/faker": "~1.0",
+                "php": ">=5.4",
+                "symfony/yaml": "~2.0"
+            },
+            "require-dev": {
+                "doctrine/common": "~2.3",
+                "phpunit/phpunit": "3.7.*",
+                "symfony/property-access": "~2.2"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "2.0.x-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Nelmio\\Alice\\": "src/Nelmio/Alice"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jordi Boggiano",
+                    "email": "j.boggiano@seld.be"
+                },
+                {
+                    "name": "Tim Shelburne",
+                    "email": "shelburt02@gmail.com"
+                }
+            ],
+            "description": "Expressive fixtures generator",
+            "keywords": [
+                "Fixture",
+                "data",
+                "orm",
+                "test"
+            ],
+            "time": "2015-06-26 17:00:37"
         },
         {
             "name": "phpdocumentor/reflection-docblock",
@@ -3365,16 +3595,16 @@
         },
         {
             "name": "phpunit/phpunit-mock-objects",
-            "version": "2.3.4",
+            "version": "2.3.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/sebastianbergmann/phpunit-mock-objects.git",
-                "reference": "92408bb1968a81b3217a6fdf6c1a198da83caa35"
+                "reference": "1c330b1b6e1ea8fd15f2fbea46770576e366855c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/92408bb1968a81b3217a6fdf6c1a198da83caa35",
-                "reference": "92408bb1968a81b3217a6fdf6c1a198da83caa35",
+                "url": "https://api.github.com/repos/sebastianbergmann/phpunit-mock-objects/zipball/1c330b1b6e1ea8fd15f2fbea46770576e366855c",
+                "reference": "1c330b1b6e1ea8fd15f2fbea46770576e366855c",
                 "shasum": ""
             },
             "require": {
@@ -3416,7 +3646,71 @@
                 "mock",
                 "xunit"
             ],
-            "time": "2015-06-11 15:55:48"
+            "time": "2015-07-04 05:41:32"
+        },
+        {
+            "name": "ramsey/uuid",
+            "version": "2.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/uuid.git",
+                "reference": "c1d7d8f0ac860fceaadadbda7154e8b5d2f9789e"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/uuid/zipball/c1d7d8f0ac860fceaadadbda7154e8b5d2f9789e",
+                "reference": "c1d7d8f0ac860fceaadadbda7154e8b5d2f9789e",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.3"
+            },
+            "replace": {
+                "rhumsaa/uuid": "self.version"
+            },
+            "require-dev": {
+                "doctrine/dbal": ">=2.3",
+                "moontoast/math": "~1.1",
+                "phpunit/phpunit": "~4.1",
+                "satooshi/php-coveralls": "~0.6",
+                "symfony/console": "~2.3"
+            },
+            "suggest": {
+                "doctrine/dbal": "Allow the use of a UUID as doctrine field type.",
+                "moontoast/math": "Support for converting UUID to 128-bit integer (in string form).",
+                "symfony/console": "Support for use of the bin/uuid command line tool."
+            },
+            "bin": [
+                "bin/uuid"
+            ],
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Rhumsaa\\Uuid\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Marijn Huizendveld",
+                    "email": "marijn.huizendveld@gmail.com"
+                },
+                {
+                    "name": "Ben Ramsey",
+                    "homepage": "http://benramsey.com"
+                }
+            ],
+            "description": "A PHP 5.3+ library for generating RFC 4122 version 1, 3, 4, and 5 universally unique identifiers (UUID).",
+            "homepage": "https://github.com/ramsey/uuid",
+            "keywords": [
+                "guid",
+                "identifier",
+                "uuid"
+            ],
+            "time": "2015-06-16 15:12:41"
         },
         {
             "name": "sebastian/comparator",
@@ -3794,7 +4088,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "silex/silex": 20,
-        "linkorb/database-manager": 20
+        "linkorb/database-manager": 20,
+        "nelmio/alice": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
