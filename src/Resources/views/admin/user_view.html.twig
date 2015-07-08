@@ -55,7 +55,29 @@
     </ul>
 {% endif %}
 
-<h3>Events (#)</h3>
-//TODO: List all the `user_event` objects linked to this `user_name`
+<h3>Events ({{ aUserEvents|length }})</h3>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th style=" text-align: center">Event Name</th>
+            <th style=" text-align: center">Occured</th>
+            <th style=" text-align: center">Admin</th>
+            <th style=" text-align: center">Data</th>
+        </tr>
+        {% for aUserEvent in aUserEvents %}
+        <tr>
+            <td>{{aUserEvent.user_name}}</td>
+            <td  style="text-align: center" >{{ aUserEvent.event_name }}</td>
+            <td   style="text-align: center" >{{ aUserEvent.occured_at|mydate }} {{ aUserEvent.occured_at|date("H:i:s") }} </td>
+            <td  style="text-align: center">{{ aUserEvent.admin_name }}</td>
+            <td style="text-align: center" class="js-data-toggle"><button><span class="glyphicon glyphicon-send"></span></button></td>
+        </tr>
+        <tr>
+           <td colspan="5" style="display: none;">
+               <div>{{ aUserEvent.data }}</div>
+           </td>
+        </tr>
+        {% endfor %}
+    </table>
 
 {% endblock %}

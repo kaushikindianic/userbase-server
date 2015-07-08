@@ -13,7 +13,7 @@
         </tr>
         {% for aEvent in aEvents %}
         <tr>
-            <td>{{ed}}</td>
+            <td>{{aEvent.user_name}}</td>
             <td  style="text-align: center" >{{ aEvent.event_name }}</td>
             <td   style="text-align: center" >{{ aEvent.occured_at|mydate }} {{ aEvent.occured_at|date("H:i:s") }} </td>
             <td  style="text-align: center">{{ aEvent.admin_name }}</td>
