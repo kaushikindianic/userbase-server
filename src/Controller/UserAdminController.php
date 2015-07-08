@@ -33,11 +33,14 @@ class UserAdminController
         $oAccRepo = $app->getAccountRepository();
         $oAppRepo  = $app->getAppRepository();
         $oIdentRepo = $app->getIdentityRepository();
+        $oEventRepo = $app->getEventRepository();
         
         $viewuser = $userRepo->getByName($username);
         $aUserAccounts = $oAccRepo->getByUserName($username);
         $aUserApps =  $oAppRepo->getByUserName($username);
         $aUserIdentities = $oIdentRepo->getByUserName($username);
+        
+        $aUserEvents = $oEventRepo->getUserEvents($username);
         
         return new Response($app['twig']->render('admin/user_view.html.twig', 
             array(
@@ -46,6 +49,7 @@ class UserAdminController
                 'aUserAccounts' => $aUserAccounts,
                 'aUserApps' => $aUserApps,
                 'aUserIdentities' => $aUserIdentities,
+                'aUserEvents' => $aUserEvents
             )
         ));
     }

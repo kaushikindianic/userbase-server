@@ -18,13 +18,8 @@ class AdminController
 
     public function logListAction(Application $app, Request $request)
     {
-        
         $oEventRepo = $app->getEventRepository();
-        
         $aEvents = $oEventRepo->getAll();
-        
-        $data = array();
-        
         
         return new Response($app['twig']->render('admin/log_list.html.twig',
                 array( 'aEvents' => $aEvents )
