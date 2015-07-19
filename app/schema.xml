@@ -13,7 +13,7 @@
 
     <table name="account_user">
         <column name="account_name" type="varchar(128)" />
-        <column name="user_name" type="varchar(128)" />       
+        <column name="user_name" type="varchar(128)" />
         <index name="unique_account_user"  unique="unique">
             <column name="account_name"/>
             <column name="user_name"/>
@@ -160,7 +160,7 @@
     </table>
     
     <table name="event" primaryKey="id" >
-        <column name="id" type="INT"/>
+        <column name="id" type="INT" autoincrement="true" />
         <column name="occured_at" type="INT"/>
         <column name="data" type="LONGTEXT"/>
         <column name="user_name" type="VARCHAR(128)"/>
