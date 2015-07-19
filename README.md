@@ -6,7 +6,7 @@
     
 ## Initializing the database
 
-    vendor/bin/schema-loader schema:load app/schema.xml mysql://username:password@localhost/userbase
+    vendor/bin/dbtk-schema-loader schema:load app/schema.xml mysql://username:password@localhost/userbase
 
 ## Configuration
 
