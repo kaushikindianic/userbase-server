@@ -299,4 +299,17 @@ class SiteController
             $data
         ));
     }
+    
+    public function pictureAction(Application $app, Request $request, $accountname)
+    {
+        $repo = $app->getUserRepository();
+        $user = $repo->getByName($accountname);
+        
+        $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim(''))) . "?d=retro";
+
+        if ($user) {
+            $url = $user->getPictureUrl();
+        }
+        return $app->redirect($url);
+    }
 }

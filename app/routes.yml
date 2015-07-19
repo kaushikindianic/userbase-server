@@ -61,6 +61,10 @@ password_reset_success:
     path: /password/reset-success
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSuccessAction }
 
+picture:
+    path: /picture/{accountname}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::pictureAction }
+
 cp_index:
     path: /cp
     defaults:  { _controller: UserBase\Server\Controller\CpController::indexAction }
@@ -201,4 +205,3 @@ admin_app_delete:
     path: /admin/apps/{appname}/delete
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }
    
-
