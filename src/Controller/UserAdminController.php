@@ -138,11 +138,13 @@ class UserAdminController
             $data['username'] =$formData['_username'];
             $app['mailer']->sendTemplate('welcome', $user, $data);
             
-            //--CREATE PRSONAL ACCOUNT--//
+            //--CREATE PERSONAL ACCOUNT--//
             $oAccunt = new Account($formData['_username']);
             $oAccunt->setDisplayName($formData['_username'])
                     ->setAbout('Personal account')
-                    ->setPictureUrl('');
+                    ->setPictureUrl('')
+                    ->setAccountType('user')
+                    ;
             
             $oAccRepo = $app->getAccountRepository();
             if ($oAccRepo->add($oAccunt)) {                                

@@ -48,7 +48,7 @@ class PdoAccountRepository
         $sql .= '  ORDER BY name DESC';
         
         $statement = $this->pdo->prepare($sql);
-        $statement->execute($aVal);        
+        $statement->execute($aVal);
         $rows = $statement->fetchAll();
         $accounts = array();
 
@@ -86,7 +86,7 @@ class PdoAccountRepository
                     ':about' => $account->getAbout(),
                     ':picture_url' => $account->getPictureUrl(),
                     ':created_at' => time(),
-                    ':account_type' => $account->getaccountType(),
+                    ':account_type' => $account->getAccountType(),
                 )
             );
             //$this->update($account);

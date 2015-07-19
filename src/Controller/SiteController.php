@@ -91,11 +91,13 @@ class SiteController
         $data['username'] = $username;
         $app['mailer']->sendTemplate('welcome', $user, $data);
         
-        //--CREATE PRSONAL ACCOUNT--//
+        //--CREATE PERSONAL ACCOUNT--//
         $oAccunt = new Account($user->getUsername());
         $oAccunt->setDisplayName($user->getUsername())
                 ->setAbout('Personal account')
-                ->setPictureUrl('');
+                ->setPictureUrl('')
+                ->setAccountType('user')
+                ;
         
         $oAccRepo = $app->getAccountRepository();
         if ($oAccRepo->add($oAccunt)) {

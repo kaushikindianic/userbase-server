@@ -185,10 +185,11 @@ class AccountAdminController
     
             $account->setDisplayName($data['displayName'])
             ->setAbout($data['about'])
-            ->setPictureUrl($data['pictureUrl']);
+            ->setPictureUrl($data['pictureUrl'])
+            ->setAccountType('organization');
     
             if ($add) {
-                if (! $repo->add($account)) {                 
+                if (! $repo->add($account)) {
                     return $app->redirect($app['url_generator']->generate('admin_account_add', array(
                         'error' => 'Name exists'
                     )));
