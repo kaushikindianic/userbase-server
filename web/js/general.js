@@ -136,10 +136,29 @@ $(function() {
 //-- USER SECTION/MODULE //
 
 $(function() {
+
+    $('#_username').keyup(function(){
+        
+        var strVal = $(this).val();
+        strVal = strVal.toLowerCase().replace(/ /g, '');
+        $(this).val(strVal);
+        
+    });
+    
    $('#_username').blur(function() {
        
         var valUsername = $.trim( $(this).val());
        if ( valUsername != '') {
+           
+           var regex = /^[a-z 0-9]+$/;
+           if (!regex.test(valUsername)) {
+               $('#btnSubmit').attr('disabled', 'disabled');
+               $( '#chkUserExist' ).html('Allow only small letter and number').addClass('alert alert-danger').slideDown( "slow" );
+               return false;
+           } else {
+               $( '#chkUserExist').html('').slideUp( "slow" ).removeClass('alert alert-danger');
+               $( '#btnSubmit' ).prop('disabled', false);
+           }           
            
            var data = 'username=' + valUsername;
            $.ajax({
