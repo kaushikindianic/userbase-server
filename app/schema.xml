@@ -170,4 +170,12 @@
             <column name="id"/>
         </index>
     </table>
+	<table name="api_key" primaryKey="id">
+        <column name="account_name" type="varchar(128)" />
+        <column name="name" type="varchar(128)" doc="User description" />
+        <column name="username" type="varchar(128)" />
+        <column name="password" type="varchar(128)" />
+        <column name="created_at" type="datetime" />
+        <column name="deleted_at" type="datetime" />
+    </table>    
 </schema>

@@ -1,0 +1,40 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>Account: {{ account.getDisplayName() }}</h2>
+
+<div class="row">
+    <div class="col-md-4">
+        <img class="profile" src="{{ account.getPictureUrl() }}" />
+    </div>
+    <div class="col-md-8">
+        <ul>
+            <li>About: {{ account.getAbout()|raw|nl2br }}</li>
+            
+        </ul>
+    </div>    
+</div>
+<div class="buttonbox">
+    <a class="btn btn-primary btn-lg" href="{{ path("admin_account_addapikey", { "accountname": account.getName() } ) }}">Add API</a>
+</div>
+
+<h3>Events ({{ aApikeys|length }})</h3>
+    <table class="table">
+        <tr>
+            <th>Name</th>
+            <th style=" text-align: center">username</th>
+            <th style=" text-align: center">passowrd</th>
+            <th style=" text-align: center">Created At</th>
+        </tr>
+        {% for aRows in aApikeys %}
+        <tr>
+            <td>{{ aRows.name }}</td>
+            <td style="text-align: center" >{{ aRows.username }}</td>
+            <td style="text-align: center" >{{ aRows.password }}</td>
+            <td style="text-align: center" >{{ aRows.created_at|date("H:i:s") }} </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+
+{% endblock %}
