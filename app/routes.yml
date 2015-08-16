@@ -132,11 +132,15 @@ admin_user_update_displayname:
 admin_account_list:
     path: /admin/account
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction }
-
+admin_account_apikeys:
+    path: /admin/apikeys
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::apikeysAction }
 admin_account_add:
     path: /admin/account/add
-    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
-
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }    
+admin_account_view:
+    path: /admin/account/{accountname}
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountViewAction }
 admin_account_edit:
     path: /admin/account/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountEditAction }
@@ -144,6 +148,9 @@ admin_account_edit:
 admin_account_delete:
     path: /admin/account/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountDeleteAction }
+admin_account_addapikey:
+    path: /admin/account/{accountname}/addapikey
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addApikeyAction }    
 
 admin_account_users:
     path: /admin/account/{accountname}/users
