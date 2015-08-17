@@ -156,17 +156,20 @@ class Application extends SilexApplication
     {
         $this->register(new TwigServiceProvider(), array(
             'twig.path' => array(
-                __DIR__.'/Resources/views/',
+                __DIR__.'/../templates/',
             ),
         ));
 
-        if (!isset($this->config['userbase']['layout'])) {
-            $this->config['userbase']['layout'] = 'app/default';
+        if (!isset($this->config['userbase']['theme'])) {
+            $this->config['userbase']['theme'] = 'themes/default';
         }
-        $layoutPath = $this->config['userbase']['layout'];
+        $path = $this->config['userbase']['theme'];
+        if ($path[0]!='/') {
+            $path = __DIR__ . '/../' . $path;
+        }
         $this['twig.loader.filesystem']->addPath(
-            __DIR__ . '/../layout/default',
-            'Layout'
+            $path,
+            'Theme'
         );
     }
 
