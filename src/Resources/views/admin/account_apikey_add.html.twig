@@ -2,7 +2,7 @@
 
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block content %}
-<h1>Add ApiKey</h1>
+<h1> {% if add %} Add {% else %}Edit{% endif %} ApiKey</h1>
 
 {% if error != null %}
     <div class="alert alert-danger" role="alert">
@@ -19,7 +19,7 @@
             <i class="fa fa-server"></i>
             Save
         </button>
-        <a href="{{ path('admin_account_list') }}" class="btn btn-default" role="button">
+        <a href="{{ path('admin_account_view', {"accountname": account.getName()} ) }}" class="btn btn-default" role="button">
             <i class="fa fa-arrow-left"></i>
             Back
         </a>        
