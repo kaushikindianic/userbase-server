@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use JWT;
 
-class CpController
+class PortalController
 {
 
     public function indexAction(Application $app, Request $request)
@@ -19,8 +19,9 @@ class CpController
         $user = $app['currentuser'];
         $accountRepo = $app->getAccountRepository();
         $data['accounts'] = $accountRepo->getByUsername($user->getName());
+
         return new Response($app['twig']->render(
-            'cp/index.html.twig',
+            'portal/index.html.twig',
             $data
         ));
     }

@@ -68,13 +68,13 @@ picture:
     path: /picture/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::pictureAction }
 
-cp_index:
-    path: /cp
-    defaults:  { _controller: UserBase\Server\Controller\CpController::indexAction }
+portal_index:
+    path: /portal
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::indexAction }
 
-cp_app_login:
-    path: /cp/applogin/{appname}
-    defaults:  { _controller: UserBase\Server\Controller\CpController::appLoginAction }
+portal_app_login:
+    path: /portal/applogin/{appname}
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
 
 api_v1_root:
     path: /api/v1
