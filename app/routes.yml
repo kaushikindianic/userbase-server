@@ -5,6 +5,9 @@ index:
 js:
     path: /js
 
+bower:
+    path: /bower
+
 login:
     path: /login
     defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }

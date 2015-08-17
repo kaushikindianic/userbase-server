@@ -1,4 +1,5 @@
 vendor/*
+web/bower/*
 config.yml
 composer.phar
 /sample.test
