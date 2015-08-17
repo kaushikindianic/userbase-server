@@ -170,7 +170,8 @@
             <column name="id"/>
         </index>
     </table>
-	<table name="api_key" primaryKey="id">
+    <table name="api_key" primaryKey="id">
+        <column name="id" type="INT" autoincrement="true" />
         <column name="account_name" type="varchar(128)" />
         <column name="name" type="varchar(128)" doc="User description" />
         <column name="username" type="varchar(128)" />
