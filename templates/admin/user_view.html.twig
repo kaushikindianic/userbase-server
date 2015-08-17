@@ -31,8 +31,11 @@
 <h3>Accounts ({{ aUserAccounts|length }})</h3>
     {% if aUserAccounts %}
         <ul>
-        {% for  aUserAccount  in aUserAccounts %}
-            <li><a href="{{ path('admin_account_edit', {'accountname': aUserAccount.account_name }) }}" >{{ aUserAccount.account_name }}</a></li>
+        {% for  account  in aUserAccounts %}
+            <li>
+                <a href="{{ path('admin_account_edit', {'accountname': account.getName }) }}" >{{ account.getName }}</a>
+                {{ account.getAccountType() }}
+            </li>
         {% endfor %}
         </ul>
     {% endif %}

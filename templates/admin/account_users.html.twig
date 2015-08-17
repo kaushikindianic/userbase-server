@@ -20,8 +20,9 @@
 </form>
 <!-- Button trigger modal -->
 <div class="buttonbox">
-    <button type="button" class="btn btn-primary btn-lg" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" 
-        data-backdrop="static">Assign Users</button>
+    <button type="button" class="btn btn-default" {{ path('admin_account_edit', {'accountname': accountName })}}>Back</button>
+    <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" 
+        data-backdrop="static">Add User</button>
 </div>
 <!-- Modal -->
 <div class="modal fade" id="popupAssignUsers" tabindex="-1" role="dialog"
@@ -33,7 +34,7 @@
                     aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
-                <h4 class="modal-title" id="myModalLabel">Seach users for assign</h4>
+                <h4 class="modal-title" id="myModalLabel">Seach users to add</h4>
             </div>
             <div class="modal-body">
                 <div id="msgAppId" style="display: none;"

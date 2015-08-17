@@ -13,9 +13,9 @@
         {% for account in accounts %}
         <tr>
             <td>
-                <a href="{{ path("cp_app_login", {"appname": account.getApp().getName() })}}">
-                    <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ account.getApp().getPictureUrl() }}" />
-                    {{ account.getApp().getName() }}</a>: {{ account.getApp().getDisplayName() }}<br />
+                <a href="{#{ path("cp_app_login", {"appname": account.getApp().getName() })}#}">
+                    <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{#{ account.getApp().getPictureUrl() }#}" />
+                    {#{ account.getApp().getName() }}</a>: {{ account.getApp().getDisplayName() }#}<br />
             </td>
         </tr>
         {% endfor %}

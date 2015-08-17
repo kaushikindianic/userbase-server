@@ -1,0 +1,49 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+
+<h2>Account: {{ accountCount }}</h2>
+
+<form action ="" name="frmAccList" id="frmAccList" method="post" >
+    <div id="form">
+        <div class="form-group">                    
+            <input type="text" placeholder="Search" value="{{ searchText }}" id="searchText" name="searchText">
+            <button type="submit" ><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button>
+        </div>
+    </div>
+    <table class="table">
+        <tr>
+            <th></th>
+            <th>Created</th>
+        </tr>
+        {% for account in accounts %}
+        <tr>
+            <td>
+                {% if account.getAccountType() == 'user' %}
+                    <i class="fa fa-user" />
+                {% endif %}
+                {% if account.getAccountType() == 'organization' %}
+                    <i class="fa fa-building" />
+                {% endif %}
+
+                <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">
+                    <img style="float: left; margin-right: 20px; width: 40px;" class="profile-thumb"
+                    src="{{ path('picture', {'accountname': account.getName()}) }}" />
+                    {{ account.getName() }}</a>:
+                <i>{{ account.getDisplayName() }}</i>
+            </td>
+            <td>
+                {{ account.getCreatedAt()|mydate }}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+</form>
+<div class="buttonbox">
+    <a href="{{ path('admin_account_add') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Add
+    </a>
+</div>
+
+{% endblock %}

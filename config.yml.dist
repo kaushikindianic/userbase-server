@@ -7,7 +7,7 @@ userbase:
     salt: some_random_salt
     strings:
         - app/strings.yml
-    layout: layout/default
+    theme: themes/default
 
 pdo:
     dsn: mysql:host=localhost;dbname=userbase
