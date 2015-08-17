@@ -302,13 +302,15 @@ class SiteController
     
     public function pictureAction(Application $app, Request $request, $accountname)
     {
-        $repo = $app->getUserRepository();
-        $user = $repo->getByName($accountname);
+        $repo = $app->getAccountRepository();
+        $account = $repo->getByName($accountname);
         
         $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim(''))) . "?d=retro";
 
-        if ($user) {
-            $url = $user->getPictureUrl();
+        if ($account) {
+            $email = $account->getEmail();
+            $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=retro";
+            //$url = $account->getPictureUrl();
         }
         return $app->redirect($url);
     }
