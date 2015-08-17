@@ -13,7 +13,7 @@ $service = new \ServiceProvider\Provider(
 $application = new Application();
 
 $application->before(function (Request $request) use ($application) {
-    $token = isset($application['security']) ? $application['security']->getToken() : null;
+    $token = $application['security.token_storage']->getToken();
     if ($token) {
         if ($request->getRequestUri()!='/login') {
             if ($token->getUser() == 'anon.') {
