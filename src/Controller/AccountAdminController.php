@@ -248,7 +248,7 @@ class AccountAdminController
             $account = $repo->getById($accountname);
         }
         $oApiKeyRepo  = $app->getApikeyRepository();
-        $aApikeys  = $oApiKeyRepo->getAll($accountname);
+        $aApikeys  = $oApiKeyRepo->getByAccountName($accountname);
         
         return new Response($app['twig']->render('admin/account_view.html.twig', array(
             'account' => $account,
