@@ -8,6 +8,7 @@ use Exception;
 use UserBase\Server\Model\Account;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use UserBase\Server\Model\Event;
+use UserBase\Server\Model\Apikey;
 
 class AccountAdminController
 {
@@ -236,5 +237,122 @@ class AccountAdminController
             'account' => $account,
             'error' => $error
         )));
+    }
+    
+    public function accountViewAction(Application $app, Request $request, $accountname)
+    {   
+        $repo = $app->getAccountRepository();
+        $account = $repo->getByName($accountname);
+        // also support getting template by id
+        if (! $account && is_numeric($accountname)) {
+            $account = $repo->getById($accountname);
+        }
+        $oApiKeyRepo  = $app->getApikeyRepository();
+        $aApikeys  = $oApiKeyRepo->getAll($accountname);
+        
+        return new Response($app['twig']->render('admin/account_view.html.twig', array(
+            'account' => $account,
+            'aApikeys' => $aApikeys
+        )));        
+    }
+    
+    public function addApikeyAction(Application $app, Request $request, $accountname)
+    { 
+        return $this->apikeyForm($app, $request, $accountname, 0);
+    }
+    
+    public function editApikeyAction(Application $app, Request $request, $accountname, $id)
+    {
+        return $this->apikeyForm($app, $request, $accountname, $id);
+    }
+        
+    
+    private function apikeyForm($app, $request, $accountname, $id)
+    {
+        $error = $request->query->get('error');
+        $repo = $app->getAccountRepository();
+        $oApiKeyRepo  = $app->getApikeyRepository();
+        $add = false;
+        
+        $account = $repo->getByName($accountname);
+        // also support getting template by id
+        if (! $account && is_numeric($accountname)) {
+            $account = $repo->getById($accountname);
+        }
+
+        if ($id) {
+            if (!$aApikey = $oApiKeyRepo->getById($id)) {
+                return $app->redirect($app['url_generator']->generate('admin_account_view', array(                       
+                        'accountname' => $accountname
+                 )));
+            }
+            $defaults = [
+                'name' => $aApikey['name'],
+                'username' =>  $aApikey['username'],
+                'password' => $aApikey['password']
+            ];
+            $nameParam = array();
+        } else {
+            $defaults = null;
+            $nameParam = array();
+            $add = true;
+        }
+       
+        $form = $app['form.factory']->createBuilder('form', $defaults)
+        ->add('name', 'text', $nameParam)
+        ->add('username', 'text', array('required' => false, 'label' => 'username'))
+        ->add('password', 'password', array('required' => false, 'always_empty' => false ))
+        ->getForm();
+        
+        // handle form submission
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();           
+            $oApikeyModel = new Apikey($data['name']);
+            
+            if ($add) {
+                $oApikeyModel->setName($data['name'])
+                    ->setUserName($data['username'])
+                    ->setPassword($data['password'])
+                    ->setCreatedAt(date('Y-m-d H:i:s'))
+                    ->setAccountName($accountname);
+            } else {
+                $oApikeyModel->setId($id)
+                    ->setName($data['name'])
+                    ->setUserName($data['username'])
+                    ->setPassword((empty($data['password'])?$defaults['password'] :$data['password']))
+                    ->setAccountName($accountname);
+            }        
+            if ($add) {
+                if (! $oApiKeyRepo->add($oApikeyModel)) {
+                    return $app->redirect($app['url_generator']->generate('admin_account_view', array(
+                        'error' => 'Failed adding Apikey',
+                        'accountname' => $accountname
+                    )));
+                }
+            } else {
+                $oApiKeyRepo->update($oApikeyModel);
+            }
+            return $app->redirect($app['url_generator']->generate('admin_account_view',array(
+                'accountname' => $accountname
+            )));
+        }
+        return new Response($app['twig']->render('admin/account_apikey_add.html.twig', array(
+            'form' => $form->createView(),
+            'account' => $account,
+            'add' => $add,
+            'error' => $error
+        )));        
+    }
+    
+    public function apikeysAction(Application $app, Request $request)
+    {
+        $oApiKeyRepo  = $app->getApikeyRepository();
+        $aApikeys  = $oApiKeyRepo->getAll();
+        
+        return new Response($app['twig']->render('admin/account_apikey_list.html.twig', array(
+            'account' => $account,
+            'aApikeys' => $aApikeys
+        )));        
     }    
 }
