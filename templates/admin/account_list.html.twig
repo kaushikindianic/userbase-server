@@ -15,26 +15,26 @@
         <tr>
             <th></th>
             <th>Created</th>
+            <th>Users</th>
+            <th>Action</th>
         </tr>
         {% for account in accounts %}
         <tr>
             <td>
-                {% if account.getAccountType() == 'user' %}
-                    <i class="fa fa-user" />
-                {% endif %}
-                {% if account.getAccountType() == 'organization' %}
-                    <i class="fa fa-building" />
-                {% endif %}
-
-                <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">
-                    <img style="float: left; margin-right: 20px; width: 40px;" class="profile-thumb"
-                    src="{{ path('picture', {'accountname': account.getName()}) }}" />
-                    {{ account.getName() }}</a>:
-                <i>{{ account.getDisplayName() }}</i>
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{account.getPictureUrl() }}" />
+                <a href="{{ path("admin_account_view", {"accountname": account.getName() })}}">
+                    {{ account.getName() }}: {{ account.getDisplayName() }}
+                </a>
             </td>
             <td>
                 {{ account.getCreatedAt()|mydate }}
             </td>
+            <td> <a href="{{ path('admin_account_users', {"accountname": account.getName()}) }}" ><span class="fa fa-group"></span></a></td>
+            <td>
+                <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">
+                 <span class="glyphicon glyphicon-edit"></span>
+                </a>
+            </td> 
         </tr>
         {% endfor %}
     </table>
