@@ -25,16 +25,20 @@
             <th style=" text-align: center">username</th>
             <th style=" text-align: center">passowrd</th>
             <th style=" text-align: center">Created At</th>
+            <th style=" text-align: center">Action</th>
         </tr>
         {% for aRows in aApikeys %}
         <tr>
             <td>{{ aRows.name }}</td>
             <td style="text-align: center" >{{ aRows.username }}</td>
             <td style="text-align: center" >{{ aRows.password }}</td>
-            <td style="text-align: center" >{{ aRows.created_at|date("H:i:s") }} </td>
+            <td style="text-align: center" >{{ aRows.created_at|date("H:i:s") }}</td>
+            <td style="text-align: center" >
+                <a href="{{ path("admin_account_editapikey", {"accountname": account.getName(), 'id': aRows.id})}}">
+                 <span class="glyphicon glyphicon-edit"></span>
+                </a>
+            </td>
         </tr>
         {% endfor %}
     </table>
-
-
 {% endblock %}

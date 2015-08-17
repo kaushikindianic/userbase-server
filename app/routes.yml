@@ -150,8 +150,10 @@ admin_account_delete:
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountDeleteAction }
 admin_account_addapikey:
     path: /admin/account/{accountname}/addapikey
-    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addApikeyAction }    
-
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addApikeyAction }
+admin_account_editapikey:
+    path: /admin/account/{accountname}/{id}/editapikey
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::editApikeyAction }
 admin_account_users:
     path: /admin/account/{accountname}/users
     defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountUsersAction }

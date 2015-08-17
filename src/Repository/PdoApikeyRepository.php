@@ -14,6 +14,16 @@ class PdoApikeyRepository
         $this->pdo = $pdo;
     }
     
+    public function getById($id)
+    {
+        $statement = $this->pdo->prepare("SELECT * FROM api_key WHERE id=:id LIMIT 1");
+        $statement->execute(array(
+            'id' => $id
+        ));
+        $row = $statement->fetch();
+        return $row;
+    }    
+    
     public function getAll($accountName = '')
     {
         $aVal = array();
@@ -44,5 +54,23 @@ class PdoApikeyRepository
                 'created_at' => $oApikey->getCreatedAt()
         ));
         return $row;
-    }    
+    }
+    
+    public function update(Apikey $oApikey)
+    {
+        $sql  = 'UPDATE  api_key SET
+                   name =:name,
+                   username =:username,
+                   password =:password
+                 WHERE id = :id
+                ';
+        $statement = $this->pdo->prepare($sql);
+        $row = $statement->execute(array(
+            'id' => $oApikey->getId() ,
+            'name' => $oApikey->getName(),
+            'username' => $oApikey->getUserName(),
+            'password' => $oApikey->getPassword()            
+        ));
+        return $row;
+    }
 }
