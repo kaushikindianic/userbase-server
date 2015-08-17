@@ -63,10 +63,12 @@ class PdoAccountRepository
         $account = new Account($row['name']);
 
         return $account->setCreatedAt($row['created_at'])
-                ->setDeletedAt($row['deleted_at'])
-                ->setAbout($row['about'])
-                ->setPictureUrl($row['picture_url'])
-                ->setDisplayName($row['display_name']);
+            ->setDeletedAt($row['deleted_at'])
+            ->setAbout($row['about'])
+            ->setPictureUrl($row['picture_url'])
+            ->setDisplayName($row['display_name'])
+            ->setAccountType($row['account_type'])
+        ;
     }
 
     public function add(account $account)
@@ -101,7 +103,8 @@ class PdoAccountRepository
     {
         $statement = $this->pdo->prepare(
             'UPDATE account
-             SET display_name=:display_name, about=:about, picture_url=:picture_url
+             SET display_name=:display_name, about=:about,
+             picture_url=:picture_url, account_type=:account_type
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
         $statement->execute(
@@ -110,13 +113,14 @@ class PdoAccountRepository
                 ':display_name' => $account->getDisplayName(),
                 ':about' => $account->getAbout(),
                 ':picture_url' => $account->getPictureUrl(),
+                ':account_type' => $account->getAccountType(),
             )
         );
     }
     
     public function delete($name)
     {
-        if (! $name) {
+        if (!$name) {
             throw new RuntimeException("account not specified");
         }
     
@@ -139,20 +143,30 @@ class PdoAccountRepository
         foreach ($rows as $row) {
             $aUsers[] = $row['user_name'];
         }
-        return $aUsers;        
+        return $aUsers;
     }
     
     public function delAccUsers($accountName, $userName)
     {
-        $statement = $this->pdo->prepare('Delete From account_user WHERE account_name = :account_name AND user_name = :user_name');
-        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
+        $statement = $this->pdo->prepare(
+            'DELETE FROM account_user
+            WHERE account_name = :account_name
+            AND user_name = :user_name'
+        );
+        $statement->execute(
+            array(
+                ':account_name' => $accountName,
+                ':user_name' => $userName
+            )
+        );
     }
     
-    public function  addAccUser($accountName, $userName)
+    public function addAccUser($accountName, $userName)
     {
         $statement = $this->pdo->prepare(
-                'INSERT IGNORE INTO account_user (account_name, user_name) VALUES (:account_name, :user_name )'
-            );
+            'INSERT IGNORE INTO account_user (account_name, user_name)
+            VALUES (:account_name, :user_name )'
+        );
         $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
         return true;
     }
@@ -160,16 +174,21 @@ class PdoAccountRepository
     public function getByUserName($userName)
     {  
         $statement = $this->pdo->prepare(
-                'SELECT  AU.account_name FROM account_user As AU
-                JOIN  account as A ON AU.account_name = A.name  
-                WHERE AU.user_name = :user_name 
-                AND  A.deleted_at = 0
-                ORDER BY AU.account_name ASC'
-               );
+            'SELECT  AU.account_name FROM account_user As AU
+            JOIN  account as A ON AU.account_name = A.name  
+            WHERE AU.user_name = :user_name 
+            AND  A.deleted_at = 0
+            ORDER BY AU.account_name ASC'
+        );
         $statement->execute(array( ':user_name' => $userName));
         $rows = $statement->fetchAll();
         
-        return $rows;
+        $accounts = array();
+
+        foreach ($rows as $row) {
+            $accounts[]= $this->getByName($row['account_name']);
+        }
+        return $accounts;
     }
     
 }

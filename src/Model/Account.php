@@ -30,6 +30,18 @@ class Account
     {
         return $this->about;
     }
+    
+    private $email;
+    
+    public function getEmail()
+    {
+        return $this->email;
+    }
+    
+    public function setEmail($email)
+    {
+        $this->email = $email;
+    }
 
     public function setAbout($about)
     {
@@ -100,5 +112,7 @@ class Account
     public function getAccountType()
     {
         return $this->accountType;
-    }    
+    }
+    
+
 }
