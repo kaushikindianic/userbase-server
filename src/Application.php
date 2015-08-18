@@ -70,6 +70,8 @@ class Application extends SilexApplication
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.salt'] = $this->config['userbase']['salt'];
         $this['picturePath'] = $this->config['picturePath'];
+        $this['tmpDirPath'] = $this->config['tmpDirPath'];
+       
     }
 
 
