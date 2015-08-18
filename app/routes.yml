@@ -73,7 +73,10 @@ portal_index:
     defaults:  { _controller: UserBase\Server\Controller\PortalController::indexAction }
 portal_view:
     path: /portal/accounts/{accountname}
-    defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction } 
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }
+portal_cropimag:
+    path: /portal/accounts/{accountname}/crop
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::cropImageAction }     
 
 portal_app_login:
     path: /portal/applogin/{appname}

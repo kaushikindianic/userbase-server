@@ -187,14 +187,5 @@ class PdoAccountRepository
             $accounts[]= $this->getByName($row['account_name']);
         }
         return $accounts;
-    }    
-    
-    public function updatePicture($accountName, $pictureURL)
-    {
-       $sql = 'UPDATE account SET picture_url = :picture_url WHERE name =:name';
-       
-       $statement = $this->pdo->prepare($sql);
-       $row = $statement->execute(array( 'name' => $accountName, 'picture_url' => $pictureURL ));
-       return $row;
     }
 }

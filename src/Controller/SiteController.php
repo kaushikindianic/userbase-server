@@ -304,14 +304,14 @@ class SiteController
     {
         $repo = $app->getAccountRepository();
         $account = $repo->getByName($accountname);
+        $fileName = $accountname.'.png';
         
-        // $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim(''))) . "?d=retro";
-
-        if (!empty($account->getPictureUrl()) && is_file($app['picturePath'].'/'.$account->getPictureUrl()) ) {
+        
+        if ( is_file($app['picturePath'].'/'.$fileName) ) {
             
            //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
             
-            return $app->redirect('/'.$app['picturePath'].'/'.$account->getPictureUrl());
+            return $app->redirect('/'.$app['picturePath'].'/'.$fileName);
             
         } else {
             $email = $account->getEmail();

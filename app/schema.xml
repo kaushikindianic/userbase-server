@@ -4,8 +4,7 @@
     <table name="account" primaryKey="name">
         <column name="name" type="varchar(128)" />
         <column name="display_name" type="varchar(128)" />
-        <column name="about" type="text" />
-        <column name="picture_url" type="varchar(128)" />
+        <column name="about" type="text" />       
         <column name="account_type" type="varchar(50)" />
         <column name="created_at" type="integer" />
         <column name="deleted_at" type="integer" />
@@ -154,8 +153,7 @@
         <column name="email" type="VARCHAR(128)"/>
         <column name="password_updated_at" type="INT"/>
         <column name="last_seen_at" type="INT"/>
-        <column name="is_admin" type="INT"/>
-        <column name="picture_url" type="VARCHAR(128)"/>
+        <column name="is_admin" type="INT"/>        
         <column name="email_verified_at" type="INT"/>
     </table>
     
