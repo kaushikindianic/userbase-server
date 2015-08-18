@@ -69,6 +69,7 @@ class Application extends SilexApplication
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.salt'] = $this->config['userbase']['salt'];
+        $this['picturePath'] = $this->config['picturePath'];
     }
 
 

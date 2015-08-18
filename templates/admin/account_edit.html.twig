@@ -23,7 +23,7 @@
             <i class="fa fa-arrow-left"></i>
             Back
         </a>
-        {% if account.getAccountType() == 'organization' %}
+        {% if (account)  and (account.getAccountType() == 'organization') %}
         <a href="{{ path('admin_account_users', {'accountname': account.getName()}) }}"
          class="btn btn-default" role="button">
             <i class="fa fa-users"></i>

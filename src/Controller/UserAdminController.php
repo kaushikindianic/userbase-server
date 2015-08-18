@@ -13,7 +13,6 @@ use UserBase\Server\Model\Account;
 
 class UserAdminController
 {
-    
     public function userListAction(Application $app, Request $request)
     {   
         $search = $request->request->get('searchText');

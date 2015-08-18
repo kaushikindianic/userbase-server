@@ -21,7 +21,7 @@
         {% for account in accounts %}
         <tr>
             <td>
-                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{account.getPictureUrl() }}" />
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
                 <a href="{{ path("admin_account_view", {"accountname": account.getName() })}}">
                     {{ account.getName() }}: {{ account.getDisplayName() }}
                 </a>

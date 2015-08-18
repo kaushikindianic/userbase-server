@@ -305,9 +305,15 @@ class SiteController
         $repo = $app->getAccountRepository();
         $account = $repo->getByName($accountname);
         
-        $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim(''))) . "?d=retro";
+        // $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim(''))) . "?d=retro";
 
-        if ($account) {
+        if (!empty($account->getPictureUrl()) && is_file($app['picturePath'].'/'.$account->getPictureUrl()) ) {
+            
+           //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
+            
+            return $app->redirect('/'.$app['picturePath'].'/'.$account->getPictureUrl());
+            
+        } else {
             $email = $account->getEmail();
             $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=retro";
             //$url = $account->getPictureUrl();

@@ -74,6 +74,7 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
+        $user->setPictureUrl($row['picture_url']);
         if ($row['is_admin']>0) {
             $user->setAdmin(true);
         }
@@ -254,7 +255,7 @@ final class PdoUserRepository implements UserProviderInterface
 
         if (isset($data['pictureurl'])) {
             $statement = $this->pdo->prepare(
-                "UPDATE user SET pictureurl = :pictureurl WHERE name=:name"
+                "UPDATE user SET picture_url = :pictureurl WHERE name=:name"
             );
             
             $statement->execute(
