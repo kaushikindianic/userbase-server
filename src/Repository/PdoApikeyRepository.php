@@ -24,7 +24,7 @@ class PdoApikeyRepository
         return $row;
     }    
     
-    public function getAll($accountName = '')
+    public function getByAccountName($accountName = '')
     {
         $aVal = array();
         $sql = 'SELECT * FROM api_key  WHERE 1 ';
@@ -39,6 +39,20 @@ class PdoApikeyRepository
         $rows = $statement->fetchAll();
         return $rows;        
     }
+    
+    public function getAll()
+    {
+        $aVal = array();
+        $sql = 'SELECT api.*, a.display_name FROM api_key AS api
+                LEFT JOIN  account AS a ON  api.account_name = a.name  
+                WHERE 1 ';
+        
+        $sql .= ' ORDER BY api.id DESC';
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($aVal);
+        $rows = $statement->fetchAll();
+        return $rows;
+    }    
     
     public function add(Apikey $oApikey)
     {

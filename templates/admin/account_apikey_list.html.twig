@@ -8,6 +8,7 @@
             <th>Name</th>
             <th style=" text-align: center">username</th>
             <th style=" text-align: center">passowrd</th>
+            <th style=" text-align: center">Account</th>
             <th style=" text-align: center">Created At</th>
         </tr>
         {% for aRows in aApikeys %}
@@ -15,6 +16,12 @@
             <td>{{ aRows.name }}</td>
             <td style="text-align: center" >{{ aRows.username }}</td>
             <td style="text-align: center" >{{ aRows.password }}</td>
+            <td style="text-align: center" >
+                <a href="{{ path( 'admin_account_view',{ 'accountname': aRows.account_name }) }}" >
+                    {{ aRows.display_name }}
+                </a>
+                
+            </td>
             <td style="text-align: center" >{{ aRows.created_at|date("H:i:s") }} </td>
         </tr>
         {% endfor %}

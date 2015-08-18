@@ -71,6 +71,9 @@ picture:
 portal_index:
     path: /portal
     defaults:  { _controller: UserBase\Server\Controller\PortalController::indexAction }
+portal_view:
+    path: /portal/accounts/{accountname}
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction } 
 
 portal_app_login:
     path: /portal/applogin/{appname}

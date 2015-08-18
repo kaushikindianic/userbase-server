@@ -144,7 +144,8 @@ class AccountAdminController
         $error = $request->query->get('error');
         $repo = $app->getAccountRepository();
         $add = false;
-    
+       
+        
         $account = $repo->getByName($accountname);
         // also support getting template by id
         if (! $account && is_numeric($accountname)) {
@@ -160,7 +161,6 @@ class AccountAdminController
                 'name' => $account->getName(),
                 'displayName' => $account->getRawDisplayName(),
                 'about' => $account->getAbout(),
-                'pictureUrl' => $account->getPictureUrl()
             );
     
             $nameParam = array(
@@ -171,8 +171,7 @@ class AccountAdminController
         $form = $app['form.factory']->createBuilder('form', $defaults)
         ->add('name', 'text', $nameParam)
         ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
-        ->add('about', 'text', array('required' => false))
-        ->add('pictureUrl', 'url', array('required' => false, 'label' => 'Picture URL'))
+        ->add('about', 'text', array('required' => false))       
         ->getForm();
     
         // handle form submission
@@ -185,8 +184,7 @@ class AccountAdminController
             }
     
             $account->setDisplayName($data['displayName'])
-            ->setAbout($data['about'])
-            ->setPictureUrl($data['pictureUrl'])
+            ->setAbout($data['about'])            
             ->setAccountType('organization');
     
             if ($add) {
@@ -248,7 +246,7 @@ class AccountAdminController
             $account = $repo->getById($accountname);
         }
         $oApiKeyRepo  = $app->getApikeyRepository();
-        $aApikeys  = $oApiKeyRepo->getAll($accountname);
+        $aApikeys  = $oApiKeyRepo->getByAccountName($accountname);
         
         return new Response($app['twig']->render('admin/account_view.html.twig', array(
             'account' => $account,

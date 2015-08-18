@@ -78,15 +78,14 @@ class PdoAccountRepository
         
         if ($exists === null) {
             $statement = $this->pdo->prepare(
-                'INSERT INTO account (name, display_name, about, picture_url, created_at, account_type) 
-                    VALUES (:name, :display_name, :about, :picture_url, :created_at, :account_type)'
+                'INSERT INTO account (name, display_name, about, created_at, account_type) 
+                    VALUES (:name, :display_name, :about, :created_at, :account_type)'
             );
             $statement->execute(
                 array(
                     ':name' => $account->getName(),
                     ':display_name' => $account->getDisplayName(),
-                    ':about' => $account->getAbout(),
-                    ':picture_url' => $account->getPictureUrl(),
+                    ':about' => $account->getAbout(),                    
                     ':created_at' => time(),
                     ':account_type' => $account->getAccountType(),
                 )
@@ -104,15 +103,14 @@ class PdoAccountRepository
         $statement = $this->pdo->prepare(
             'UPDATE account
              SET display_name=:display_name, about=:about,
-             picture_url=:picture_url, account_type=:account_type
+              account_type=:account_type
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
         $statement->execute(
             array(
                 ':name' => $account->getName(),
                 ':display_name' => $account->getDisplayName(),
-                ':about' => $account->getAbout(),
-                ':picture_url' => $account->getPictureUrl(),
+                ':about' => $account->getAbout(),              
                 ':account_type' => $account->getAccountType(),
             )
         );
@@ -189,6 +187,14 @@ class PdoAccountRepository
             $accounts[]= $this->getByName($row['account_name']);
         }
         return $accounts;
-    }
+    }    
     
+    public function updatePicture($accountName, $pictureURL)
+    {
+       $sql = 'UPDATE account SET picture_url = :picture_url WHERE name =:name';
+       
+       $statement = $this->pdo->prepare($sql);
+       $row = $statement->execute(array( 'name' => $accountName, 'picture_url' => $pictureURL ));
+       return $row;
+    }
 }

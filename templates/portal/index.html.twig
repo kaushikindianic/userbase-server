@@ -9,13 +9,18 @@
     <table class="table">
         <tr>
             <th>Account</th>
+            <th>Action</th>
         </tr>
         {% for account in accounts %}
         <tr>
             <td>
-                <a href="{#{ path("cp_app_login", {"appname": account.getApp().getName() })}#}">
-                    <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ account.getPictureUrl() }}" />
-                    {{ account.getName() }}</a>: {{ account.getDisplayName() }}<br />
+                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
+                {{ account.getName() }}: {{ account.getDisplayName() }}<br />
+            </td>
+            <td>
+                <a href="{{ path("portal_view", {"accountname": account.getName() })}}" title="View">
+                <span class="glyphicon glyphicon-eye-open"></span>
+                </a>
             </td>
         </tr>
         {% endfor %}
