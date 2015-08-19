@@ -188,4 +188,11 @@ class PdoAccountRepository
         }
         return $accounts;
     }
+    
+    public function userAssignToAccount($accountName, $userName)
+    {   
+        $statement = $this->pdo->prepare('SELECT * FROM account_user WHERE account_name =:account_name AND user_name =:user_name LIMIT 1');
+        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
+        return $statement->fetch();
+    }
 }
