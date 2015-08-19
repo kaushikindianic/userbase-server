@@ -31,3 +31,5 @@ oauth2:
         facebook:
             clientId: <facebookClientId>
             secretSecret: <secret>
+picturePath: account_picture 
+tmpDirPath: tmp
