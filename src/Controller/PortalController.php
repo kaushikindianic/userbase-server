@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
+use UserBase\Server\Model\Account;
 use Exception;
 use JWT;
 
@@ -118,11 +119,16 @@ class PortalController
                 }
             }
         }
+        
+        //-- GET ACCOUNT USER LIST --//
+        $aAccUsers = $accountRepo->getAccountUsers($accountname);
+        
         return new Response($app['twig']->render('portal/picture.html.twig', 
             array(
                 'form' => $form->createView(),
                 'accountname' => $accountname,
-                'oAccount' => $oAccount
+                'oAccount' => $oAccount,
+                'aAccUsers' => $aAccUsers,
             )
         ));
     }
@@ -190,4 +196,53 @@ class PortalController
             )
          ));
     }
+    
+    public function editAction(Application $app, Request $request, $accountname)
+    {
+        $error = $request->query->get('error');
+        $repo = $app->getAccountRepository();
+        $user = $app['currentuser'];
+        
+        //CHECK USER ASSING TO ACCOUNT
+        if (!$repo->userAssignToAccount($accountname, $user->getName())) {
+            return $app->redirect($app['url_generator']->generate('portal_view', array(
+                'accountname' => $accountname
+            )));
+        }
+        $account = $repo->getByName($accountname);  
+        // also support getting template by id
+        if (! $account && is_numeric($accountname)) {
+            $account = $repo->getById($accountname);
+        }  
+        $defaults = array(
+            'name' => $account->getName(),
+            'displayName' => $account->getRawDisplayName(),
+            'about' => $account->getAbout(),
+        );
+        $form = $app['form.factory']->createBuilder('form', $defaults)
+            ->add('name', 'text',  array( 'read_only' => true ))
+            ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
+            ->add('about', 'text', array('required' => false))
+            ->getForm();
+    
+        // handle form submission
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+            $data = $form->getData();
+            $oAccModel = new Account($accountname);
+    
+            $oAccModel->setDisplayName($data['displayName'])
+                    ->setAbout($data['about'])
+                    ->setAccountType($account->getAccountType());
+            
+            $repo->update($oAccModel);
+    
+            return $app->redirect($app['url_generator']->generate('portal_index'));
+        }
+        return new Response($app['twig']->render('portal/account_edit.html.twig', array(
+            'form' => $form->createView(),
+            'account' => $account,
+            'error' => $error
+        )));
+    }    
 }

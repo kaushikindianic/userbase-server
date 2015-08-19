@@ -21,6 +21,11 @@
                 <a href="{{ path("portal_view", {"accountname": account.getName() })}}" title="View">
                 <span class="glyphicon glyphicon-eye-open"></span>
                 </a>
+                
+                 <a href="{{ path("portal_edit", {"accountname": account.getName() })}}" title="edit">
+                <span class="glyphicon glyphicon-edit"></span>
+                </a>
+                
             </td>
         </tr>
         {% endfor %}
@@ -28,5 +33,4 @@
 </div>
 
 <a href="{{ path("logout") }}" class="btn btn-default btn-lg">Logout</a><br />
-
 {% endblock %}

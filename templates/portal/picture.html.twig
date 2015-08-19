@@ -31,4 +31,20 @@
         </ul>
     </div>   
 </div>
+
+<div class="row">
+
+    <table class="table">
+        <tr>
+            <th class="text-center" >Users</th>
+        </tr>
+        <tr>
+            <td>
+        {% for aAccUser in aAccUsers %}
+                <div class="col-md-4 table-bordered">{{ aAccUser }}</div>
+        {% endfor %}
+            </td>
+        </tr>
+    </table>
+</div>
 {% endblock %}
