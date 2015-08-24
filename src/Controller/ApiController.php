@@ -21,7 +21,7 @@ class ApiController
         return new JsonResponse($data);
     }
     
-    private function user2array($user, $details = false)
+    private function user2array(Application $app, $user, $details = false)
     {
         $data = array();
         $data['href'] = $this->baseUrl . '/api/v1/users/' . $user->getUsername();
@@ -35,6 +35,15 @@ class ApiController
             $data['lastseen_at'] = $user->getLastSeenAt();
             $data['deleted_at'] = $user->getDeletedAt();
             $data['passwordupdated_at'] = $user->getPasswordUpdatedAt();
+            
+            // GET USER ACCOUNTS //
+            $oAccRepo = $app->getAccountRepository();
+            $aAccount = $oAccRepo->getByUserNameForApi($user->getUsername());
+            $data['accounts'] =  ($aAccount)? $aAccount : array() ;  
+            // GET USER SPACES //
+            $oSpaceRepo = $app->getSpaceRepository();
+            $aSpaces = $oSpaceRepo->getSpacesByAccounts($data['accounts']);
+            $data['spaces'] =  ($aSpaces)? $aSpaces : array() ;
         }
         return $data;
     }
@@ -47,7 +56,7 @@ class ApiController
         $data = array();
         $items = array();
         foreach ($users as $user) {
-            $a = $this->user2array($user);
+            $a = $this->user2array($app, $user);
             $items[] = $a;
         }
         $data['items'] = $items;
@@ -62,7 +71,7 @@ class ApiController
         if (!$user) {
             return $this->getErrorResponse(404, "User not found");
         }
-        $data = $this->user2array($user, true);
+        $data = $this->user2array($app,$user, true);
 
         return new JsonResponse($data);
     }
