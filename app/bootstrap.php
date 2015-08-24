@@ -34,7 +34,7 @@ $application->before(function (Request $request) use ($application) {
 
     $filter = new Twig_SimpleFilter('mydate', function ($value) {
         if ($value>0) {
-            return date('d/M/Y');
+            return date('d/M/Y', $value);
         } else {
             return '-';
         }
