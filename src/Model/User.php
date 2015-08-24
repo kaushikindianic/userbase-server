@@ -178,6 +178,8 @@ final class User implements AdvancedUserInterface
     public function setEmail($email)
     {
         $this->email = $email;
+        
+        return $this;
     }
     
     public function getEmail()
@@ -199,6 +201,7 @@ final class User implements AdvancedUserInterface
     public function setPictureUrl($url)
     {
         $this->pictureUrl = $url;
+        return $his;
     }
 
     public function setAdmin($bool)

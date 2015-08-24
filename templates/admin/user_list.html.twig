@@ -20,8 +20,7 @@
         <tr>
             <td>
                 <a href="{{ path("admin_user_view", {"username": user.getUsername() })}}">
-                <img style="float: left; margin-right: 20px; width: 40px;" class="profile-thumb"
-                    src="{{ path('picture', {'accountname': user.getName()}) }}" />
+                 <img style="float: left; margin-right: 20px; width: 40px;" class="profile-thumb" src="{{ user.getPictureUrl() }}" />   
                 <i>{{ user.getEmail() }}</i>
             </td>
             <td style="text-align: center">{{ user.getLastSeenAt()|mydate }}</td>
