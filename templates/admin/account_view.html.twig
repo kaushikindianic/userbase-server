@@ -5,7 +5,7 @@
 
 <div class="row">
     <div class="col-md-4">
-        <img class="profile" src="{{ account.getPictureUrl() }}" />
+        <img class="profile"  src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
     </div>
     <div class="col-md-8">
         <ul>

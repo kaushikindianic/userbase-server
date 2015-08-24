@@ -65,7 +65,7 @@ class PdoAccountRepository
         return $account->setCreatedAt($row['created_at'])
             ->setDeletedAt($row['deleted_at'])
             ->setAbout($row['about'])
-            ->setPictureUrl($row['picture_url'])
+           // ->setPictureUrl($row['picture_url'])
             ->setDisplayName($row['display_name'])
             ->setAccountType($row['account_type'])
         ;
