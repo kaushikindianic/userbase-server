@@ -43,6 +43,21 @@ class PdoSpaceRepository
         return $rows;
     }
     
+    public function getSpacesByAccounts($accountName = array())
+    {
+        $str = implode('","', $accountName);
+        $statement = $this->pdo->prepare('SELECT name FROM space WHERE  account_name IN ("'.$str.'")  AND deleted_at IS NULL ORDER BY name ASC');
+        $statement->execute();
+        $rows = $statement->fetchAll();
+        
+        $aSpace = array();
+        
+        foreach ($rows as $row) {
+            $aSpace[]= $row['name'];
+        }
+        return $aSpace;
+    }    
+    
     public function checkExist($name, $accountName, $id = 0)
     {
         $aVal = array();
