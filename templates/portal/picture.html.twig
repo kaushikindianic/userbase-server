@@ -46,5 +46,35 @@
             </td>
         </tr>
     </table>
+    
+      
+    <div class="row" >
+        <div class="col-md-10" ><h2>Spaces</h2></div>
+        <div class="col-md-2" >
+            <div class="buttonbox">
+                <a href="{{ path('portal_sapces_add', {'accountname' :accountname} ) }}" class="btn btn-primary" role="button">
+                    <i class="fa fa-plus"></i>
+                    Add Space
+                </a>
+        </div>
+        </div>
+    </div> 
+  
+    <table  class="table">
+        <tr>
+            <th class="text-left">Space</th>
+            <th class="text-left">Description</th>
+        </tr>
+        {% for aRows in aSpaces %}
+            <tr>
+                <td class="text-left" >
+                    <a href="{{ path('portal_spaces_view', {'id' :aRows.id } ) }}" title="view" >
+                    {{ aRows.name }}
+                    </a>
+                </td>
+                <td class="text-left" >{{ aRows.description|raw|nl2br }}</td>
+            </tr>
+        {% endfor %}
+    </table>
 </div>
 {% endblock %}

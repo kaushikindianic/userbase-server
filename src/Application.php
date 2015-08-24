@@ -32,6 +32,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use UserBase\Server\Repository\PdoIdentityRepository;
 use Userbser\Server\Repository\PdoEventRepository;
 use UserBase\Server\Repository\PdoApikeyRepository;
+use UserBase\Server\Repository\PdoSpaceRepository;
 
 class Application extends SilexApplication
 {
@@ -44,6 +45,7 @@ class Application extends SilexApplication
     private $identityRepository;
     private $eventRepository;
     private $apikeyRepository;
+    private $spaceRepository;
 
     public function __construct(array $values = array())
     {
@@ -109,6 +111,7 @@ class Application extends SilexApplication
         $this->identityRepository = new PdoIdentityRepository($pdo);
         $this->eventRepository = new \UserBase\Server\Repository\PdoEventRepository($pdo);
         $this->apikeyRepository = new PdoApikeyRepository($pdo);
+        $this->spaceRepository = new  PdoSpaceRepository($pdo);
         
         $mailer = Service::mailer();
 
@@ -263,5 +266,8 @@ class Application extends SilexApplication
     {
         return $this->apikeyRepository;
     }
-    
+    public function getSpaceRepository()
+    {
+        return $this->spaceRepository;
+    }    
 }
