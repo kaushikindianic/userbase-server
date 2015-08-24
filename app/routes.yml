@@ -85,6 +85,20 @@ portal_app_login:
     path: /portal/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
 
+# SPACE
+portal_sapces_add:
+    path: /portal/accounts/{accountname}/spaces/add
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::addSpaceAction }
+portal_spaces_view:
+    path: /portal/spaces/{id}
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::spaceViewAction }
+portal_sapces_edit:
+    path: /portal/spaces/edit/{id}
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::editSpaceAction }
+portal_spaces_delete:
+    path: /portal/spaces/delete/{id}
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::deleteSpaceAction }       
+# API    
 api_v1_root:
     path: /api/v1
     defaults:  { _controller: UserBase\Server\Controller\ApiController::indexAction }

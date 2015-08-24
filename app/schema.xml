@@ -176,5 +176,11 @@
         <column name="password" type="varchar(128)" />
         <column name="created_at" type="datetime" />
         <column name="deleted_at" type="datetime" />
+    </table>
+    <table name="space" primaryKey="id" >
+    	<column name="name" type="varchar(128)"/>
+    	<column name="account_name" type="VARCHAR(128)"/>
+    	<column name="description" type="text" />
+    	<column name="deleted_at" type="datetime" />
     </table>    
 </schema>

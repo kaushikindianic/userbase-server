@@ -11,6 +11,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use UserBase\Server\Model\Account;
 use Exception;
 use JWT;
+use UserBase\Server\Model\Space;
 
 class PortalController
 {
@@ -123,12 +124,18 @@ class PortalController
         //-- GET ACCOUNT USER LIST --//
         $aAccUsers = $accountRepo->getAccountUsers($accountname);
         
+        //--GET ACCOUNT SPACES --//
+         $oSpaceRepo = $app->getSpaceRepository();
+         $aSpaces = $oSpaceRepo->getAccountSpaces($accountname);
+         
+        
         return new Response($app['twig']->render('portal/picture.html.twig', 
             array(
                 'form' => $form->createView(),
                 'accountname' => $accountname,
                 'oAccount' => $oAccount,
                 'aAccUsers' => $aAccUsers,
+                'aSpaces' => $aSpaces
             )
         ));
     }
@@ -244,5 +251,119 @@ class PortalController
             'account' => $account,
             'error' => $error
         )));
-    }    
+    }
+    
+    public function addSpaceAction(Application $app, Request $request, $accountname)
+    {
+        return $this->spaceFormAction($app, $request, $accountname, 0);
+    }
+    
+    public function editSpaceAction(Application $app, Request $request,$id)
+    {
+        return $this->spaceFormAction($app, $request, null, $id);
+    }
+    
+    private function spaceFormAction($app, $request, $accountname, $id)
+    {
+        $error = $request->query->get('error');
+        $oSpaceRepo = $app->getSpaceRepository();
+        $add = false;
+        
+        if ($id) {
+            if (!$aSpace = $oSpaceRepo->getById($id)) {
+                return $app->redirect($app['url_generator']->generate('portal'));
+            }
+            $defaults['name'] = $aSpace['name'];
+            $defaults['description'] = $aSpace['description'];
+            $accountname = $aSpace['account_name'];
+        } else {
+            $nameParam = array();
+            $add = true;
+            $defaults = array();
+        }
+        
+        $form = $app['form.factory']->createBuilder('form', $defaults)
+            ->add('name', 'text', array(
+                'required' => true,
+                'label' => 'name',
+                'read_only' => ($add)? false : true,
+                'trim' => true,
+                'constraints' =>  new Assert\NotBlank(array('message' => 'Name value should not be blank.')),
+                
+            ))
+            ->add('description', 'textarea', array('required' => false, 'label' => 'Description'))
+            ->getForm();
+            
+        // -- HANDAL FORM SUBMIT --//
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            $formData = $form->getData();
+            
+            //CHECK NAME EXIST
+            if ($oSpaceRepo->checkExist($formData['name'], $accountname, $id)) {
+                $form->get('name')->addError(new FormError('Name already exist'));
+            }
+            if ($form->isValid()) {
+                $oSpaceModel = new Space();
+                
+                if ($add) {
+                    $oSpaceModel->setAccountName($accountname)
+                        ->setName($formData['name'])
+                        ->setDescription($formData['description']);
+                    
+                    if (!$oSpaceRepo->add($oSpaceModel)) {
+                        return $app->redirect($app['url_generator']->generate('portal_view', array(
+                            'accountname' => $accountname,
+                            'error' => 'Failed adding Space'
+                        )));
+                    }
+                    return $app->redirect($app['url_generator']->generate('portal_view', array(
+                        'accountname' => $accountname,
+                    )));
+                } else {
+                    $oSpaceModel->setId($id)
+                        ->setDescription($formData['description']);
+                    $oSpaceRepo->update($oSpaceModel);
+                    
+                    return $app->redirect($app['url_generator']->generate('portal_spaces_view', array(
+                        'id' => $id,
+                    )));
+                }
+            }
+        }
+        return new Response($app['twig']->render('portal/space_edit.html.twig', array(
+            'form' => $form->createView(),            
+            'error' => $error,
+            'add' => $add
+        )));
+    }
+    
+    public function spaceViewAction(Application $app, Request $request, $id)
+    {
+        $oSpaceRepo = $app->getSpaceRepository();
+        $aSpace = $oSpaceRepo->getById($id); 
+
+        return new Response($app['twig']->render('portal/space_view.html.twig', array(
+                'aSpace' => $aSpace
+            )   
+        ));
+    }
+    
+    public function deleteSpaceAction(Application $app, Request $request, $id)
+    {
+        $oSpaceRepo = $app->getSpaceRepository();
+        $accountRepo = $app->getAccountRepository();
+        $aSpace = $oSpaceRepo->getById($id);
+        $user = $app['currentuser'];
+        
+        if ($accountRepo->userAssignToAccount($aSpace['account_name'], $user->getName())) {
+            $oSpaceRepo->delete($id);
+        } else {
+            return $app->redirect($app['url_generator']->generate('portal'));
+        }
+        
+        return $app->redirect($app['url_generator']->generate('portal_view', array(
+            'accountname' => $aSpace['account_name']
+        )));
+    }
 }

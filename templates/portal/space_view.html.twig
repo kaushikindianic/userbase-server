@@ -1,0 +1,30 @@
+{% extends "portal/layout.html.twig" %} {% block content %}
+
+<h2>{{ aSpace.name }}</h2>
+
+    <div class="row">
+        <div class="col-md-6 text-left"  >
+            <ul>
+                <li>Account: {{ aSpace.account_name }} </li>
+                <li>Description: {{ aSpace.description|raw|nl2br }}</li>
+            </ul>
+        </div>
+        <div class="col-md-6">            
+        </div>
+    </div>
+        
+    <div class="buttonbox">
+        <a href="{{ path('portal_sapces_edit', {'id' : aSpace.id }) }}" class="btn btn-primary" role="button">
+            <i class="fa fa-server"></i>
+            edit
+        </a>
+        <a href="{{  path('portal_view', {'accountname' : aSpace.account_name }) }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+        <a href="{{  path('portal_spaces_delete', {'id' : aSpace.id }) }}"  class="btn btn-danger" role="button" onclick="return confirm('Are you sure?')">
+            <i class="fa fa-trash"></i>
+            Delete
+        </a>
+    </div>
+{% endblock %}
