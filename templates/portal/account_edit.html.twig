@@ -1,8 +1,8 @@
-{% extends "admin/layout.html.twig" %}
+{% extends "portal/layout.html.twig" %}
 
 {% form_theme form 'bootstrap_3_layout.html.twig' %}
 {% block content %}
-<h1>Edit Account</h1>
+<h1>{% if add %} Add {% else %} Edit {% endif %} Account</h1>
 
 {% if error != null %}
     <div class="alert alert-danger" role="alert">
