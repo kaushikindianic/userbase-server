@@ -309,7 +309,8 @@ class PortalController
         return new Response($app['twig']->render('portal/account_edit.html.twig', array(
             'form' => $form->createView(),
             'account' => $account,
-            'error' => $error
+            'error' => $error,
+            'add' => $add
         )));
     }
     
