@@ -204,30 +204,71 @@ class PortalController
          ));
     }
     
-    public function editAction(Application $app, Request $request, $accountname)
+    public  function accountAddAction(Application $app, Request $request)
+    { 
+       return $this->accountForm($app, $request, null );
+    }
+    
+    public function  accountEditAction(Application $app, Request $request, $accountname)
+    {
+       return $this->accountForm($app, $request, $accountname );
+    }
+    
+    public function accountUserAddAction(Application $app, Request $request, $accountname)
+    {
+        $oAccRepo = $app->getAccountRepository();
+        $oUserRepo = $app->getUserRepository();
+        
+        if ($request->isMethod('POST')) {
+            $userName = $request->get('userName');
+            
+            if ($oUserRepo->getByName($userName)) {
+                $oAccRepo->addAccUser($accountname, $userName, 'group');
+            }
+        }
+        return $app->redirect($app['url_generator']->generate('portal_view', array(
+            'accountname' => $accountname
+        )));
+    }
+    
+    private function accountForm(Application $app, Request $request, $accountname)
     {
         $error = $request->query->get('error');
         $repo = $app->getAccountRepository();
         $user = $app['currentuser'];
+        $add = false;
         
-        //CHECK USER ASSING TO ACCOUNT
-        if (!$repo->userAssignToAccount($accountname, $user->getName())) {
-            return $app->redirect($app['url_generator']->generate('portal_view', array(
-                'accountname' => $accountname
-            )));
+        if (!empty($accountname)) {
+            
+            //CHECK USER ASSING TO ACCOUNT
+            if (!$repo->userAssignToAccount($accountname, $user->getName())) {
+                return $app->redirect($app['url_generator']->generate('portal_view', array(
+                    'accountname' => $accountname
+                )));
+            }
+            $account = $repo->getByName($accountname);
+            // also support getting template by id
+            if (! $account && is_numeric($accountname)) {
+                $account = $repo->getById($accountname);
+            }
+            
+            $defaults = array(
+                'name' => $account->getName(),
+                'displayName' => $account->getRawDisplayName(),
+                'about' => $account->getAbout(),
+            );
+            $nameParam = array(
+                'read_only' => true
+            );
+        } else {
+            $add = true;
+            $defaults = array();
+            $nameParam = array();
+            $account = array();
         }
-        $account = $repo->getByName($accountname);  
-        // also support getting template by id
-        if (! $account && is_numeric($accountname)) {
-            $account = $repo->getById($accountname);
-        }  
-        $defaults = array(
-            'name' => $account->getName(),
-            'displayName' => $account->getRawDisplayName(),
-            'about' => $account->getAbout(),
-        );
+
         $form = $app['form.factory']->createBuilder('form', $defaults)
-            ->add('name', 'text',  array( 'read_only' => true ))
+            ->add('name', 'text',  $nameParam)
             ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
             ->add('about', 'text', array('required' => false))
             ->getForm();
@@ -236,16 +277,35 @@ class PortalController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $data = $form->getData();
-            $oAccModel = new Account($accountname);
-    
-            $oAccModel->setDisplayName($data['displayName'])
+            $oAccModel = new Account( (($add)? $data['name'] : $accountname));
+                        
+            if ($add) {
+                $oAccModel->setDisplayName($data['displayName'])
+                    ->setAbout($data['about'])
+                    ->setAccountType('organization');
+            
+               if (! $repo->add($oAccModel)) {
+                   $error = 'Name exists'; 
+                   return $app->redirect($app['url_generator']->generate('portal_add', array(
+                       'error' => 'Name exists'
+                   )));
+                   
+               } else { 
+                   //-- ASSIGN USER
+                   $repo->addAccUser($data['name'], $user->getName(), 'user');
+                   return $app->redirect($app['url_generator']->generate('portal_index'));
+               }
+                
+            } else {
+                $oAccModel->setDisplayName($data['displayName'])
                     ->setAbout($data['about'])
                     ->setAccountType($account->getAccountType());
+                $repo->update($oAccModel);
+            }
             
-            $repo->update($oAccModel);
-    
             return $app->redirect($app['url_generator']->generate('portal_index'));
         }
+        
         return new Response($app['twig']->render('portal/account_edit.html.twig', array(
             'form' => $form->createView(),
             'account' => $account,

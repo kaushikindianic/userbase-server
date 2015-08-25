@@ -67,10 +67,14 @@ password_reset_success:
 picture:
     path: /picture/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::pictureAction }
-
+    
+# PORTAL
 portal_index:
     path: /portal
     defaults:  { _controller: UserBase\Server\Controller\PortalController::indexAction }
+portal_add:
+    path: /portal/accounts/new
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::accountAddAction }  
 portal_view:
     path: /portal/accounts/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }    
@@ -79,12 +83,14 @@ portal_cropimag:
     defaults:  { _controller: UserBase\Server\Controller\PortalController::cropImageAction }
 portal_edit:
     path: /portal/accounts/{accountname}/edit
-    defaults:  { _controller: UserBase\Server\Controller\PortalController::editAction }         
-
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::accountEditAction }         
+protal_account_user_add:
+    path: /portal/accounts/{accountname}/users/add
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::accountUserAddAction }    
 portal_app_login:
     path: /portal/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
-
+  
 # SPACE
 portal_sapces_add:
     path: /portal/accounts/{accountname}/spaces/add
