@@ -62,7 +62,7 @@ class Application extends SilexApplication
     private function configureParameters()
     {
         $parser = new YamlParser();
-        $this->config = $parser->parse(file_get_contents(__DIR__.'/../config.yml'));
+        $this->config = $parser->parse(file_get_contents(__DIR__.'/../app/config/parameters.yml'));
         if (isset($this->config['debug'])) {
             $this['debug'] = !!$this->config['debug'];
         }
@@ -156,7 +156,7 @@ class Application extends SilexApplication
 
     private function configureRoutes()
     {
-        $locator = new FileLocator(array(__DIR__.'/../app'));
+        $locator = new FileLocator(array(__DIR__.'/../app/config'));
         $loader = new YamlFileLoader($locator);
         $this['routes'] = $loader->load('routes.yml');
     }

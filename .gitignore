@@ -1,8 +1,7 @@
 vendor/*
 web/bower/*
-config.yml
+app/config/parameters.yml
 composer.phar
-/sample.test
 /.settings
 .buildpath
 .project
