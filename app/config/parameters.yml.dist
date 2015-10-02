@@ -1,8 +1,8 @@
 debug: false
 userbase:
-    baseurl: http://localhost:8888
+    baseurl: http://localhost:8080
     title: My Site Name
-    postfix: "*userbase.web"
+    postfix: "*localhost"
     logourl: http://www.epifaniasolar.cl/images/member1.jpg
     salt: some_random_salt
     strings:
@@ -11,9 +11,9 @@ userbase:
     partition: dev
 
 pdo:
-    dsn: mysql:host=localhost;dbname=userbase
-    username: my_username
-    password: my_password
+    dsn: mysql:host=localhost;dbname=linkorb_sandbox_userbase_server
+    username: root
+    password: ""
 
 herald:
     username: my_herald_username
@@ -26,9 +26,10 @@ oauth2:
     return_url: '/oauth2/confirm'
     scopes: [email]
     services:
-        twitter:
-            clientId: <twitterClientId>
-            clientSecret: <secret>
+        # Currently this caused error
+        # twitter:
+        #     clientId: <twitterClientId>
+        #     clientSecret: <secret>
         facebook:
             clientId: <facebookClientId>
             secretSecret: <secret>
