@@ -1,44 +1,44 @@
 <?xml version="1.0"?>
 <schema>
     <!-- think of account as github organizations.. a place to share resources -->
-    <table name="account" primaryKey="name">
-        <column name="name" type="varchar(128)" />
-        <column name="display_name" type="varchar(128)" />
+    <table name="account">
+        <column name="name" type="string" length="128" />
+        <column name="display_name" type="string" length="128" />
         <column name="about" type="text" />
-        <column name="account_type" type="varchar(50)" />
+        <column name="account_type" type="string" length="50" />
         <column name="created_at" type="integer" />
         <column name="deleted_at" type="integer" />
+
+        <index name="primary" primary="true" columns="name" />
     </table>
 
     <table name="account_user">
-        <column name="account_name" type="varchar(128)" />
-        <column name="user_name" type="varchar(128)" />
-        <column name="is_owner" type="int" />
-        <index name="unique_account_user"  unique="unique">
-            <column name="account_name"/>
-            <column name="user_name"/>
-        </index>
+        <column name="account_name" type="string" length="128" />
+        <column name="user_name" type="string" length="128" />
+        <column name="is_owner" type="integer" />
+
         <!-- store account specific user data here, like roles, join-status, etc -->
+        <index name="unique_account_user" unique="unique" columns="account_name,user_name" />
     </table>
 
-    <table name="app" primaryKey="name" >
-        <column name="name" type="VARCHAR(128)"/>
-        <column name="display_name" type="VARCHAR(128)"/>
-        <column name="about" type="LONGTEXT"/>
-        <column name="picture_url" type="VARCHAR(128)"/>
-        <column name="created_at" type="INT"/>
-        <column name="deleted_at" type="INT"/>
-        <column name="base_url" type="VARCHAR(128)"/>
+    <table name="app">
+        <column name="name" type="string" length="128" />
+        <column name="display_name" type="string" length="128" />
+        <column name="about" type="text" />
+        <column name="picture_url" type="string" length="128" />
+        <column name="created_at" type="integer"/>
+        <column name="deleted_at" type="integer"/>
+        <column name="base_url" type="string" length="128" />
+
+        <index name="primary" primary="true" columns="name" />
     </table>
 
    <table name="app_user">
-        <column name="app_name" type="varchar(128)" />
-        <column name="user_name" type="varchar(128)" />
+        <column name="app_name" type="string" length="128" />
+        <column name="user_name" type="string" length="128" />
+
         <!-- store account specific user data here, like roles, join-status, etc -->
-        <index name="unique_app_user"  unique="unique">
-            <column name="app_name"/>
-            <column name="user_name"/>
-        </index>
+        <index name="unique_app_user" unique="unique" columns="app_name,user_name" />
     </table>
 
     <!--
@@ -47,29 +47,23 @@
     This may need an admin in the user's panel page (to remove any external identity).
     -->
     <table name="identities">
-        <column name="identity_id" type="BIGINT"/>
-        <column name="user_name" type="VARCHAR(128)"/>
-        <column name="service" type="VARCHAR(50)"/>
-        <column name="access_token" type="TEXT"/>
-        <column name="expires" type="DATETIME"/>
-        <column name="refresh_token" type="TEXT"/>
-        <column name="identity_uid" type="VARCHAR(250)"/>
-        <column name="identity_email" type="VARCHAR(100)"/>
-        <column name="identity_first_name" type="VARCHAR(100)"/>
-        <column name="identity_last_name" type="VARCHAR(100)"/>
-        <column name="identity_object" type="LONGTEXT"/>
-        <column name="identity_avatar" type="TEXT"/>
-        <index name="PRIMARY" primary="primary" unique="unique">
-            <column name="identity_id"/>
-        </index>
-        <index name="user_name_lookup">
-            <column name="user_name"/>
-            <column name="service"/>
-        </index>
-        <index name="fast_look_by_uid">
-            <column name="service"/>
-            <column name="identity_id"/>
-        </index>
+        <column name="identity_id" type="bigint"/>
+        <column name="user_name" type="string" length="128" />
+        <column name="service" type="string" length="50" />
+        <column name="access_token" type="text" />
+        <column name="expires" type="datetime" />
+        <column name="refresh_token" type="text" />
+        <column name="identity_uid"  type="string" length="250" />
+        <column name="identity_email" type="string" length="100"  />
+        <column name="identity_first_name"  type="string" length="100" />
+        <column name="identity_last_name"  type="string" length="100" />
+        <column name="identity_object" type="text"/>
+        <column name="identity_avatar" type="text"/>
+
+        
+        <index name="primary" primary="true" columns="identity_id" />
+        <index name="user_name_lookup" columns="user_name,service" />
+        <index name="fast_look_by_uid" columns="service,identity_id" />
     </table>
 
     <!--
@@ -78,11 +72,11 @@
     it ever grants (like sessions). This table doesn't need any admin.
     -->
     <table name="oauth_access_tokens">
-        <column name="access_token" type="TEXT"/>
-        <column name="client_id" type="TEXT"/>
-        <column name="user_id" type="TEXT"/>
-        <column name="expires" type="DATETIME"/>
-        <column name="scope" type="TEXT"/>
+        <column name="access_token" type="text" />
+        <column name="client_id" type="text" />
+        <column name="user_id" type="text" />
+        <column name="expires" type="datetime" />
+        <column name="scope" type="text" />
     </table>
 
     <!--
@@ -90,13 +84,13 @@
     Internal table, pretty similar to the `oauth_access_tokens` table.
     -->
     <table name="oauth_authorization_codes">
-        <column name="authorization_code" type="TEXT"/>
-        <column name="client_id" type="TEXT"/>
-        <column name="user_id" type="TEXT"/>
-        <column name="redirect_uri" type="TEXT"/>
-        <column name="expires" type="DATETIME"/>
-        <column name="scope" type="TEXT"/>
-        <column name="id_token" type="TEXT"/>
+        <column name="authorization_code" type="text" />
+        <column name="client_id" type="text" />
+        <column name="user_id" type="text" />
+        <column name="redirect_uri" type="text" />
+        <column name="expires" type="datetime" />
+        <column name="scope" type="text" />
+        <column name="id_token" type="text" />
     </table>
 
     <!--
@@ -104,85 +98,92 @@
     This table may need an interface to add/remove things in the *Admin* panel.
     -->
     <table name="oauth_clients">
-        <column name="client_id" type="TEXT"/>
-        <column name="client_secret" type="TEXT"/>
-        <column name="client_name" type="VARCHAR(250)"/>
-        <column name="redirect_uri" type="TEXT"/>
+        <column name="client_id" type="text" />
+        <column name="client_secret" type="text" />
+        <column name="client_name" type="string" length="250" />
+        <column name="redirect_uri" type="text" />
     </table>
 
     <!-- Internal table used in the authorization process -->
     <table name="oauth_public_keys">
-        <column name="client_id" type="VARCHAR(80)"/>
-        <column name="public_key" type="VARCHAR(8000)"/>
-        <column name="private_key" type="VARCHAR(8000)"/>
-        <column name="encryption_algorithm" type="VARCHAR(80)"/>
+        <column name="client_id" type="string" length="80" />
+        <column name="public_key" type="string" length="8000" />
+        <column name="private_key" type="string" length="8000" />
+        <column name="encryption_algorithm" type="string" length="80" />
     </table>
 
     <!-- Internal table used in refresh programatically an oauth2 session -->
     <table name="oauth_refresh_tokens">
-        <column name="refresh_token" type="TEXT"/>
-        <column name="client_id" type="TEXT"/>
-        <column name="user_id" type="TEXT"/>
-        <column name="expires" type="DATETIME"/>
-        <column name="scope" type="TEXT"/>
+        <column name="refresh_token" type="text" />
+        <column name="client_id" type="text" />
+        <column name="user_id" type="text" />
+        <column name="expires" type="datetime" />
+        <column name="scope" type="text" />
     </table>
 
     <!-- List of scopes, this should have a CRUD interface on *admin* -->
     <table name="oauth_scopes">
-        <column name="scope" type="TEXT"/>
-        <column name="is_default" type="TINYINT(1)"/>
+        <column name="scope" type="text"/>
+        <column name="is_default" type="integer" length="1" />
     </table>
 
     <!-- Internal table -->
     <table name="oauth_users">
-        <column name="username" type="VARCHAR(255)"/>
-        <column name="password" type="VARCHAR(2000)"/>
-        <column name="first_name" type="VARCHAR(255)"/>
-        <column name="last_name" type="VARCHAR(255)"/>
-        <index name="PRIMARY" primary="primary" unique="unique">
-            <column name="username"/>
-        </index>
+        <column name="username" type="string" length="255" />
+        <column name="password" type="string" length="2000" />
+        <column name="first_name" type="string" length="255" />
+        <column name="last_name" type="string" length="255" />
+
+        <index name="primary" primary="true" columns="username" />
+    </table>
+    
+    <table name="user">
+        <column name="name" type="string" length="128" />
+        <column name="display_name" type="string" length="128" />
+        <column name="password" type="string" length="128" />
+        <column name="about" type="text" />
+        <column name="created_at" type="integer" />
+        <column name="deleted_at" type="integer" />
+        <column name="email" type="string" length="128" />
+        <column name="password_updated_at" type="integer" />
+        <column name="last_seen_at" type="integer" />
+        <column name="is_admin" type="integer" />
+        <column name="email_verified_at" type="integer" />
+
+        <index name="primary" primary="true" columns="name" />
+    </table>
+    
+    <table name="event">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="occured_at" type="integer" />
+        <column name="data" type="text" />
+        <column name="user_name" type="string" length="128" />
+        <column name="event_name" type="string" length="128" />
+        <column name="admin_name" type="string" length="128" />
+        
+        <index name="primary" primary="true" columns="id" />
     </table>
 
-    <table name="user" primaryKey="name">
-        <column name="name" type="VARCHAR(128)"/>
-        <column name="display_name" type="VARCHAR(128)"/>
-        <column name="password" type="VARCHAR(128)"/>
-        <column name="about" type="LONGTEXT"/>
-        <column name="created_at" type="INT"/>
-        <column name="deleted_at" type="INT"/>
-        <column name="email" type="VARCHAR(128)"/>
-        <column name="password_updated_at" type="INT"/>
-        <column name="last_seen_at" type="INT"/>
-        <column name="is_admin" type="INT"/>
-        <column name="email_verified_at" type="INT"/>
-    </table>
-
-    <table name="event" primaryKey="id" >
-        <column name="id" type="INT" autoincrement="true" />
-        <column name="occured_at" type="INT"/>
-        <column name="data" type="LONGTEXT"/>
-        <column name="user_name" type="VARCHAR(128)"/>
-        <column name="event_name" type="VARCHAR(128)"/>
-        <column name="admin_name" type="VARCHAR(128)" />
-        <index name="PRIMARY" primary="primary" unique="unique">
-            <column name="id"/>
-        </index>
-    </table>
-    <table name="api_key" primaryKey="id">
-        <column name="id" type="INT" autoincrement="true" />
-        <column name="account_name" type="varchar(128)" />
-        <column name="name" type="varchar(128)" doc="User description" />
-        <column name="username" type="varchar(128)" />
-        <column name="password" type="varchar(128)" />
+    <table name="api_key">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="account_name" type="string" length="128" />
+        <column name="name" type="string" length="128" doc="User description" />
+        <column name="username" type="string" length="128" />
+        <column name="password" type="string" length="128" />
         <column name="created_at" type="datetime" />
         <column name="deleted_at" type="datetime" />
+
+        <index name="primary" primary="true" columns="id" />
     </table>
-    <table name="space" primaryKey="id" >
-    	<column name="id" type="INT" autoincrement="true" />
-    	<column name="name" type="varchar(128)"/>
-    	<column name="account_name" type="VARCHAR(128)"/>
+
+    <table name="space">
+    	<column name="id" type="integer" autoincrement="true" />
+    	<column name="name" type="string" length="128" />
+    	<column name="account_name" type="string" length="128" />
     	<column name="description" type="text" />
     	<column name="deleted_at" type="datetime" />
+
+        <index name="primary" primary="true" columns="id" />
     </table>
+
 </schema>

@@ -4,13 +4,11 @@
     "homepage": "http://www.github.com/linkorb/userbase-server",
     "keywords": ["login", "signup", "user", "account"],
     "type": "library",
-    "authors": [
-        {
-            "name": "Joost Faassen",
-            "email": "j.faassen@linkorb.com",
-            "role": "Development"
-        }
-    ],
+    "authors": [{
+        "name": "Joost Faassen",
+        "email": "j.faassen@linkorb.com",
+        "role": "Development"
+    }],
     "require": {
         "php": ">=5.3.0",
         "symfony/console": "~2.7",
@@ -18,7 +16,7 @@
         "symfony/yaml": "~2.7",
         "symfony/form": "~2.7",
         "symfony/security": "~2.7",
-        "silex/silex": "2.0.*@dev",
+        "silex/silex": "2.0.x-dev#a3881a5a2fc7e0233307c8240d4adc909a559b49",
         "crodas/service-provider": "~0.1",
         "twig/twig": ">=1.8,<2.0-dev",
         "symfony/twig-bridge": "~2.7",
@@ -36,10 +34,14 @@
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",
-        "linkorb/database-manager": "dev-master",
-        "dbtk/schema-loader": "~1.0",
-        "nelmio/alice": "dev-master",
-        "linkorb/haigha": "~1.0"
+        "dbtk/schema-loader": "~2.1",
+        "linkorb/haigha": "~2.2",
+        "linkorb/conventions-checker": "~1.1"
+    },
+    "extra": {
+        "grumphp": {
+            "config-default-path": "vendor/linkorb/conventions-checker/config/app/grumphp.yml"
+        }
     },
     "autoload": {
         "psr-4": {
