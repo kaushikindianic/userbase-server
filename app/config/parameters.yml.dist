@@ -8,6 +8,7 @@ userbase:
     strings:
         - app/strings.yml
     theme: themes/default
+    partition: dev
 
 pdo:
     dsn: mysql:host=localhost;dbname=userbase

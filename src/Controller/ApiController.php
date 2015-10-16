@@ -5,6 +5,7 @@ namespace UserBase\Server\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
+use RuntimeException;
 
 class ApiController
 {
@@ -23,7 +24,12 @@ class ApiController
     
     private function user2array(Application $app, $user, $details = false)
     {
+        if (!isset($app['userbase.partition'])) {
+            throw new RuntimeException("userbase.partition undefined");
+        }
+        $partition = strtolower($app['userbase.partition']);
         $data = array();
+        $rolesData = array();
         $data['href'] = $this->baseUrl . '/api/v1/users/' . $user->getUsername();
         $data['username'] = $user->getUsername();
         if ($details) {
@@ -38,12 +44,45 @@ class ApiController
             
             // GET USER ACCOUNTS //
             $oAccRepo = $app->getAccountRepository();
-            $aAccount = $oAccRepo->getByUserNameForApi($user->getUsername());
-            $data['accounts'] =  ($aAccount)? $aAccount : array() ;  
+            $aAccounts = $oAccRepo->getByUserName($user->getUsername());
+            
+            $data['accounts'] = array();
+            foreach ($aAccounts as $oAccount) {
+                $accountData = array();
+                $accountData['name'] = $oAccount->getName();
+                $accountData['display_name'] = $oAccount->getDisplayName();
+                $accountData['about'] = $oAccount->getAbout();
+                $accountData['picture_url'] = $oAccount->getPictureUrl();
+                $accountData['email'] = $oAccount->getEmail();
+                $accountData['created_at'] = $oAccount->getCreatedAt();
+                $accountData['deleted_at'] = $oAccount->getDeletedAt();
+                $accountData['account_type'] = $oAccount->getAccountType();
+                
+                $statement = array(
+                    'effect' => 'allow',
+                    'action' => ['userbase:manage_account', 'userbase:use_account'],
+                    'resource' => 'xrn:' . $partition . ':userbase::account/' . strtolower($oAccount->getName()) . '',
+                );
+                $rolesData[] = $statement;
+
+
+                /*
+                $accountData['roles'][] = 'ROLE_ADMIN';
+                $accountData['roles'][] = 'ROLE_USER';
+                */
+                
+                
+                $data['accounts'][] = $accountData;
+
+            }
+            $data['policies'] = $rolesData;
+            
             // GET USER SPACES //
+            /*
             $oSpaceRepo = $app->getSpaceRepository();
             $aSpaces = $oSpaceRepo->getSpacesByAccounts($data['accounts']);
             $data['spaces'] =  ($aSpaces)? $aSpaces : array() ;
+            */
         }
         return $data;
     }

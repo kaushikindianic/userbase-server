@@ -990,12 +990,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Silex.git",
-                "reference": "48a3fdc483bc7e5e27750afaf2325682ea2b325f"
+                "reference": "a3881a5a2fc7e0233307c8240d4adc909a559b49"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Silex/zipball/48a3fdc483bc7e5e27750afaf2325682ea2b325f",
-                "reference": "48a3fdc483bc7e5e27750afaf2325682ea2b325f",
+                "url": "https://api.github.com/repos/silexphp/Silex/zipball/a3881a5a2fc7e0233307c8240d4adc909a559b49",
+                "reference": "a3881a5a2fc7e0233307c8240d4adc909a559b49",
                 "shasum": ""
             },
             "require": {
@@ -1014,6 +1014,7 @@
                 "doctrine/dbal": "~2.2",
                 "monolog/monolog": "~1.4,>=1.4.1",
                 "swiftmailer/swiftmailer": "5.*",
+                "symfony/asset": "~2.7",
                 "symfony/browser-kit": "~2.7",
                 "symfony/config": "~2.7",
                 "symfony/css-selector": "~2.7",
@@ -1069,7 +1070,7 @@
             "keywords": [
                 "microframework"
             ],
-            "time": "2015-08-05 16:16:09"
+            "time": "2015-08-24 09:40:42"
         },
         {
             "name": "swiftmailer/swiftmailer",
@@ -2246,25 +2247,29 @@
         },
         {
             "name": "twig/twig",
-            "version": "v1.20.0",
+            "version": "v1.21.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/twigphp/Twig.git",
-                "reference": "1ea4e5f81c6d005fe84d0b38e1c4f1955eb86844"
+                "reference": "913d282caca9ee0e8d05940c6caa486d58810dd4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/twigphp/Twig/zipball/1ea4e5f81c6d005fe84d0b38e1c4f1955eb86844",
-                "reference": "1ea4e5f81c6d005fe84d0b38e1c4f1955eb86844",
+                "url": "https://api.github.com/repos/twigphp/Twig/zipball/913d282caca9ee0e8d05940c6caa486d58810dd4",
+                "reference": "913d282caca9ee0e8d05940c6caa486d58810dd4",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.2.7"
             },
+            "require-dev": {
+                "symfony/debug": "~2.7",
+                "symfony/phpunit-bridge": "~2.7"
+            },
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.20-dev"
+                    "dev-master": "1.21-dev"
                 }
             },
             "autoload": {
@@ -2299,7 +2304,7 @@
             "keywords": [
                 "templating"
             ],
-            "time": "2015-08-12 15:56:39"
+            "time": "2015-08-24 09:51:18"
         }
     ],
     "packages-dev": [

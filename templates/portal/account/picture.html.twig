@@ -1,0 +1,22 @@
+{% extends "portal/layout.html.twig" %}
+
+
+{% block content %}
+
+<h3>Upload picture</h3>
+<form action="#" method="post" id="frmPicture" name="frmPicture"  enctype="multipart/form-data" >
+    {{ form_widget(form) }}
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-server"></i>
+            Upload
+        </button>
+        <a href="{{ path('portal_index') }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+    </div>
+</form>
+
+{% endblock %}
