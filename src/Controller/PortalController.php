@@ -133,11 +133,7 @@ class PortalController
                 }
             }
         }
-<<<<<<< HEAD
-
-=======
->>>>>>> upstream/master
-            
+        
         return new Response(
             $app['twig']->render(
                 'portal/account/picture.html.twig',
@@ -172,20 +168,7 @@ class PortalController
                     'aAccUsers' => $aAccUsers,
                     'aSpaces' => $aSpaces
                 )
-<<<<<<< HEAD
 
-=======
-        //--GET ACCOUNT SPACES --//
-         $oSpaceRepo = $app->getSpaceRepository();
-         $aSpaces = $oSpaceRepo->getAccountSpaces($accountname);
-        
-        return new Response($app['twig']->render('portal/picture.html.twig', 
-            array(
-                'form' => $form->createView(),
-                'accountname' => $accountname,
-                'oAccount' => $oAccount,                
-                'aSpaces' => $aSpaces
->>>>>>> upstream/master
             )
         );
     }
@@ -263,30 +246,20 @@ class PortalController
     {
        return $this->accountForm($app, $request, $accountname );
     }
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> upstream/master
     
     public function accountMembersAction(Application $app, Request $request, $accountname)
     {
         $accountRepo = $app->getAccountRepository();
         $oAccount = $accountRepo->getByName($accountname);
-        $aAccUsers = $accountRepo->getAccountUsers($accountname);
+        $aAccUsers = $accountRepo->getAccountMembers($accountname);
         
-        return new Response($app['twig']->render('portal/members.html.twig', array(
+        return new Response($app['twig']->render('portal/account/members.html.twig', array(
             'accountname' => $accountname,
             'oAccount' => $oAccount,
             'aAccUsers' => $aAccUsers
         )));        
     }
-    
-<<<<<<< HEAD
-=======
 
->>>>>>> upstream/master
-=======
->>>>>>> upstream/master
     public function accountUserAddAction(Application $app, Request $request, $accountname)
     {
         $oAccRepo = $app->getAccountRepository();

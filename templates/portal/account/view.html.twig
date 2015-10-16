@@ -10,26 +10,16 @@
 <h2>{{ oAccount.getDisplayName() }}</h2>
 <p class="lead">{{ oAccount.getAbout()|raw|nl2br }}</p>
 
-{% if oAccount.getAccountType!='user' %}
-<h2>Users</h2>
-<table class="table">
-    {% for aAccUser in aAccUsers %}
-    <tr>
-        <td>
-            <a href="{{ path('portal_view', {'accountname': aAccUser })}}">
-                {{ aAccUser }}
-            </a>
-        </td>
-    </tr>
-    {% endfor %}
-</table>
+
 <div class="buttonbox">
-    <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" data-backdrop="static">
-        <i class="fa fa-plus"></i>
-        Add User
-    </button>
- </div>
-{% endif %}
+    <a href="{{ path('protal_account_members', { 'accountname': accountname } ) }}" class="btn btn-info" role="button">
+    <i class="fa fa-users"></i>  Manage members
+    </a>
+      <a href="{{ path('portal_index') }}" class="btn btn-default" role="button">
+        <i class="fa fa-arrow-left"></i>
+        Back
+    </a>
+</div>
 
 {% if spacesEnabled is defined %}
 <h2>Spaces</h2>

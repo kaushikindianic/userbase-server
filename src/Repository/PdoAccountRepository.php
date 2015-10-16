@@ -144,6 +144,17 @@ class PdoAccountRepository
         return $aUsers;
     }
     
+    public function getAccountMembers($accountName)
+    {
+        $statement = $this->pdo->prepare("SELECT au.*, u.email FROM account_user AS au
+                JOIN  user AS u ON  au.user_name = u.name
+                WHERE  au.account_name = :account_name 
+            ORDER BY au.user_name ASC");
+        $statement->execute(array(':account_name' => $accountName));
+        $rows = $statement->fetchAll();
+        return $rows;
+    }
+    
     public function delAccUsers($accountName, $userName)
     {
         $statement = $this->pdo->prepare(
