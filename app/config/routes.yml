@@ -72,26 +72,35 @@ picture:
 portal_index:
     path: /portal
     defaults:  { _controller: UserBase\Server\Controller\PortalController::indexAction }
+    
 portal_add:
     path: /portal/accounts/new
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountAddAction }
-portal_view:
-    path: /portal/accounts/{accountname}
-    defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }
 
 portal_account_picture:
     path: /portal/accounts/{accountname}/picture
     defaults:  { _controller: UserBase\Server\Controller\PortalController::pictureAction }
 
+portal_view:
+    path: /portal/accounts/{accountname}
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }
+        
 portal_cropimag:
     path: /portal/accounts/{accountname}/crop
     defaults:  { _controller: UserBase\Server\Controller\PortalController::cropImageAction }
+    
 portal_edit:
     path: /portal/accounts/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountEditAction }
+
+protal_account_members:
+    path: /portal/accounts/{accountname}/members
+    defaults:  { _controller: UserBase\Server\Controller\PortalController::accountMembersAction }
+             
 protal_account_user_add:
     path: /portal/accounts/{accountname}/users/add
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountUserAddAction }
+    
 portal_app_login:
     path: /portal/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
