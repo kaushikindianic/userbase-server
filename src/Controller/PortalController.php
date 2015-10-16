@@ -120,21 +120,15 @@ class PortalController
                 }
             }
         }
-        
-        //-- GET ACCOUNT USER LIST --//
-        $aAccUsers = $accountRepo->getAccountUsers($accountname);
-        
         //--GET ACCOUNT SPACES --//
          $oSpaceRepo = $app->getSpaceRepository();
          $aSpaces = $oSpaceRepo->getAccountSpaces($accountname);
-         
         
         return new Response($app['twig']->render('portal/picture.html.twig', 
             array(
                 'form' => $form->createView(),
                 'accountname' => $accountname,
-                'oAccount' => $oAccount,
-                'aAccUsers' => $aAccUsers,
+                'oAccount' => $oAccount,                
                 'aSpaces' => $aSpaces
             )
         ));
@@ -214,6 +208,19 @@ class PortalController
        return $this->accountForm($app, $request, $accountname );
     }
     
+    public function accountMembersAction(Application $app, Request $request, $accountname)
+    {
+        $accountRepo = $app->getAccountRepository();
+        $oAccount = $accountRepo->getByName($accountname);
+        $aAccUsers = $accountRepo->getAccountUsers($accountname);
+        
+        return new Response($app['twig']->render('portal/members.html.twig', array(
+            'accountname' => $accountname,
+            'oAccount' => $oAccount,
+            'aAccUsers' => $aAccUsers
+        )));        
+    }
+    
     public function accountUserAddAction(Application $app, Request $request, $accountname)
     {
         $oAccRepo = $app->getAccountRepository();
@@ -226,7 +233,7 @@ class PortalController
                 $oAccRepo->addAccUser($accountname, $userName, 'group');
             }
         }
-        return $app->redirect($app['url_generator']->generate('portal_view', array(
+        return $app->redirect($app['url_generator']->generate('protal_account_members', array(
             'accountname' => $accountname
         )));
     }
