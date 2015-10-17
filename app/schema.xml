@@ -4,6 +4,8 @@
     <table name="account">
         <column name="name" type="string" length="128" />
         <column name="display_name" type="string" length="128" />
+        <column name="email" type="string" length="250" />
+        <column name="url" type="string" length="250" notnull="false" />
         <column name="about" type="text" />
         <column name="account_type" type="string" length="50" />
         <column name="created_at" type="integer" />

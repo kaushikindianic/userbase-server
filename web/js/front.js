@@ -58,3 +58,11 @@
     }
   };  
 });
+
+  $(function(){
+  $('.jsRoleChange').change(function(){
+      if (confirm('Are you sure, You wan to change Role?')) {
+          this.form.submit();
+      }
+  });  
+  });  
