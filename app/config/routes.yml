@@ -77,21 +77,17 @@ portal_add:
     path: /portal/accounts/new
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountAddAction }
 
-
 portal_view:
     path: /portal/accounts/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }
-
 
 portal_account_picture:
     path: /portal/accounts/{accountname}/picture
     defaults:  { _controller: UserBase\Server\Controller\PortalController::pictureAction }
 
-
 portal_view:
     path: /portal/accounts/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }
-        
 
 portal_cropimag:
     path: /portal/accounts/{accountname}/crop
@@ -113,19 +109,28 @@ portal_app_login:
     path: /portal/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
 
+#PORTAL SETTINGS
+protal_settings_password:
+    path: /portal/settings/password
+    defaults: { _controller: UserBase\Server\Controller\PortalController::passwordAction }
+    
 # SPACE
 portal_spaces_add:
     path: /portal/accounts/{accountname}/spaces/add
     defaults:  { _controller: UserBase\Server\Controller\PortalController::addSpaceAction }
+    
 portal_spaces_view:
     path: /portal/spaces/{id}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::spaceViewAction }
+    
 portal_spaces_edit:
     path: /portal/spaces/edit/{id}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::editSpaceAction }
+    
 portal_spaces_delete:
     path: /portal/spaces/delete/{id}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::deleteSpaceAction }
+    
 # API
 api_v1_root:
     path: /api/v1
@@ -146,7 +151,6 @@ admin_index:
 admin_log_list:
     path: /admin/logs
     defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
-
 
 # USER MODULE
 admin_user_list:
@@ -186,15 +190,19 @@ admin_user_update_displayname:
 admin_account_list:
     path: /admin/account
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction }
+
 admin_account_apikeys:
     path: /admin/apikeys
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::apikeysAction }
+
 admin_account_add:
     path: /admin/account/add
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
+
 admin_account_view:
     path: /admin/account/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountViewAction }
+
 admin_account_edit:
     path: /admin/account/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountEditAction }
@@ -202,12 +210,15 @@ admin_account_edit:
 admin_account_delete:
     path: /admin/account/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountDeleteAction }
+
 admin_account_addapikey:
     path: /admin/account/{accountname}/addapikey
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addApikeyAction }
+
 admin_account_editapikey:
     path: /admin/account/{accountname}/{id}/editapikey
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::editApikeyAction }
+
 admin_account_users:
     path: /admin/account/{accountname}/users
     defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountUsersAction }
@@ -241,7 +252,6 @@ admin_app_users:
 admin_app_searchuser:
    path: /admin/apps/{appname}/searchuser
    defaults: {_controller:  UserBase\Server\Controller\AppAdminController::appSearchUserAction }
-
 
 authorize_confirm:
     path: /authorize/confirm/{provider}

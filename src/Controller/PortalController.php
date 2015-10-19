@@ -347,7 +347,7 @@ class PortalController
                 )    
             ))
             ->add('email', 'email', array(
-                'required' => true,
+                'required' => false,
                 'label' => 'E-mail',
                 'trim' => true,
                 'error_bubbling' => true,
@@ -531,6 +531,62 @@ class PortalController
 
         return $app->redirect($app['url_generator']->generate('portal_view', array(
             'accountname' => $aSpace['account_name']
+        )));
+    }
+    
+    public function passwordAction(Application $app, Request $request)
+    {
+        $oUserRepo = $app->getUserRepository();
+        $oUser = $app['currentuser'];
+        $errorType = 'danger';
+        
+        $form = $app['form.factory']->createBuilder('form')
+        ->add('password', 'password', array(
+            'required' => true,
+            'label' => 'Password',
+            'trim' => true,
+            'error_bubbling' => true,
+            'constraints' =>  new Assert\NotBlank(array('message' => 'Password requried.')),
+        ))
+        ->add('newPassword', 'repeated', array(
+            'type' => 'password',
+            'error_bubbling' => true,
+            'required' => true,
+            'error_bubbling' => true,
+            'invalid_message' => 'The new password and repeat password fields must match.',
+            'options' => array('attr' => array('class' => 'password-field')),
+            'first_options'  => array('label' => 'New Password'),
+            'second_options' => array('label' => 'Repeat Password'),
+        ))        
+        ->getForm();
+        
+        // -- HANDAL FORM SUBMIT --//
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            $formData = $form->getData();
+            
+            //1) check current password
+            if (!empty($formData['password'])) {
+               if ( $oUser->getPassword() != $oUserRepo->encodePassword($oUser,$formData['password'])) {
+                   $form->get('password')->addError(new FormError('Please enter correct Password.'));
+               }
+            }
+            if ($form->isValid()) {
+                if($oUserRepo->setPassword($oUser,$formData['newPassword'])) {
+                    $errorType = 'success' ;
+                    $error = 'Password Change Sucessfully';
+                } else {
+                    $errorType = 'warning' ;
+                    $error = 'Password not change';
+                }
+                
+            }
+        }
+        return new Response($app['twig']->render('portal/password.html.twig', array(
+            'form' => $form->createView(),
+            'error' => $error,
+            'errorType' => $errorType,
+            'add' => $add
         )));
     }
 }

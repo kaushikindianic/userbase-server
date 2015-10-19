@@ -125,7 +125,7 @@ final class PdoUserRepository implements UserProviderInterface
             WHERE name=:name"
         );
         
-        $statement->execute(
+        return  $statement->execute(
             array(
                 ':password' => $hash,
                 ':stamp' => time(),
@@ -277,5 +277,12 @@ final class PdoUserRepository implements UserProviderInterface
             $users[] = $user;
         }
         return $users;
-    }    
+    }
+    
+    public function encodePassword(User $user, $password)
+    {
+        $encoder = $this->encoderFactory->getEncoder($user);
+        $hash = $encoder->encodePassword($password, $user->getSalt());
+        return $hash;
+    }
 }
