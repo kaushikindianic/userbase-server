@@ -133,7 +133,7 @@ class PortalController
                 }
             }
         }
-            
+        
         return new Response(
             $app['twig']->render(
                 'portal/account/picture.html.twig',
@@ -168,16 +168,7 @@ class PortalController
                     'aAccUsers' => $aAccUsers,
                     'aSpaces' => $aSpaces
                 )
-        //--GET ACCOUNT SPACES --//
-         $oSpaceRepo = $app->getSpaceRepository();
-         $aSpaces = $oSpaceRepo->getAccountSpaces($accountname);
-        
-        return new Response($app['twig']->render('portal/picture.html.twig', 
-            array(
-                'form' => $form->createView(),
-                'accountname' => $accountname,
-                'oAccount' => $oAccount,                
-                'aSpaces' => $aSpaces
+
             )
         );
     }
@@ -257,18 +248,34 @@ class PortalController
     }
     
     public function accountMembersAction(Application $app, Request $request, $accountname)
-    {
+    {  
         $accountRepo = $app->getAccountRepository();
-        $oAccount = $accountRepo->getByName($accountname);
-        $aAccUsers = $accountRepo->getAccountUsers($accountname);
         
-        return new Response($app['twig']->render('portal/members.html.twig', array(
+        if (!$aAccAssignUser = $accountRepo->userAssignToAccount($accountname, $app['currentuser']->getName()) ) {
+            return $app->redirect($app['url_generator']->generate('portal_index', array()));
+        }
+        
+        if ($request->isMethod('post')) {
+           
+            $roleUserName = $request->get('frm_username');
+            $role = $request->get('frm_role');
+            if (!empty($roleUserName)) {
+                $accountRepo->updateMemberRole($accountname, $roleUserName, $role );
+            }
+        }
+        $oAccount = $accountRepo->getByName($accountname);
+        $aAccUsers = $accountRepo->getAccountMembers($accountname);
+        $aRole  = ['0' => 'Member', '1' => 'Owner'];
+        
+        return new Response($app['twig']->render('portal/account/members.html.twig', array(
             'accountname' => $accountname,
             'oAccount' => $oAccount,
-            'aAccUsers' => $aAccUsers
+            'aAccUsers' => $aAccUsers,
+            'aAccAssignUser'=> $aAccAssignUser,
+            'aRole' => $aRole
         )));        
     }
-    
+
     public function accountUserAddAction(Application $app, Request $request, $accountname)
     {
         $oAccRepo = $app->getAccountRepository();
@@ -311,9 +318,8 @@ class PortalController
                 'name' => $account->getName(),
                 'displayName' => $account->getRawDisplayName(),
                 'about' => $account->getAbout(),
-            );
-            $nameParam = array(
-                'read_only' => true
+                'email' => $account->getEmail(),
+                'url' =>  $account->getUrl()
             );
         } else {
             $add = true;
@@ -323,9 +329,52 @@ class PortalController
         }
 
         $form = $app['form.factory']->createBuilder('form', $defaults)
-            ->add('name', 'text',  $nameParam)
-            ->add('displayName', 'text', array('required' => false, 'label' => 'Display name'))
-            ->add('about', 'text', array('required' => false))
+            ->add('name', 'text', array(
+                'required' => true,
+                'read_only' => ($add)? false: true,
+                'error_bubbling' => true,
+                'attr' => array(
+                    'placeholder' => 'Name',
+                    (($add)? 'autofocus' : '' ) => '' ,
+                )
+            ))
+            ->add('displayName', 'text', array(
+                'required' => false, 
+                'label' => 'Display name',
+                'attr' => array(
+                    'placeholder' => 'Display name',
+                    ((!$add)? 'autofocus' : '' ) => '' ,
+                )    
+            ))
+            ->add('email', 'email', array(
+                'required' => false,
+                'label' => 'E-mail',
+                'trim' => true,
+                'error_bubbling' => true,
+                'constraints' => array(
+                    new Assert\NotBlank(array('message' => 'E-mail value should not be blank.')),
+                    new Assert\Email()
+                ),
+                'attr' => array(
+                    'placeholder' => 'E-mail',
+                    'class' => 'form-control'
+                )
+            ))
+            ->add('url', 'url', array(
+                'required' => false,
+                'label' => 'URL',
+                'error_bubbling' => true,
+                'attr' => array(
+                   'placeholder' => 'URL',
+                    'class' => 'form-control'
+                 )   
+            ))
+            ->add('about', 'text', array(
+                'required' => false,
+                'attr' => array(
+                    'placeholder' => 'About',
+                )
+            ))
             ->getForm();
 
         // handle form submission
@@ -337,6 +386,8 @@ class PortalController
             if ($add) {
                 $oAccModel->setDisplayName($data['displayName'])
                     ->setAbout($data['about'])
+                    ->setEmail($data['email'])
+                    ->setUrl($data['url'])
                     ->setAccountType('organization');
 
                if (! $repo->add($oAccModel)) {
@@ -346,8 +397,8 @@ class PortalController
                    )));
 
                } else {
-                   //-- ASSIGN USER
-                   $repo->addAccUser($data['name'], $user->getName(), 'user');
+                   //-- ASSIGN MEMEBR TO USER --//
+                   $repo->addAccUser($data['name'], $user->getName(), 1);
                    return $app->redirect($app['url_generator']->generate('portal_index'));
                }
 
@@ -480,6 +531,62 @@ class PortalController
 
         return $app->redirect($app['url_generator']->generate('portal_view', array(
             'accountname' => $aSpace['account_name']
+        )));
+    }
+    
+    public function passwordAction(Application $app, Request $request)
+    {
+        $oUserRepo = $app->getUserRepository();
+        $oUser = $app['currentuser'];
+        $errorType = 'danger';
+        
+        $form = $app['form.factory']->createBuilder('form')
+        ->add('password', 'password', array(
+            'required' => true,
+            'label' => 'Password',
+            'trim' => true,
+            'error_bubbling' => true,
+            'constraints' =>  new Assert\NotBlank(array('message' => 'Password requried.')),
+        ))
+        ->add('newPassword', 'repeated', array(
+            'type' => 'password',
+            'error_bubbling' => true,
+            'required' => true,
+            'error_bubbling' => true,
+            'invalid_message' => 'The new password and repeat password fields must match.',
+            'options' => array('attr' => array('class' => 'password-field')),
+            'first_options'  => array('label' => 'New Password'),
+            'second_options' => array('label' => 'Repeat Password'),
+        ))        
+        ->getForm();
+        
+        // -- HANDAL FORM SUBMIT --//
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            $formData = $form->getData();
+            
+            //1) check current password
+            if (!empty($formData['password'])) {
+               if ( $oUser->getPassword() != $oUserRepo->encodePassword($oUser,$formData['password'])) {
+                   $form->get('password')->addError(new FormError('Please enter correct Password.'));
+               }
+            }
+            if ($form->isValid()) {
+                if($oUserRepo->setPassword($oUser,$formData['newPassword'])) {
+                    $errorType = 'success' ;
+                    $error = 'Password Change Sucessfully';
+                } else {
+                    $errorType = 'warning' ;
+                    $error = 'Password not change';
+                }
+                
+            }
+        }
+        return new Response($app['twig']->render('portal/password.html.twig', array(
+            'form' => $form->createView(),
+            'error' => $error,
+            'errorType' => $errorType,
+            'add' => $add
         )));
     }
 }

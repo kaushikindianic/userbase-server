@@ -1,0 +1,82 @@
+{% extends "portal/layout.html.twig" %}
+
+{% block content %}
+
+<h2>{{ oAccount.getDisplayName() }} </h2>
+
+    <div class="col-md-8" ><h2>Users</h2></div>
+    <div class="col-md-2" >
+        <div class="buttonbox">
+            <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" data-backdrop="static">
+              <i class="fa fa-plus"></i>   Add User</button>
+         </div>
+    </div>
+    <div class="col-md-2" >
+        <a href="{{ path('portal_view', {'accountname' :accountname}) }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+    </div>         
+    <table class="table">
+        <tr>
+            <th>Member</th>
+            <th>Email</th>
+            <th>Role</th>
+        </tr>
+         {% for aAccUser in aAccUsers %}
+            <tr>
+                <td>{{ aAccUser.user_name }}</td>
+                <td>{{ aAccUser.email }}</td>
+                <td>
+                    {% if aAccAssignUser.is_owner == '1'  and   aAccAssignUser.user_name != aAccUser.user_name %}
+                        <form method="post" action="" name="frm_{{ aAccUser.user_name }}">
+                            <input type="hidden" name="frm_username" value="{{ aAccUser.user_name }}" >
+                            <select name="frm_role" class="jsRoleChange">
+                                {% for key, role in aRole %}
+                                    <option value="{{ key }}" {% if aAccUser.is_owner == key %} selected="selected" {% endif %} >{{ role }}</option>
+                                {% endfor %}
+                            </select>
+                        </form>
+                     {% else %}
+                           {% if aAccUser.is_owner == '1' %}
+                                Owner
+                            {% else %}
+                                Member
+                            {% endif %}
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+
+
+<!-- Modal -->
+<div class="modal fade" id="popupAssignUsers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+                <h4 class="modal-title" id="myModalLabel">&nbsp;</h4>
+            </div>
+            <div class="modal-body">
+                <div id="msgAppId" style="display: none;"
+                    class="alert alert-success" role="alert"></div>
+                <div>
+                    <form method="post" name="frmUser" id="frmUser" action="{{ path('protal_account_user_add', {'accountname' :accountname} ) }}" >
+                        <div class="form-group">
+                            <label for="recipient-name" class="control-label">Usersname</label>
+                            <input type="text" class="form-control" id="userName" name="userName" required="required">
+                        </div>
+                        <button type="submit" class="btn btn-success">
+                            <i class="fa fa-server"></i>
+                            Save
+                        </button>
+                    </form>
+                </div>                
+            </div>            
+        </div>
+    </div>
+</div>
+{% endblock %}

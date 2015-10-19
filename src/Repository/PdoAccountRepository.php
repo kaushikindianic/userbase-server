@@ -16,7 +16,7 @@ class PdoAccountRepository
     }
 
     public function getByName($name)
-    {
+    {   
         $statement = $this->pdo->prepare(
             "SELECT * FROM account WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
         );
@@ -68,6 +68,8 @@ class PdoAccountRepository
            // ->setPictureUrl($row['picture_url'])
             ->setDisplayName($row['display_name'])
             ->setAccountType($row['account_type'])
+            ->setEmail($row['email'])
+            ->setUrl($row['url'])
         ;
     }
 
@@ -78,21 +80,21 @@ class PdoAccountRepository
         
         if ($exists === null) {
             $statement = $this->pdo->prepare(
-                'INSERT INTO account (name, display_name, about, created_at, account_type) 
-                    VALUES (:name, :display_name, :about, :created_at, :account_type)'
+                'INSERT INTO account (name, display_name, about, created_at, account_type, email, url) 
+                    VALUES (:name, :display_name, :about, :created_at, :account_type, :email, :url)'
             );
-            $statement->execute(
+            $row = $statement->execute(
                 array(
                     ':name' => $account->getName(),
                     ':display_name' => $account->getDisplayName(),
                     ':about' => $account->getAbout(),                    
                     ':created_at' => time(),
                     ':account_type' => $account->getAccountType(),
+                    ':email' => $account->getEmail(),
+                    ':url' => $account->getUrl()
                 )
             );
-            //$this->update($account);
-
-            return true;
+            return $row;
         } else {
             return false;
         }
@@ -103,7 +105,8 @@ class PdoAccountRepository
         $statement = $this->pdo->prepare(
             'UPDATE account
              SET display_name=:display_name, about=:about,
-              account_type=:account_type
+              account_type=:account_type,
+              email = :email, url =:url
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
         $statement->execute(
@@ -112,6 +115,8 @@ class PdoAccountRepository
                 ':display_name' => $account->getDisplayName(),
                 ':about' => $account->getAbout(),              
                 ':account_type' => $account->getAccountType(),
+                ':email' => $account->getEmail(),
+                ':url' => $account->getUrl()
             )
         );
     }
@@ -144,6 +149,17 @@ class PdoAccountRepository
         return $aUsers;
     }
     
+    public function getAccountMembers($accountName)
+    {
+        $statement = $this->pdo->prepare("SELECT au.*, u.email FROM account_user AS au
+                JOIN  user AS u ON  au.user_name = u.name
+                WHERE  au.account_name = :account_name 
+            ORDER BY au.user_name ASC");
+        $statement->execute(array(':account_name' => $accountName));
+        $rows = $statement->fetchAll();
+        return $rows;
+    }
+    
     public function delAccUsers($accountName, $userName)
     {
         $statement = $this->pdo->prepare(
@@ -159,13 +175,16 @@ class PdoAccountRepository
         );
     }
     
-    public function addAccUser($accountName, $userName)
+    public function addAccUser($accountName, $userName, $isOwner = 0)
     {
         $statement = $this->pdo->prepare(
-            'INSERT IGNORE INTO account_user (account_name, user_name)
-            VALUES (:account_name, :user_name )'
+            'INSERT IGNORE INTO account_user (account_name, user_name, is_owner)
+            VALUES (:account_name, :user_name, :is_owner )'
         );
-        $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
+        $statement->execute(array(':account_name' => $accountName,
+            ':user_name' => $userName,
+            ':is_owner' =>$isOwner
+        ));
         return true;
     }
     
@@ -194,5 +213,18 @@ class PdoAccountRepository
         $statement = $this->pdo->prepare('SELECT * FROM account_user WHERE account_name =:account_name AND user_name =:user_name LIMIT 1');
         $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
         return $statement->fetch();
+    }
+    
+    public function updateMemberRole($accountName, $userName, $isOwner = 0)
+    {
+        $statement = $this->pdo->prepare(
+            'UPDATE account_user SET  is_owner = :is_owner 
+             WHERE  user_name = :user_name  AND  account_name = :account_name');
+        
+       $row = $statement->execute(array(':account_name' => $accountName,
+            ':user_name' => $userName,
+            ':is_owner' =>$isOwner
+        ));
+        return $row;        
     }
 }
