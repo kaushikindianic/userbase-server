@@ -94,9 +94,10 @@ class SiteController
         //--CREATE PERSONAL ACCOUNT--//
         $oAccunt = new Account($user->getUsername());
         $oAccunt->setDisplayName($user->getUsername())
-                ->setAbout('Personal account')
+                ->setAbout('')
                 ->setPictureUrl('')
                 ->setAccountType('user')
+                ->setEmail($user->getEmail())
                 ;
         
         $oAccRepo = $app->getAccountRepository();
@@ -156,15 +157,15 @@ class SiteController
             // no such user
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E03');
         }
-        $leeway = 60 * 10; // +/- 10 minutes
+        $leeway = 60 * 60; // +/- 60 minutes
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05');
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05&detail=expired');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05');
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05&detail=early');
         }
 
         $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
