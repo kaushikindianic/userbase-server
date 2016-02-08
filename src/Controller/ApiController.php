@@ -34,6 +34,7 @@ class ApiController
         $data['username'] = $user->getUsername();
         if ($details) {
             $data['display_name'] = $user->getDisplayName();
+            $data['alias'] = $user->getAlias();
             $data['picture_url'] = $user->getPictureUrl();
             $data['email'] = $user->getEmail();
             $data['password'] = $user->getPassword();
