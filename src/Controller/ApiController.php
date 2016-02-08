@@ -61,7 +61,7 @@ class ApiController
                 $statement = array(
                     'effect' => 'allow',
                     'action' => ['userbase:manage_account', 'userbase:use_account'],
-                    'resource' => 'xrn:' . $partition . ':userbase::account/' . strtolower($oAccount->getName()) . '',
+                    'resource' => 'xrn:' . $partition . ':userbase:::account/' . strtolower($oAccount->getName()) . '',
                 );
                 $rolesData[] = $statement;
 
