@@ -74,6 +74,7 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
+        $user->setEmailVerifiedAt($row['email_verified_at']);
 //      $user->setPictureUrl($row['picture_url']);
         if ($row['is_admin']>0) {
             $user->setAdmin(true);

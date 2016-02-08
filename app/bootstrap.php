@@ -46,6 +46,16 @@ $application->before(function (Request $request) use ($application) {
         return $value;
     });
     $application['twig']->addFilter($filter);
+    
+    // Secure admin and api urls
+    if (strpos($request->getUri(), '/admin') || strpos($request->getUri(), '/api')) {
+        if (!isset($application['currentuser'])) {
+            return $application->redirect('/?errcode=noadmin1');
+        }
+        if (!$application['currentuser']->isAdmin()) {
+            return $application->redirect('/?errcode=noadmin2');
+        }
+    }
 
     //$application['twig']->addGlobal('site', $application['site']);
 });

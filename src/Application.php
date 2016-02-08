@@ -20,7 +20,6 @@ use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
 
 use UserBase\Server\Repository\PdoUserRepository;
-use UserBase\Server\Repository\PdoAdminRepository;
 use UserBase\Server\Repository\PdoAppRepository;
 use UserBase\Server\Repository\PdoAccountRepository;
 use UserBase\Server\Repository\PdoOAuthRepository;
@@ -41,7 +40,6 @@ class Application extends SilexApplication
     private $userRepository;
     private $oauthRepository;
     private $accountRepository;
-    private $adminRepository;
     private $identityRepository;
     private $eventRepository;
     private $apikeyRepository;
@@ -107,7 +105,6 @@ class Application extends SilexApplication
         $this->oauthRepository = new PdoOAuthRepository($pdo);
         $this->userRepository = new PdoUserRepository($pdo, $this->oauthRepository, $factory);
         $this->accountRepository = new PdoAccountRepository($pdo);
-        $this->adminRepository = new PdoAdminRepository($pdo, $factory);
         $this->appRepository = new PdoAppRepository($pdo);
         $this->identityRepository = new PdoIdentityRepository($pdo);
         $this->eventRepository = new \UserBase\Server\Repository\PdoEventRepository($pdo);
@@ -202,13 +199,13 @@ class Application extends SilexApplication
                 'stateless' => true,
                 'pattern' => '^/api',
                 'http' => true,
-                'users' => $this->getAdminRepository(),
+                'users' => $this->getUserRepository(),
             ),
             'admin' => array(
                 'stateless' => true,
                 'pattern' => '^/admin',
                 'http' => true,
-                'users' => $this->getAdminRepository(),
+                'users' => $this->getUserRepository(),
             ),
             'default' => array(
                 'anonymous' => true,
@@ -238,11 +235,6 @@ class Application extends SilexApplication
         return $this->oauthRepository;
     }
 
-    public function getAdminRepository()
-    {
-        return $this->adminRepository;
-    }
-
     public function getAppRepository()
     {
         return $this->appRepository;
@@ -267,8 +259,9 @@ class Application extends SilexApplication
     {
         return $this->apikeyRepository;
     }
+    
     public function getSpaceRepository()
     {
         return $this->spaceRepository;
-    }    
+    }
 }
