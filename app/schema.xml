@@ -141,6 +141,7 @@
     
     <table name="user">
         <column name="name" type="string" length="128" />
+        <column name="alias" type="string" length="128" />
         <column name="display_name" type="string" length="128" />
         <column name="password" type="string" length="128" />
         <column name="about" type="text" />

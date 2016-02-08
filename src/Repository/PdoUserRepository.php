@@ -30,11 +30,13 @@ final class PdoUserRepository implements UserProviderInterface
         $statement = $this->pdo->prepare(
             "SELECT u.*
             FROM user AS u
-            WHERE u.name=:name
+            WHERE u.name=:name OR u.alias=:alias
             LIMIT 1"
         );
-        $statement->execute(array('name' => $name));
+        
+        $statement->execute(array('name' => $name, 'alias' => $name));
         $row = $statement->fetch();
+
 
         if (!$row) {
             return null;
@@ -46,7 +48,7 @@ final class PdoUserRepository implements UserProviderInterface
     public function getAll($limit = 10, $search = '')
     {
         $aVal = array();
-        $sql = 'SELECT * FROM user  WHERE 1 ';
+        $sql = 'SELECT * FROM user WHERE 1 ';
         
         if ($search) {
             $sql .= ' AND name LIKE  :search  OR  email LIKE :search ';
@@ -75,6 +77,7 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
         $user->setEmailVerifiedAt($row['email_verified_at']);
+        $user->setAlias($row['alias']);
 //      $user->setPictureUrl($row['picture_url']);
         if ($row['is_admin']>0) {
             $user->setAdmin(true);

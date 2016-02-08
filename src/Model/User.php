@@ -21,6 +21,7 @@ final class User implements AdvancedUserInterface
     private $lastSeenAt;
     private $deletedAt;
     private $isAdmin = false;
+    private $alias;
 
     public function __construct($name)
     {
@@ -233,4 +234,16 @@ final class User implements AdvancedUserInterface
         }
         return false;
     }
+    
+    public function getAlias()
+    {
+        return $this->alias;
+    }
+    
+    public function setAlias($alias)
+    {
+        $this->alias = $alias;
+        return $this;
+    }
+    
 }
