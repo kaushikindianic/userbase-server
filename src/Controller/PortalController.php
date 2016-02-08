@@ -539,6 +539,7 @@ class PortalController
         $oUserRepo = $app->getUserRepository();
         $oUser = $app['currentuser'];
         $errorType = 'danger';
+        $error = array();
         
         $form = $app['form.factory']->createBuilder('form')
         ->add('password', 'password', array(
@@ -567,9 +568,9 @@ class PortalController
             
             //1) check current password
             if (!empty($formData['password'])) {
-               if ( $oUser->getPassword() != $oUserRepo->encodePassword($oUser,$formData['password'])) {
-                   $form->get('password')->addError(new FormError('Please enter correct Password.'));
-               }
+                if ($oUser->getPassword() != $oUserRepo->encodePassword($oUser,$formData['password'])) {
+                    $form->get('password')->addError(new FormError('Please enter correct Password.'));
+                }
             }
             if ($form->isValid()) {
                 if($oUserRepo->setPassword($oUser,$formData['newPassword'])) {
@@ -585,8 +586,7 @@ class PortalController
         return new Response($app['twig']->render('portal/password.html.twig', array(
             'form' => $form->createView(),
             'error' => $error,
-            'errorType' => $errorType,
-            'add' => $add
+            'errorType' => $errorType
         )));
     }
 }
