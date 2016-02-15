@@ -124,6 +124,17 @@ class ApiController
                 $data['members'][] = $memberData;
 
             }
+            $data['properties'] = array();
+            $accountPropertyRepo = $app->getAccountPropertyRepository();
+            $accountProperties = $accountPropertyRepo->getByAccountName($account->getName());
+            foreach ($accountProperties as $accountProperty) {
+                $propertyData = array();
+                $propertyData['name'] = $accountProperty->getName();
+                $propertyData['value'] = $accountProperty->getValue();
+                $data['properties'][] = $propertyData;
+            }
+            
+            
         }
     
         return $data;
@@ -185,8 +196,8 @@ class ApiController
     public function accountViewAction(Application $app, $accountName)
     {
         $this->baseUrl = $app['userbase.baseurl'];
-        $repo = $app->getAccountRepository();
-        $account = $repo->getByName($accountName);
+        $accountRepo = $app->getAccountRepository();
+        $account = $accountRepo->getByName($accountName);
         if (!$account) {
             return $this->getErrorResponse(404, "Account not found");
         }

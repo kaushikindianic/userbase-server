@@ -281,6 +281,7 @@ class AccountAdminController
     public function accountViewAction(Application $app, Request $request, $accountname)
     {   
         $repo = $app->getAccountRepository();
+        $accountPropertyRepository = $app->getAccountPropertyRepository();
         $account = $repo->getByName($accountname);
         // also support getting template by id
         if (! $account && is_numeric($accountname)) {
@@ -288,11 +289,18 @@ class AccountAdminController
         }
         $oApiKeyRepo  = $app->getApikeyRepository();
         $aApikeys  = $oApiKeyRepo->getByAccountName($accountname);
+        $accountProperties  = $accountPropertyRepository->getByAccountName($accountname);
         
-        return new Response($app['twig']->render('admin/account_view.html.twig', array(
-            'account' => $account,
-            'aApikeys' => $aApikeys
-        )));        
+        return new Response(
+            $app['twig']->render(
+                'admin/account_view.html.twig',
+                array(
+                    'account' => $account,
+                    'aApikeys' => $aApikeys,
+                    'accountProperties' => $accountProperties
+                )
+            )
+        );
     }
     
     public function addApikeyAction(Application $app, Request $request, $accountname)

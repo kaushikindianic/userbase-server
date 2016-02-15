@@ -31,6 +31,7 @@ use Silex\Provider\ValidatorServiceProvider;
 use UserBase\Server\Repository\PdoIdentityRepository;
 use Userbser\Server\Repository\PdoEventRepository;
 use UserBase\Server\Repository\PdoApikeyRepository;
+use UserBase\Server\Repository\PdoAccountPropertyRepository;
 use UserBase\Server\Repository\PdoSpaceRepository;
 
 class Application extends SilexApplication
@@ -109,6 +110,7 @@ class Application extends SilexApplication
         $this->identityRepository = new PdoIdentityRepository($pdo);
         $this->eventRepository = new \UserBase\Server\Repository\PdoEventRepository($pdo);
         $this->apikeyRepository = new PdoApikeyRepository($pdo);
+        $this->accountPropertyRepository = new PdoAccountPropertyRepository($pdo);
         $this->spaceRepository = new  PdoSpaceRepository($pdo);
         
         $mailer = Service::mailer();
@@ -258,6 +260,11 @@ class Application extends SilexApplication
     public function getApikeyRepository()
     {
         return $this->apikeyRepository;
+    }
+    
+    public function getAccountPropertyRepository()
+    {
+        return $this->accountPropertyRepository;
     }
     
     public function getSpaceRepository()

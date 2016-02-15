@@ -18,6 +18,13 @@
     <a class="btn btn-primary btn-lg" href="{{ path("admin_account_addapikey", { "accountname": account.getName() } ) }}">Add API</a>
 </div>
 
+<h3>Account Properties ({{ accountProperties|length }})</h3>
+<ul>
+    {% for p in accountProperties %}
+    <li><b>{{ p.getName() }}</b>: {{ p.getValue() }}</li>
+    {% endfor %}
+</ul>
+
 <h3>Events ({{ aApikeys|length }})</h3>
     <table class="table">
         <tr>
