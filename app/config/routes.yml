@@ -138,11 +138,19 @@ api_v1_root:
 
 api_v1_user_list:
     path: /api/v1/users
-    defaults:  { _controller: UserBase\Server\Controller\ApiController::userListAction }
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::userIndexAction }
 
 api_v1_user_view:
-    path: /api/v1/users/{username}
+    path: /api/v1/users/{userName}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userViewAction }
+
+api_v1_account_list:
+    path: /api/v1/accounts
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::accountIndexAction }
+
+api_v1_account_view:
+    path: /api/v1/accounts/{accountName}
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::accountViewAction }
 
 admin_index:
     path: /admin
