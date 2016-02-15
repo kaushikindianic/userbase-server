@@ -70,9 +70,13 @@ class Account
 
     public function getPictureUrl($size = null)
     {
-        return $this->pictureUrl;
+        if ($this->pictureUrl) {
+            return $this->pictureUrl;
+        }
+        $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=retro";
+        return $url;
     }
-
+    
     public function setPictureUrl($url)
     {
         $this->pictureUrl = $url;
