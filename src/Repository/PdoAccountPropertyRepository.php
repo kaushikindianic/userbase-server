@@ -21,6 +21,7 @@ class PdoAccountPropertyRepository
             'account_name' => $accountName
         ));
         $rows = $statement->fetchAll();
+        $objs = array();
         foreach ($rows as $row) {
             $objs[] = $this->rowToAccountProperty($row);
         }
