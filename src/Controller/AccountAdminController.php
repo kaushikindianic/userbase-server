@@ -222,7 +222,7 @@ class AccountAdminController
             }
     
             $account->setDisplayName($data['displayName'])
-            ->setAbout($data['about'])            
+            ->setAbout($data['about'])
             ->setAccountType('organization');
     
             if ($add) {
