@@ -315,8 +315,11 @@ class SiteController
             return $app->redirect('/'.$app['picturePath'].'/'.$fileName);
             
         } else {
-            $email = $account->getEmail();
-            $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($email))) . "?d=retro";
+            $value = $account->getEmail();
+            if (!$value) {
+                $value = $account->getName();
+            }
+            $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($value))) . "?d=retro";
             //$url = $account->getPictureUrl();
         }
         return $app->redirect($url);
