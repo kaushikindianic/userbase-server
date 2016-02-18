@@ -3,13 +3,13 @@
     <!-- think of account as github organizations.. a place to share resources -->
     <table name="account">
         <column name="name" type="string" length="128" />
-        <column name="display_name" type="string" length="128" />
-        <column name="email" type="string" length="250" />
+        <column name="display_name" type="string" length="128" notnull="false" />
+        <column name="email" type="string" length="250" notnull="false" />
         <column name="url" type="string" length="250" notnull="false" />
-        <column name="about" type="text" />
+        <column name="about" type="text" notnull="false" />
         <column name="account_type" type="string" length="50" />
-        <column name="created_at" type="integer" />
-        <column name="deleted_at" type="integer" />
+        <column name="created_at" type="integer" notnull="false" />
+        <column name="deleted_at" type="integer" notnull="false" />
 
         <index name="primary" primary="true" columns="name" />
     </table>
