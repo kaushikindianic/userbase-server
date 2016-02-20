@@ -308,10 +308,8 @@ class SiteController
         $fileName = $accountname.'.png';
         
         
-        if ( is_file($app['picturePath'].'/'.$fileName) ) {
-            
+        if (is_file($app['picturePath'].'/'.$fileName)) {
            //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
-            
             return $app->redirect('/'.$app['picturePath'].'/'.$fileName);
             
         } else {

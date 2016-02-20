@@ -25,6 +25,48 @@ class PdoAccountRepository
 
         return $row ? $this->rowToAccount($row) : null;
     }
+    
+    public function getAccountUsersByType($accountname, $type)
+    {   
+        $statement = $this->pdo->prepare(
+            "SELECT account.* FROM account_user
+            JOIN account ON account.name=account_user.user_name
+            WHERE account_user.account_name=:account_name AND account.account_type=:account_type"
+        );
+        $statement->execute(
+            array(
+                'account_name' => $accountname,
+                'account_type' => $type
+            )
+        );
+        $rows = $statement->fetchAll();
+        $objs = array();
+        foreach ($rows as $row) {
+            $objs[] = $this->rowToAccount($row);
+        }
+        return $objs;
+    }
+    
+    public function getUserAccountsByType($username, $type)
+    {   
+        $statement = $this->pdo->prepare(
+            "SELECT account.* FROM account_user
+            JOIN account ON account.name=account_user.account_name
+            WHERE account_user.user_name=:user_name AND account.account_type=:account_type"
+        );
+        $statement->execute(
+            array(
+                'user_name' => $username,
+                'account_type' => $type
+            )
+        );
+        $rows = $statement->fetchAll();
+        $objs = array();
+        foreach ($rows as $row) {
+            $objs[] = $this->rowToAccount($row);
+        }
+        return $objs;
+    }
 
     private function userExistsByName($name)
     {

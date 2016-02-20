@@ -21,10 +21,14 @@
         {% for account in accounts %}
         <tr>
             <td>
-                <img style="float: left; margin-right: 10px; width: 40px;" class="profile-thumb" src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
+                <div style="width: 40px; height: 40px; float: left; margin-right: 10px; display: inline-block;">
+                    <img style="width: 40px; height: 40px;"
+                        class="profile-thumb"
+                        src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
+                </div>
                 <a href="{{ path("admin_account_view", {"accountname": account.getName() })}}">
                     {{ account.getName() }}: {{ account.getDisplayName() }}
-                </a>
+                </a><br /><span class="badge badge-default">{{ account.getAccountType() }}</span>
             </td>
             <td>
                 {{ account.getCreatedAt()|mydate }}

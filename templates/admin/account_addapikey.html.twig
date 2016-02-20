@@ -1,0 +1,20 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>@{{account.getName}} <small>{{ account.getDisplayName() }}</small></h2>
+<h3>New API Key created</h3>
+<div class="alert alert-info">
+    Please store the information displayed below. It will only be displayed once, and can not be retrieved at a later time.
+    If you ever loose this information, you can delete the key, and create a new one to retrieve new credentials.
+</div>
+
+<ul>
+    <li>API Key: <code>{{ apikey }}</code></li>
+    <li>Secret: <code>{{ secret }}</code></li>
+</ul>
+
+<div class="buttonbox">
+    <a class="btn btn-primary" href="{{ path("admin_account_view", { "accountname": account.getName() } ) }}">Back</a>
+</div>
+
+{% endblock %}

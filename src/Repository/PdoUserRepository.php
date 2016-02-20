@@ -30,13 +30,12 @@ final class PdoUserRepository implements UserProviderInterface
         $statement = $this->pdo->prepare(
             "SELECT u.*
             FROM user AS u
-            WHERE u.name=:name OR u.alias=:alias
+            WHERE (u.name=:name OR u.alias=:alias)
             LIMIT 1"
         );
         
         $statement->execute(array('name' => $name, 'alias' => $name));
         $row = $statement->fetch();
-
 
         if (!$row) {
             return null;

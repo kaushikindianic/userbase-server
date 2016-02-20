@@ -20,7 +20,11 @@ $application->before(function (Request $request) use ($application) {
                 //exit('anon!');
                 //return $app->redirect('/login');
             } else {
+                $accountRepo = $application->getAccountRepository();
+                $account = $accountRepo->getByName($token->getUser()->getUsername());
                 $application['currentuser'] = $token->getUser();
+                $application['currentaccount'] = $account;
+                
                 $application['twig']->addGlobal('currentuser', $token->getUser());
             }
         }
@@ -48,13 +52,21 @@ $application->before(function (Request $request) use ($application) {
     $application['twig']->addFilter($filter);
     
     // Secure admin and api urls
-    if (strpos($request->getUri(), '/admin') || strpos($request->getUri(), '/api')) {
+    if (strpos($request->getUri(), '/admin') || strpos($request->getUri(), '/api/')) {
         if (!isset($application['currentuser'])) {
             return $application->redirect('/?errcode=noadmin1');
         }
         if (!$application['currentuser']->isAdmin()) {
             return $application->redirect('/?errcode=noadmin2');
         }
+    }
+    
+    if (!strpos($request->getUri(), '/api/')) {
+        /*
+        if ($application['currentaccount']->getAccountType()!='apikey') {
+            return $application->redirect('/?errcode=apikey');
+        }
+        */
     }
 
     //$application['twig']->addGlobal('site', $application['site']);

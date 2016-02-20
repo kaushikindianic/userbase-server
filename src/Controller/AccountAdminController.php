@@ -281,32 +281,107 @@ class AccountAdminController
     
     public function accountViewAction(Application $app, Request $request, $accountname)
     {   
-        $repo = $app->getAccountRepository();
-        $accountPropertyRepository = $app->getAccountPropertyRepository();
-        $account = $repo->getByName($accountname);
+        $accountRepo = $app->getAccountRepository();
+        $account = $accountRepo->getByName($accountname);
         // also support getting template by id
         if (! $account && is_numeric($accountname)) {
             $account = $repo->getById($accountname);
         }
-        $oApiKeyRepo  = $app->getApikeyRepository();
-        $aApikeys  = $oApiKeyRepo->getByAccountName($accountname);
-        $accountProperties  = $accountPropertyRepository->getByAccountName($accountname);
+        
+        $apikeys = $accountRepo->getAccountUsersByType($accountname, 'apikey');
+        $users = $accountRepo->getAccountUsersByType($accountname, 'user');
+        $organizations = $accountRepo->getUserAccountsByType($accountname, 'organization');
+
+        $accountPropertyRepository = $app->getAccountPropertyRepository();
+        $accountProperties = $accountPropertyRepository->getByAccountName($accountname);
         
         return new Response(
             $app['twig']->render(
                 'admin/account_view.html.twig',
                 array(
                     'account' => $account,
-                    'aApikeys' => $aApikeys,
+                    'apikeys' => $apikeys,
+                    'users' => $users,
+                    'organizations' => $organizations,
                     'accountProperties' => $accountProperties
                 )
             )
         );
     }
-    
+
+    private function generateRandomString($length = 10)
+    {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
     public function addApikeyAction(Application $app, Request $request, $accountname)
-    { 
-        return $this->apikeyForm($app, $request, $accountname, 0);
+    {
+        $repo = $app->getUserRepository();
+        $username = 'apikey-' . $accountname . '-' . $this->generateRandomString(16);
+        $email = '';
+        $password = $this->generateRandomString(32);
+        try {
+            $user = $repo->register($app, $username, $email);
+        } catch (Exception $e) {
+            return $app->redirect(
+                $app['url_generator']->generate(
+                    'admin_account_view',
+                    ['accountname' => $accountname]
+                ) . '?errorcode=E34'
+            );
+        }
+        $user = $repo->getByName($username);
+
+        $repo->setPassword($user, $password);
+        
+        //--CREATE APIKEY ACCOUNT--//
+        $account = new Account($user->getUsername());
+        $account->setDisplayName('API Key ' . $user->getUsername())
+                ->setAccountType('apikey')
+                ;
+        
+        $accountRepo = $app->getAccountRepository();
+        if ($accountRepo->add($account)) {
+            $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'apikey');
+            $accountRepo->addAccUser($accountname, $user->getUsername(), 'apikey');
+        } else {
+            throw new RuntimeException("Failed to add account: " . $account->getName());
+        }
+        
+        
+        //--EVENT LOG --//
+        $time = time();
+        $sEventData = json_encode( array('username' => $accountname, 'apikey' => $username, 'time' => $time ));
+        
+        $oEvent = new Event();
+        $oEvent->setName($accountname);
+        $oEvent->setEventName('apikey.create');
+        $oEvent->setOccuredAt($time);
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName('');
+        
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+        
+        //echo $username . ':' . $password;
+        return new Response(
+            $app['twig']->render(
+                'admin/account_addapikey.html.twig',
+                array(
+                    'account' => $accountRepo->getByName($accountname),
+                    'apikey' => $username,
+                    'secret' => $password
+                )
+            )
+        );
+        
+        //return $this->apikeyForm($app, $request, $accountname, 0);
     }
     
     public function editApikeyAction(Application $app, Request $request, $accountname, $id)

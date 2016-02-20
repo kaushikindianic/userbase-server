@@ -4,12 +4,9 @@
 <img class="profile" style="float: right; margin-left: 10px;"
     src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
 <h2>@{{account.getName}} <small>{{ account.getDisplayName() }}</small></h2>
+<span class="badge badge-default">{{ account.getAccountType()}}</span>
 <p class="lead">{{ account.getAbout()|raw|nl2br }}</p>
 <div style="clear: both;"></div>
-{#<div class="buttonbox">
-    <a class="btn btn-primary" href="{{ path("admin_account_addapikey", { "accountname": account.getName() } ) }}">Add API</a>
-</div>
-#}
 
 <h3>Account Properties ({{ accountProperties|length }})</h3>
 <ul>
@@ -23,27 +20,53 @@
 
     <button class="btn btn-primary">Add property</button>
 </form>
-<h3>Events ({{ aApikeys|length }})</h3>
-    <table class="table">
-        <tr>
-            <th>Name</th>
-            <th style=" text-align: center">username</th>
-            <th style=" text-align: center">passowrd</th>
-            <th style=" text-align: center">Created At</th>
-            <th style=" text-align: center">Action</th>
-        </tr>
-        {% for aRows in aApikeys %}
-        <tr>
-            <td>{{ aRows.name }}</td>
-            <td style="text-align: center" >{{ aRows.username }}</td>
-            <td style="text-align: center" >{{ aRows.password }}</td>
-            <td style="text-align: center" >{{ aRows.created_at|date("H:i:s") }}</td>
-            <td style="text-align: center" >
-                <a href="{{ path("admin_account_editapikey", {"accountname": account.getName(), 'id': aRows.id})}}">
-                 <span class="glyphicon glyphicon-edit"></span>
-                </a>
-            </td>
-        </tr>
-        {% endfor %}
-    </table>
+{% if account.getAccountType() == 'organization' %}
+<h3>Users ({{ users|length }})</h3>
+<table class="table">
+    <tr>
+        <th>Name</th>
+    </tr>
+    {% for row in users %}
+    <tr>
+        <td><a href="{{ path('admin_account_view', { 'accountname': row.name })}}">{{ row.name }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+<div class="buttonbox">
+    <a class="btn btn-primary" href="{{ path('admin_account_users', {'accountname': account.getName()})}}">Manage users and apikeys</a>
+</div>
+{% endif %}
+
+{% if account.getAccountType() == 'user' or account.getAccountType() == 'apikey' %}
+<h3>Organizations ({{ organizations|length }})</h3>
+<table class="table">
+    <tr>
+        <th>Name</th>
+    </tr>
+    {% for row in organizations %}
+    <tr>
+        <td><a href="{{ path('admin_account_view', { 'accountname': row.name })}}">{{ row.name }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+{% endif %}
+
+{% if account.getAccountType() == 'organization' %}
+<h3>API Keys ({{ apikeys|length }})</h3>
+<table class="table">
+    <tr>
+        <th>Name</th>
+    </tr>
+    {% for row in apikeys %}
+    <tr>
+        <td><a href="{{ path('admin_account_view', { 'accountname': row.name })}}">{{ row.name }}</a></td>
+    </tr>
+    {% endfor %}
+</table>
+
+<div class="buttonbox">
+    <a class="btn btn-primary" href="{{ path("admin_account_add_apikey", { "accountname": account.getName() } ) }}">Add API Key</a>
+</div>
+{% endif %}
+
 {% endblock %}
