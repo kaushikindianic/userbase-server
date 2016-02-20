@@ -1,30 +1,28 @@
 {% extends "admin/layout.html.twig" %}
 
 {% block content %}
-<h2>Account: {{ account.getDisplayName() }}</h2>
-
-<div class="row">
-    <div class="col-md-4">
-        <img class="profile"  src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
-    </div>
-    <div class="col-md-8">
-        <ul>
-            <li>About: {{ account.getAbout()|raw|nl2br }}</li>
-            
-        </ul>
-    </div>    
+<img class="profile" style="float: right; margin-left: 10px;"
+    src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
+<h2>@{{account.getName}} <small>{{ account.getDisplayName() }}</small></h2>
+<p class="lead">{{ account.getAbout()|raw|nl2br }}</p>
+<div style="clear: both;"></div>
+{#<div class="buttonbox">
+    <a class="btn btn-primary" href="{{ path("admin_account_addapikey", { "accountname": account.getName() } ) }}">Add API</a>
 </div>
-<div class="buttonbox">
-    <a class="btn btn-primary btn-lg" href="{{ path("admin_account_addapikey", { "accountname": account.getName() } ) }}">Add API</a>
-</div>
+#}
 
 <h3>Account Properties ({{ accountProperties|length }})</h3>
 <ul>
     {% for p in accountProperties %}
-    <li><b>{{ p.getName() }}</b>: {{ p.getValue() }}</li>
+    <li><b>{{ p.getName() }}</b>: {{ p.getValue() }} <a href="{{path('admin_account_delete_property', {'accountname': account.getName, 'propertyId': p.id })}}"><i class="fa fa-remove"></i></a></li>
     {% endfor %}
 </ul>
+<form action="{{ path('admin_account_add_property', {'accountname': account.getName()})}}" method="post">
+    <input type="text" required name="property_name" class="form-control" style="width: 150px; display: inline;" placeholder="Name" />
+    <input type="text" required name="property_value" class="form-control" style="width: 150px; display: inline;" placeholder="Value" />
 
+    <button class="btn btn-primary">Add property</button>
+</form>
 <h3>Events ({{ aApikeys|length }})</h3>
     <table class="table">
         <tr>

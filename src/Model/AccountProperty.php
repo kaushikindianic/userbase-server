@@ -3,9 +3,21 @@ namespace UserBase\Server\Model;
 
 class AccountProperty
 {
+    private $id;
     private $accountName;
     private $name;
     private $value;
+    
+    public function setId($id)
+    {
+        $this->id = $id;
+        return $this;
+    }
+    
+    public function getId()
+    {
+        return $this->id;
+    }
 
     public function getAccountName()
     {

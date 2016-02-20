@@ -219,13 +219,21 @@ admin_account_delete:
     path: /admin/account/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountDeleteAction }
 
-admin_account_addapikey:
+admin_account_add_apikey:
     path: /admin/account/{accountname}/addapikey
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addApikeyAction }
 
-admin_account_editapikey:
+admin_account_edit_apikey:
     path: /admin/account/{accountname}/{id}/editapikey
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::editApikeyAction }
+
+admin_account_add_property:
+    path: /admin/account/{accountname}/addproperty
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addPropertyAction }
+
+admin_account_delete_property:
+    path: /admin/account/{accountname}/deleteproperty/{propertyId}
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::deletePropertyAction }
 
 admin_account_users:
     path: /admin/account/{accountname}/users

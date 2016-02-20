@@ -15,9 +15,12 @@
     </table>
 
     <table name="account_property">
+        <column name="id" type="integer" autoincrement="true" />
         <column name="account_name" type="string" length="128" />
         <column name="name" type="string" length="128" />
         <column name="value" type="text" />
+        
+        <index name="primary" primary="true" columns="id" />
     </table>
 
     <table name="account_user">

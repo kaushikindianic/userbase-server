@@ -11,6 +11,7 @@ use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Apikey;
+use UserBase\Server\Model\AccountProperty;
 
 class AccountAdminController
 {
@@ -401,5 +402,24 @@ class AccountAdminController
             'account' => $account,
             'aApikeys' => $aApikeys
         )));        
-    }    
+    }
+
+    public function addPropertyAction(Application $app, Request $request, $accountname)
+    {
+        $accountPropertyRepository = $app->getAccountPropertyRepository();
+        $property = new AccountProperty();
+        $property->setAccountName($accountname);
+        $property->setName($request->request->get('property_name'));
+        $property->setValue($request->request->get('property_value'));
+        $accountPropertyRepository->add($property);
+        return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
+    }
+    
+    public function deletePropertyAction(Application $app, Request $request, $accountname, $propertyId)
+    {
+        $accountPropertyRepository = $app->getAccountPropertyRepository();
+        $property = $accountPropertyRepository->find($propertyId);
+        $accountPropertyRepository->delete($property);
+        return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
+    }
 }
