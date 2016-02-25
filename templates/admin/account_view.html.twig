@@ -7,6 +7,9 @@
 <span class="badge badge-default">{{ account.getAccountType()}}</span>
 <p class="lead">{{ account.getAbout()|raw|nl2br }}</p>
 <div style="clear: both;"></div>
+<div class="buttonbox">
+    <a class="btn btn-primary" href="{{ path('admin_account_edit', {'accountname': account.getName()})}}">Edit</a>
+</div>
 
 <h3>Account Properties ({{ accountProperties|length }})</h3>
 <ul>

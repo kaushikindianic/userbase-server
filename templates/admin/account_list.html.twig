@@ -3,6 +3,12 @@
 {% block content %}
 
 <h2>Account: {{ accountCount }}</h2>
+<div class="buttonbox">
+    <a href="{{ path('admin_account_add') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Create new account
+    </a>
+</div>
 
 <form action ="" name="frmAccList" id="frmAccList" method="post" >
     <div id="form">
@@ -43,11 +49,5 @@
         {% endfor %}
     </table>
 </form>
-<div class="buttonbox">
-    <a href="{{ path('admin_account_add') }}" class="btn btn-primary" role="button">
-        <i class="fa fa-plus"></i>
-        Add
-    </a>
-</div>
 
 {% endblock %}

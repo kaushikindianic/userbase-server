@@ -149,6 +149,11 @@ class AccountAdminController
         $add = false;
         
         $account = $repo->getByName($accountname);
+        $accountTypes = [
+            'organization' => 'Organization',
+            'user' => 'User',
+            'apikey' => 'API Key'
+        ];
         // also support getting template by id
         if (! $account && is_numeric($accountname)) {
             $account = $repo->getById($accountname);
@@ -162,6 +167,7 @@ class AccountAdminController
                 'name' => $account->getName(),
                 'displayName' => $account->getRawDisplayName(),
                 'about' => $account->getAbout(),
+                'accountType' => $account->getAccountType()
             );
         }
         $form = $app['form.factory']->createBuilder('form', $defaults)
@@ -173,6 +179,19 @@ class AccountAdminController
                 'placeholder' => 'Name',
                 (($add)? 'autofocus' : '' ) => '' ,
             )
+        ))
+        
+        ->add('accountType', 'choice', array('required' => true,
+            'label' => 'Account type',
+            'trim' => true,
+            'choices' => $accountTypes,
+            'read_only' => ($add)? false: true,
+            'empty_data' => null,
+            'empty_value' => '-- Select --',
+            'attr' => array(
+                'placeholder' => 'Account type',
+                'class' => 'form-control'
+            ),
         ))
         ->add('displayName', 'text', array(
             'required' => false,
@@ -220,11 +239,21 @@ class AccountAdminController
            
             if ($add) {
                 $account = new Account($data['name']);
+                $account->setAccountType($data['accountType']);
+                $userRepo = $app->getUserRepository();
+
+                switch ($data['accountType']) {
+                    case 'user':
+                        $user = $userRepo->register($app, $data['name'], $data['email']);
+                        $user = $userRepo->getByName($data['name']);
+                        $repo->addAccUser($data['name'], $data['name'], 'user');
+                        break;
+                }
+                //$userRepo->setPassword($user, $formData['_password']);
             }
     
             $account->setDisplayName($data['displayName'])
-            ->setAbout($data['about'])
-            ->setAccountType('organization');
+            ->setAbout($data['about']);
     
             if ($add) {
                 if (! $repo->add($account)) {
@@ -233,7 +262,7 @@ class AccountAdminController
                     )));
                 }
                 //-- ASSIGN MEMEBR TO USER --//
-                $repo->addAccUser($data['name'], $request->getUser(), 1);
+                //$repo->addAccUser($data['name'], $request->getUser(), 1);
                 
                 //--EVENT LOG --//
                 $time = time();

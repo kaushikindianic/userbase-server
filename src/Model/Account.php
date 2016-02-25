@@ -129,4 +129,19 @@ class Account
     {
         return $this->url;
     }
+    
+    public function getInitials()
+    {
+        $parts = explode(' ', $this->getDisplayName());
+        if (count($parts)>1) {
+            $initials = $parts[0][0];
+            $initials .= $parts[count($parts)-1][0];
+        } else {
+            $initials = substr($this->getDisplayName(), 0, 2);
+        }
+        if ($this->getAccountType()=='apikey') {
+            $initials = '#';
+        }
+        return strtoupper($initials);
+    }
 }

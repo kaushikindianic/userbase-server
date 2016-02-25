@@ -19,10 +19,12 @@
             <i class="fa fa-server"></i>
             Save
         </button>
-        <a href="{{ path('admin_account_list') }}" class="btn btn-default" role="button">
+        {%if account%}
+        <a href="{{ path('admin_account_view', {'accountname': account.getName() }) }}" class="btn btn-default" role="button">
             <i class="fa fa-arrow-left"></i>
             Back
         </a>
+        {% endif %}
         {% if (account)  and (account.getAccountType() == 'organization') %}
         <a href="{{ path('admin_account_users', {'accountname': account.getName()}) }}"
          class="btn btn-default" role="button">
