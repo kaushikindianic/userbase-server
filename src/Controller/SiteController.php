@@ -306,18 +306,22 @@ class SiteController
     {
         $repo = $app->getAccountRepository();
         $account = $repo->getByName($accountname);
-        $fileName = $accountname.'.png';
+        $fileName = $accountname . '.png';
         
         
         if (is_file($app['picturePath'].'/'.$fileName)) {
            //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
             header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
             return $app->redirect('/'.$app['picturePath'].'/'.$fileName);
-            
         } else {
-            $value = $account->getEmail();
-            if (!$value) {
-                $value = $account->getName();
+            if ($account) {
+                $value = $account->getEmail();
+                if (!$value) {
+                    $value = $account->getName();
+                }
+                $initials = $account->getInitials();
+            } else {
+                $initials = '?';
             }
             /*
             $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($value))) . "?d=retro";
@@ -326,8 +330,7 @@ class SiteController
             //$url = $account->getPictureUrl();
             
             $initialcon = new Initialcon();
-            $initials = $account->getInitials();
-            $img = $initialcon->getImageObject($initials, $account->getName(), 128);
+            $img = $initialcon->getImageObject($initials, $accountname, 128);
             header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
             echo $img->response('png');
             exit();
