@@ -9,6 +9,7 @@ use Service;
 use Exception;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
+use RunMyBusiness\Initialcon\Initialcon;
 
 class SiteController
 {
@@ -310,6 +311,7 @@ class SiteController
         
         if (is_file($app['picturePath'].'/'.$fileName)) {
            //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
+            header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
             return $app->redirect('/'.$app['picturePath'].'/'.$fileName);
             
         } else {
@@ -317,9 +319,20 @@ class SiteController
             if (!$value) {
                 $value = $account->getName();
             }
+            /*
             $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($value))) . "?d=retro";
+            return $app->redirect($url);
+            */
             //$url = $account->getPictureUrl();
+            
+            $initialcon = new Initialcon();
+            $initials = $account->getInitials();
+            $img = $initialcon->getImageObject($initials, $account->getName(), 128);
+            header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
+            echo $img->response('png');
+            exit();
         }
-        return $app->redirect($url);
     }
+    
+    
 }
