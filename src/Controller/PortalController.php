@@ -93,7 +93,7 @@ class PortalController
                 //CONVERT IMAGE TO PNG //
                 $imgPath =  $tmpDir.'/'.$tmpName;
 
-                $info = new \SplFileInfo( $imgPath);
+                $info = new \SplFileInfo($imgPath);
 
                 switch (strtolower($info->getExtension())) {
                     case 'gif':
@@ -116,7 +116,7 @@ class PortalController
 
                     //--resize image --//
                     $resizeImag = imagecreatetruecolor($newWidth, $newHeight);
-                    imagecopyresized($resizeImag, $img, 0, 0, 0, 0,$newWidth, $newHeight, $width, $height);
+                    imagecopyresized($resizeImag, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
                     imagepng($resizeImag, $dir.'/'.$newResizeName);
                     //---------//
                     imagecopy($im, $img, 0, 0, 0, 0, $width, $height);
@@ -168,7 +168,6 @@ class PortalController
                     'aAccUsers' => $aAccUsers,
                     'aSpaces' => $aSpaces
                 )
-
             )
         );
     }
@@ -219,61 +218,79 @@ class PortalController
             $formData['h'] = $request->get('h');
 
             $imgSrc = imagecreatefrompng($imgPath);
-            $dstSrc = ImageCreateTrueColor( $newWidth, $newHeight);
+            $dstSrc = ImageCreateTrueColor($newWidth, $newHeight);
             imagecolortransparent($dstSrc, imagecolorallocatealpha($dstSrc, 0, 0, 0, 127));
             imagealphablending($dstSrc, false);
             imagesavealpha($dstSrc, true);
-            imagecopyresampled($dstSrc, $imgSrc,0,0, $formData['x'], $formData['y'], $newWidth,$newHeight, $formData['w'],$formData['h']);
+            imagecopyresampled(
+                $dstSrc,
+                $imgSrc,
+                0,
+                0,
+                $formData['x'],
+                $formData['y'],
+                $newWidth,
+                $newHeight,
+                $formData['w'],
+                $formData['h']
+            );
             @imagepng($dstSrc, $newResizePath);
 
             return $app->redirect($app['url_generator']->generate('portal_index', array()));
         }
-        return new Response($app['twig']->render('portal/picture-crop.html.twig',
-            array(
-                'accountname' => $accountname,
-                'oAccount' => $oAccount,
-                 'tmpImgPath' => '/'.$dir.'/'.$imgName
+        return new Response(
+            $app['twig']->render(
+                'portal/picture-crop.html.twig',
+                array(
+                    'accountname' => $accountname,
+                    'oAccount' => $oAccount,
+                     'tmpImgPath' => '/'.$dir.'/'.$imgName
+                )
             )
-         ));
+        );
     }
 
-    public  function accountAddAction(Application $app, Request $request)
+    public function accountAddAction(Application $app, Request $request)
     {
-       return $this->accountForm($app, $request, null );
+        return $this->accountForm($app, $request, null);
     }
 
-    public function  accountEditAction(Application $app, Request $request, $accountname)
+    public function accountEditAction(Application $app, Request $request, $accountname)
     {
-       return $this->accountForm($app, $request, $accountname );
+        return $this->accountForm($app, $request, $accountname);
     }
     
     public function accountMembersAction(Application $app, Request $request, $accountname)
-    {  
+    {
         $accountRepo = $app->getAccountRepository();
         
-        if (!$aAccAssignUser = $accountRepo->userAssignToAccount($accountname, $app['currentuser']->getName()) ) {
+        if (!$aAccAssignUser = $accountRepo->userAssignToAccount($accountname, $app['currentuser']->getName())) {
             return $app->redirect($app['url_generator']->generate('portal_index', array()));
         }
         
         if ($request->isMethod('post')) {
-           
             $roleUserName = $request->get('frm_username');
             $role = $request->get('frm_role');
             if (!empty($roleUserName)) {
-                $accountRepo->updateMemberRole($accountname, $roleUserName, $role );
+                $accountRepo->updateMemberRole($accountname, $roleUserName, $role);
             }
         }
         $oAccount = $accountRepo->getByName($accountname);
         $aAccUsers = $accountRepo->getAccountMembers($accountname);
         $aRole  = ['0' => 'Member', '1' => 'Owner'];
         
-        return new Response($app['twig']->render('portal/account/members.html.twig', array(
-            'accountname' => $accountname,
-            'oAccount' => $oAccount,
-            'aAccUsers' => $aAccUsers,
-            'aAccAssignUser'=> $aAccAssignUser,
-            'aRole' => $aRole
-        )));        
+        return new Response(
+            $app['twig']->render(
+                'portal/account/members.html.twig',
+                array(
+                    'accountname' => $accountname,
+                    'oAccount' => $oAccount,
+                    'aAccUsers' => $aAccUsers,
+                    'aAccAssignUser'=> $aAccAssignUser,
+                    'aRole' => $aRole
+                )
+            )
+        );
     }
 
     public function accountUserAddAction(Application $app, Request $request, $accountname)
@@ -301,7 +318,6 @@ class PortalController
         $add = false;
 
         if (!empty($accountname)) {
-
             //CHECK USER ASSING TO ACCOUNT
             if (!$repo->userAssignToAccount($accountname, $user->getName())) {
                 return $app->redirect($app['url_generator']->generate('portal_view', array(
@@ -542,36 +558,27 @@ class PortalController
         $error = array();
         
         $form = $app['form.factory']->createBuilder('form')
-        ->add('password', 'password', array(
-            'required' => true,
-            'label' => 'Password',
-            'trim' => true,
-            'error_bubbling' => true,
-            'constraints' =>  new Assert\NotBlank(array('message' => 'Password requried.')),
-        ))
-        ->add('newPassword', 'repeated', array(
-            'type' => 'password',
-            'error_bubbling' => true,
-            'required' => true,
-            'error_bubbling' => true,
-            'invalid_message' => 'The new password and repeat password fields must match.',
-            'options' => array('attr' => array('class' => 'password-field')),
-            'first_options'  => array('label' => 'New Password'),
-            'second_options' => array('label' => 'Repeat Password'),
-        ))        
-        ->getForm();
+            ->add(
+                'newPassword',
+                'repeated',
+                array(
+                    'type' => 'password',
+                    'error_bubbling' => true,
+                    'required' => true,
+                    'error_bubbling' => true,
+                    'invalid_message' => 'The new password and repeat password fields must match.',
+                    'options' => array('attr' => array('class' => 'password-field')),
+                    'first_options'  => array('label' => 'New password'),
+                    'second_options' => array('label' => 'Repeat password'),
+                )
+            )
+            ->getForm();
         
-        // -- HANDAL FORM SUBMIT --//
+        // -- HANDLE FORM SUBMIT --//
         if ($request->isMethod('POST')) {
             $form->handleRequest($request);
             $formData = $form->getData();
             
-            //1) check current password
-            if (!empty($formData['password'])) {
-                if ($oUser->getPassword() != $oUserRepo->encodePassword($oUser,$formData['password'])) {
-                    $form->get('password')->addError(new FormError('Please enter correct Password.'));
-                }
-            }
             if ($form->isValid()) {
                 if($oUserRepo->setPassword($oUser,$formData['newPassword'])) {
                     $errorType = 'success' ;
@@ -580,7 +587,6 @@ class PortalController
                     $errorType = 'warning' ;
                     $error = 'Password not change';
                 }
-                
             }
         }
         return new Response($app['twig']->render('portal/password.html.twig', array(
