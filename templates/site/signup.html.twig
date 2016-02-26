@@ -19,6 +19,12 @@
     <div class="form-group form-group">
          <input name="_email" value="{{ _email|default("") }}" class="form-control" placeholder="{{ "common.label_email"|trans }}" type="email" required="required" />
     </div>
+    
+    {% if enable_mobile %}
+    <div class="form-group form-group">
+         <input name="_mobile" value="{{ _mobile|default("") }}" class="form-control" placeholder="{{ "common.label_mobile"|trans }}" type="text" required="required" />
+    </div>
+    {% endif %}
 
     <div class="form-group form-group">
          <input name="_password" class="form-control" placeholder="{{ "common.label_password"|trans }}" type="password" required="required" />

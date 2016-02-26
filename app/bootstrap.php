@@ -35,6 +35,7 @@ $application->before(function (Request $request) use ($application) {
         $application['twig']->addGlobal('postfix', $postfix);
     }
     $application['twig']->addGlobal('logourl', $application['userbase.logourl']);
+    $application['twig']->addGlobal('enable_mobile', $application['userbase.enable_mobile']);
 
     $filter = new Twig_SimpleFilter('mydate', function ($value) {
         if ($value>0) {

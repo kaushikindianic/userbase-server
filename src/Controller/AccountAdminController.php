@@ -167,6 +167,8 @@ class AccountAdminController
                 'name' => $account->getName(),
                 'displayName' => $account->getRawDisplayName(),
                 'about' => $account->getAbout(),
+                'email' => $account->getEmail(),
+                'mobile' => $account->getMobile(),
                 'accountType' => $account->getAccountType()
             );
         }
@@ -215,6 +217,18 @@ class AccountAdminController
                 'class' => 'form-control'
             )
         ))
+        ->add('mobile', 'text', array(
+            'required' => false,
+            'label' => 'Mobile',
+            'trim' => true,
+            'error_bubbling' => true,
+            'constraints' => array(
+            ),
+            'attr' => array(
+                'placeholder' => 'Mobile',
+                'class' => 'form-control'
+            )
+        ))
         ->add('url', 'url', array(
             'required' => false,
             'label' => 'URL',
@@ -252,8 +266,11 @@ class AccountAdminController
                 //$userRepo->setPassword($user, $formData['_password']);
             }
     
-            $account->setDisplayName($data['displayName'])
-            ->setAbout($data['about']);
+            $account
+                ->setDisplayName($data['displayName'])
+                ->setAbout($data['about'])
+                ->setMobile($data['mobile'])
+            ;
     
             if ($add) {
                 if (! $repo->add($account)) {
@@ -298,7 +315,7 @@ class AccountAdminController
                 
             }
     
-            return $app->redirect($app['url_generator']->generate('admin_account_list'));
+            return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname'=>$account->getName()]));
         }
     
         return new Response($app['twig']->render('admin/account_edit.html.twig', array(

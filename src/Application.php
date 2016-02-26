@@ -69,6 +69,7 @@ class Application extends SilexApplication
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
+        $this['userbase.enable_mobile'] = $this->config['userbase']['enable_mobile'];
         $this['userbase.partition'] = $this->config['userbase']['partition'];
         $this['userbase.salt'] = $this->config['userbase']['salt'];
         $this['picturePath'] = $this->config['picturePath'];

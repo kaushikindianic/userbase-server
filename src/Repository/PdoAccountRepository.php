@@ -111,6 +111,7 @@ class PdoAccountRepository
             ->setDisplayName($row['display_name'])
             ->setAccountType($row['account_type'])
             ->setEmail($row['email'])
+            ->setMobile($row['mobile'])
             ->setUrl($row['url'])
         ;
     }
@@ -122,8 +123,8 @@ class PdoAccountRepository
         
         if ($exists === null) {
             $statement = $this->pdo->prepare(
-                'INSERT INTO account (name, display_name, about, created_at, account_type, email, url) 
-                    VALUES (:name, :display_name, :about, :created_at, :account_type, :email, :url)'
+                'INSERT INTO account (name, display_name, about, created_at, account_type, email, mobile, url) 
+                    VALUES (:name, :display_name, :about, :created_at, :account_type, :email, :mobile, :url)'
             );
             $row = $statement->execute(
                 array(
@@ -133,6 +134,7 @@ class PdoAccountRepository
                     ':created_at' => time(),
                     ':account_type' => $account->getAccountType(),
                     ':email' => $account->getEmail(),
+                    ':mobile' => $account->getMobile(),
                     ':url' => $account->getUrl()
                 )
             );
@@ -148,7 +150,7 @@ class PdoAccountRepository
             'UPDATE account
              SET display_name=:display_name, about=:about,
               account_type=:account_type,
-              email = :email, url =:url
+              email=:email, mobile=:mobile, url=:url
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
         $statement->execute(
@@ -158,6 +160,7 @@ class PdoAccountRepository
                 ':about' => $account->getAbout(),              
                 ':account_type' => $account->getAccountType(),
                 ':email' => $account->getEmail(),
+                ':mobile' => $account->getMobile(),
                 ':url' => $account->getUrl()
             )
         );

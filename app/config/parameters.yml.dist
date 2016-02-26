@@ -9,6 +9,7 @@ userbase:
         - app/strings.yml
     theme: themes/default
     partition: dev
+    enable_mobile: false
 
 pdo:
     dsn: mysql:host=localhost;dbname=linkorb_sandbox_userbase_server

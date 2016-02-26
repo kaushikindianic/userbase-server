@@ -12,6 +12,7 @@ class Account
     private $deletedAt;
     private $accountType;
     private $email;
+    private $mobile;
     private $url;
 
     public function __construct($name)
@@ -144,4 +145,16 @@ class Account
         }
         return strtoupper($initials);
     }
+    
+    public function getMobile()
+    {
+        return $this->mobile;
+    }
+    
+    public function setMobile($mobile)
+    {
+        $this->mobile = $mobile;
+        return $this;
+    }
+    
 }
