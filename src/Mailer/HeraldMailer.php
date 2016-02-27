@@ -4,6 +4,7 @@ namespace UserBase\Server\Mailer;
 
 use Herald\Client\Client as HeraldClient;
 use Herald\Client\Message as HeraldMessage;
+use UserBase\Server\Model\Account;
 
 class HeraldMailer implements MailerInterface
 {
@@ -13,14 +14,14 @@ class HeraldMailer implements MailerInterface
         $this->client = $client;
     }
     
-    public function sendTemplate($templateName, $user, array $data)
+    public function sendTemplate($templateName, Account $account, array $data)
     {
         $message = new HeraldMessage();
         $message->setTemplate($templateName);
         foreach ($data as $key => $value) {
             $message->setData($key, $value);
         }
-        $message->setToAddress($user->getEmail(), $user->getDisplayName());
+        $message->setToAddress($account->getEmail(), $account->getDisplayName());
         $this->client->send($message);
     }
 }

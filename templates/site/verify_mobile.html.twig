@@ -1,0 +1,17 @@
+{% extends "@Theme/layout.html.twig" %}
+
+{% block content %}
+
+{% if resent is defined %}
+<div class="alert alert-success">{{ "verify_mobile.resent"|trans }}</div>
+{% endif %}
+
+<h1>{{ "verify_mobile.header"|trans }}</h1>
+<p>{{ "verify_mobile.description"|trans }}</p>
+<form action="{{path('verify_mobile', {'accountName': accountName })}}" method="post">
+    <input autofocus type="text" name="mobile_code" class="form-control" style="margin-bottom: 5px;"/>
+    <button class="btn btn-primary">{{ "common.action_next"|trans }}</button>
+</form>
+<hr />
+<a class="btn btn-default" href="{{path('verify_mobile', {'accountName': accountName })}}?resend">{{ "verify_mobile.resend"|trans }}</a>
+{% endblock %}

@@ -18,13 +18,18 @@ class SiteController
     {
 
         if (isset($app['currentuser'])) {
-            //return $app->redirect("/cp");
+            return $app->redirect($app['url_generator']->generate('portal_index'));
         }
         $data = array(
             'services' => array_keys((array)Service::oauth2()),
         );
 
         $error = $app['security.last_error']($request);
+        /*
+        if (!$app['currentuser']->isEmailVerified()) {
+            return $app->redirect($app['url_generator']->generate('verify_email'));
+        }
+        */
 
         return new Response($app['twig']->render(
             'site/index.html.twig',
@@ -35,15 +40,29 @@ class SiteController
     public function loginAction(Application $app, Request $request)
     {
         if (isset($app['currentuser'])) {
-            return $app->redirect($app['url_generator']->generate('cp_index'));
+            return $app->redirect($app['url_generator']->generate('portal_index'));
         }
 
         $data = array();
         //echo $error;
-
+        $last_username = $app['session']->get('_security.last_username');
+        $data['last_username'] = $last_username;
+        
         $error = $app['security.last_error']($request);
-        if ($error == 'Bad credentials.') {
-            $data['errormessage'] = $app['translator']->trans('common.error_incorrectcredentials');
+        switch ($error) {
+            case 'Bad credentials.':
+                $data['errormessage'] = $app['translator']->trans('common.error_incorrectcredentials');
+                break;
+            case 'User account is locked.':
+                $app['session']->set('_security.last_username', null);
+                if ($last_username) {
+                    return $app->redirect(
+                        $app['url_generator']->generate(
+                            'verify_email',
+                            ['accountName' => $last_username]
+                        )
+                    );
+                }
         }
 
         return new Response($app['twig']->render(
@@ -67,6 +86,11 @@ class SiteController
         $email = $request->request->get('_email');
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
+        $mobile = '';
+        if ($request->request->has('_mobile')) {
+            $mobile = $request->request->get('_mobile');
+        }
+        
 
         if ($password != $password2) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E02');
@@ -82,32 +106,32 @@ class SiteController
 
         $repo->setPassword($user, $password);
 
-        $baseUrl = $app['userbase.baseurl'];
-
-        $stamp = time();
-        $validatetoken = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
-        $link = $baseUrl . '/validate/' . $user->getUsername() . '/' . $stamp . '/' . $validatetoken;
-        $data = array();
-        $data['link'] = $link;
-        $data['username'] = $username;
-        $app['mailer']->sendTemplate('welcome', $user, $data);
+        $app->sendMail('welcome', $username);
         
         //--CREATE PERSONAL ACCOUNT--//
-        $oAccunt = new Account($user->getUsername());
-        $oAccunt->setDisplayName($user->getUsername())
-                ->setAbout('')
-                ->setPictureUrl('')
-                ->setAccountType('user')
-                ->setEmail($user->getEmail())
-                ;
+        $oAccount = new Account($user->getUsername());
+        $oAccount
+            ->setDisplayName($user->getUsername())
+            ->setAbout('')
+            ->setPictureUrl('')
+            ->setAccountType('user')
+            ->setEmail($user->getEmail())
+            ->setMobile($mobile)
+        ;
         
-        $oAccRepo = $app->getAccountRepository();
-        if ($oAccRepo->add($oAccunt)) {
-            $oAccRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
-        }        
+        $oAccountRepo = $app->getAccountRepository();
+        if ($oAccountRepo->add($oAccount)) {
+            $oAccountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
+        }
         //--EVENT LOG --//
         $time = time();
-        $sEventData = json_encode( array('username' => $user->getUsername(), 'email' => $user->getEmail(), 'time' => $time ));
+        $sEventData = json_encode(
+            array(
+                'username' => $user->getUsername(),
+                'email' => $user->getEmail(),
+                'time' => $time
+            )
+        );
         
         $oEvent = new Event();
         $oEvent->setName($user->getUsername());
@@ -118,16 +142,30 @@ class SiteController
         
         $oEventRepo = $app->getEventRepository();
         $oEventRepo->add($oEvent);
-        //-- END EVENT LOG --//        
-        
-        return $app->redirect($app['url_generator']->generate('signup_thankyou'));
-
+        //-- END EVENT LOG --//
+        return $app->redirect(
+            $app['url_generator']->generate(
+                'signup_thankyou',
+                ['accountName' => $user->getUsername()]
+            )
+        );
     }
 
-    public function signupThankYouAction(Application $app, Request $request)
+    public function signupThankYouAction(Application $app, Request $request, $accountName)
     {
+        $repo = $app->getAccountRepository();
+        $account = $repo->getByName($accountName);
+        if (!$account) {
+            return $app->redirect($app['url_generator']->generate('signup')) . '?errorcode=E21&detail=noaccount';
+        }
+        if (!$account->isEmailVerified()) {
+            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName'=>$accountName]));
+        }
+        if (!$account->isMobileVerified()) {
+            return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]));
+        }
+
         $data = array();
-        $data['email'] = 'x@y.z';
         return new Response($app['twig']->render(
             'site/signup_thankyou.html.twig',
             $data
@@ -148,46 +186,100 @@ class SiteController
             $data
         ));
     }
-
-    public function validateAction(Application $app, Request $request, $username, $stamp, $token)
+    
+    public function verifyEmailAction(Application $app, Request $request, $accountName)
     {
-        $repo = $app->getUserRepository();
-
-        $user = $repo->getByName($username);
-        if (!$user) {
+        $repo = $app->getAccountRepository();
+        $account = $repo->getByName($accountName);
+        if (!$account) {
             // no such user
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E03');
+            return $app->redirect($app['url_generator']->generate('login') . '?errorcode=E04&detail=noaccount');
+        }
+        if ($account->isEmailVerified()) {
+            return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=>$accountName]));
+        }
+        $data = array();
+        if ($request->query->has('resend')) {
+            $app->sendMail('welcome', $accountName);
+            $data['resent'] = true;
+        }
+        $data['accountName'] = $accountName;
+        return new Response($app['twig']->render(
+            'site/verify_email.html.twig',
+            $data
+        ));
+    }
+
+    public function verifyMobileAction(Application $app, Request $request, $accountName)
+    {
+        $accountRepo = $app->getAccountRepository();
+        $account = $accountRepo->getByName($accountName);
+        if (!$account) {
+            // no such user
+            return $app->redirect($app['url_generator']->generate('login') . '?errorcode=E04&detail=noaccount');
+        }
+        if ($account->isMobileVerified()) {
+            return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=>$accountName]));
+        }
+        
+        if ($request->request->has('mobile_code')) {
+            $code = $request->request->get('mobile_code');
+            if ($code == '') {
+                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=E81&detail=nocode1');
+            }
+            if ($account->getMobileCode() == '') {
+                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=E81&detail=nocode2');
+            }
+            if ($code != $account->getMobileCode()) {
+                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=E81&detail=nomatch');
+            }
+            $accountRepo->setMobileVerifiedStamp($account, time());
+            return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=>$accountName]));
+        }
+        $data = array();
+        if ($request->query->has('resend')) {
+            $code = $accountRepo->setMobileCode($account);
+            $app->sendSms('verify', $accountName, ['code'=>$code]);
+            $data['resent'] = true;
+        }
+        $data['accountName'] = $accountName;
+        return new Response($app['twig']->render(
+            'site/verify_mobile.html.twig',
+            $data
+        ));
+    }
+
+
+    public function verifyEmailLinkAction(Application $app, Request $request, $accountName, $stamp, $token)
+    {
+        $accountRepo = $app->getAccountRepository();
+
+        $account = $accountRepo->getByName($accountName);
+        
+        if (!$account) {
+            // no such user
+            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E03&detail=noaccount');
         }
         $leeway = 60 * 60; // +/- 60 minutes
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05&detail=expired');
+            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E05&detail=expired');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E05&detail=early');
+            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E05&detail=early');
         }
 
-        $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+        $test = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=E04');
+            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E04');
         }
 
-        $repo->setEmailVerifiedStamp($user, $stamp);
-        return $app->redirect($app['url_generator']->generate('validate_success'));
+        $accountRepo->setEmailVerifiedStamp($account, $stamp);
+        return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=> $accountName]));
     }
-
-    public function validateSuccessAction(Application $app, Request $request)
-    {
-        $data = array();
-        return new Response($app['twig']->render(
-            'site/validate_success.html.twig',
-            array($data)
-        ));
-    }
-
 
     public function passwordLostAction(Application $app, Request $request)
     {
@@ -329,8 +421,15 @@ class SiteController
             */
             //$url = $account->getPictureUrl();
             
+            $size = 128;
+            if ($request->query->has('s')) {
+                $size = (int)$request->query->get('s');
+                if ($size>512) {
+                    $size = 512;
+                }
+            }
             $initialcon = new Initialcon();
-            $img = $initialcon->getImageObject($initials, $accountname, 128);
+            $img = $initialcon->getImageObject($initials, $accountname, $size);
             header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
             echo $img->response('png');
             exit();

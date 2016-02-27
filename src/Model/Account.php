@@ -12,7 +12,10 @@ class Account
     private $deletedAt;
     private $accountType;
     private $email;
+    private $emailVerifiedAt;
     private $mobile;
+    private $mobileVerifiedAt;
+    private $mobileCode;
     private $url;
 
     public function __construct($name)
@@ -157,4 +160,47 @@ class Account
         return $this;
     }
     
+    public function getEmailVerifiedAt()
+    {
+        return $this->emailVerifiedAt;
+    }
+    
+    public function isEmailVerified()
+    {
+        return $this->emailVerifiedAt > 0;
+    }
+    
+    public function setEmailVerifiedAt($emailVerifiedAt)
+    {
+        $this->emailVerifiedAt = $emailVerifiedAt;
+        return $this;
+    }
+
+
+    public function getMobileVerifiedAt()
+    {
+        return $this->mobileVerifiedAt;
+    }
+
+    public function isMobileVerified()
+    {
+        return $this->mobileVerifiedAt > 0;
+    }
+
+    public function setMobileVerifiedAt($mobileVerifiedAt)
+    {
+        $this->mobileVerifiedAt = $mobileVerifiedAt;
+        return $this;
+    }
+    
+    public function getMobileCode()
+    {
+        return $this->mobileCode;
+    }
+    
+    public function setMobileCode($mobileCode)
+    {
+        $this->mobileCode = $mobileCode;
+        return $this;
+    }
 }

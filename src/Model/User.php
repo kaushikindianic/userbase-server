@@ -16,7 +16,6 @@ final class User implements AdvancedUserInterface
     private $displayName;
     
     private $createdAt;
-    private $emailVerifiedAt;
     private $passwordUpdatedAt;
     private $lastSeenAt;
     private $deletedAt;
@@ -187,23 +186,6 @@ final class User implements AdvancedUserInterface
     {
         return $this->email;
     }
-    
-    public function getEmailVerifiedAt()
-    {
-        return $this->emailVerifiedAt;
-    }
-    
-    public function isEmailVerified()
-    {
-        return $this->emailVerifiedAt > 0;
-    }
-    
-    public function setEmailVerifiedAt($emailVerifiedAt)
-    {
-        $this->emailVerifiedAt = $emailVerifiedAt;
-        return $this;
-    }
-    
     
     private $pictureUrl;
     

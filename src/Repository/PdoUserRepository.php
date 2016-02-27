@@ -75,7 +75,6 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
-        $user->setEmailVerifiedAt($row['email_verified_at']);
         $user->setAlias($row['alias']);
 //      $user->setPictureUrl($row['picture_url']);
         if ($row['is_admin']>0) {
@@ -178,27 +177,6 @@ final class PdoUserRepository implements UserProviderInterface
             )
         );
     }
-    
-    public function setEmailVerifiedStamp(User $user, $stamp)
-    {
-        if (!$user) {
-            throw new RuntimeException("User not specified");
-        }
-        
-        $statement = $this->pdo->prepare(
-            "UPDATE user SET
-            email_verified_at = :stamp
-            WHERE name=:name"
-        );
-        
-        $statement->execute(
-            array(
-                ':stamp' => $stamp,
-                ':name' => $user->getUsername()
-            )
-        );
-    }
-
 
     // Needed for symfony user provider interface
     public function loadUserByUsername($username)

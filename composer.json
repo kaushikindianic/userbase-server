@@ -31,7 +31,8 @@
         "league/oauth2-client": "^0.11.0",
         "bshaffer/oauth2-server-httpfoundation-bridge": "^1.0",
         "symfony/validator": "2.7.*",
-        "runmybusiness/initialcon": "~0.0"
+        "runmybusiness/initialcon": "~0.0",
+        "xi/sms": "~0.3"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",

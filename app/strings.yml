@@ -31,9 +31,17 @@ logout.message: You have been successfully logged out. Thank you for using our s
 
 signup.header: Signup
 signup.thankyou: Thanks for signing up!
-signup.pleaseconfirm: Please confirm your signup by clicking on the link that we have just sent to you by e-mail.
-validate_success.header: Verification success
-validate_success.description: Thank you for the verification. Your account is now activated, and you can now login.
+signup.thankyou_details: You can now login using the button below.
+
+verify_email.header: E-mail verification required
+verify_email.description: Please click the link that was sent to your e-mail address.
+verify_email.resent: We've just re-sent you the verification email.
+verify_email.resend: Resend
+
+verify_mobile.header: Mobile verification required
+verify_mobile.description: Please enter the verification code that was sent to your mobile phone.
+verify_mobile.resent: We've just re-sent you the verification code.
+verify_mobile.resend: Resend
 
 password_lost.header: Lost password
 password_lost.description: Enter your username below, and we'll send you a password-reset link.

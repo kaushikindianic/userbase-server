@@ -1,0 +1,15 @@
+{% extends "@Theme/layout.html.twig" %}
+
+{% block content %}
+
+{% if resent is defined %}
+<div class="alert alert-success">{{ "verify_email.resent"|trans }}</div>
+{% endif %}
+
+<h1>{{ "verify_email.header"|trans }}</h1>
+<p>{{ "verify_email.description"|trans }}</p>
+
+
+
+<a class="btn btn-primary" href="{{path('verify_email', {'accountName': accountName })}}?resend">{{ "verify_email.resend"|trans }}</a>
+{% endblock %}

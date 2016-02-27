@@ -33,6 +33,9 @@ use Userbser\Server\Repository\PdoEventRepository;
 use UserBase\Server\Repository\PdoApikeyRepository;
 use UserBase\Server\Repository\PdoAccountPropertyRepository;
 use UserBase\Server\Repository\PdoSpaceRepository;
+use Xi\Sms\SmsService;
+use Xi\Sms\SmsMessage;
+use Xi\Sms\Gateway\MessageBirdGateway;
 
 class Application extends SilexApplication
 {
@@ -74,7 +77,12 @@ class Application extends SilexApplication
         $this['userbase.salt'] = $this->config['userbase']['salt'];
         $this['picturePath'] = $this->config['picturePath'];
         $this['tmpDirPath'] = $this->config['tmpDirPath'];
-       
+
+        if (isset($this->config['sms'])) {
+            $this['sms.provider'] = $this->config['sms']['provider'];
+            $this['sms.sender'] = $this->config['sms']['sender'];
+            $this['sms.apikey'] = $this->config['sms']['apikey'];
+        }
     }
 
 
@@ -271,5 +279,55 @@ class Application extends SilexApplication
     public function getSpaceRepository()
     {
         return $this->spaceRepository;
+    }
+    
+    public function sendMail($templateName, $username)
+    {
+        $userRepo = $this->getUserRepository();
+        $accountRepo = $this->getAccountRepository();
+        $user = $userRepo->getByName($username);
+        $account = $accountRepo->getByName($username);
+        
+        $salt = $this['userbase.salt'];
+        $stamp = time();
+        $baseUrl = $this['userbase.baseurl'];
+        
+        $verifyToken = sha1($stamp . ':' . $account->getEmail() . ':' . $salt);
+        $link = $baseUrl . '/verify/email/' . $account->getName() . '/' . $stamp . '/' . $verifyToken;
+        
+        $data = array();
+        $data['link'] = $link;
+        $data['username'] = $username;
+        $this['mailer']->sendTemplate($templateName, $account, $data);
+        
+    }
+
+
+
+    public function sendSms($templateName, $username, $data = array())
+    {
+        if (!$this['sms.provider']) {
+            throw new RuntimeException("No SMS provider configured");
+        }
+        $userRepo = $this->getUserRepository();
+        $accountRepo = $this->getAccountRepository();
+        $user = $userRepo->getByName($username);
+        $account = $accountRepo->getByName($username);
+        
+        $stamp = time();
+        
+        $data['username'] = $username;
+        
+        $apiKey = $this['sms.apikey'];
+        $gw = new MessageBirdGateway($apiKey);
+        $service = new SmsService($gw);
+        
+        $sender = $this['sms.sender'];
+        $to = $account->getMobile();
+        
+        $message='code: ' . $data['code'];
+        
+        $msg = new SmsMessage($message, $sender, $to);
+        $service->send($msg);
     }
 }

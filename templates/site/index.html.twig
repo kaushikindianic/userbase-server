@@ -3,12 +3,7 @@
 {% block content %}
 
 {% if currentuser is defined %}
-<h1>{{ "index.welcome_username"|trans({ '%username%': currentuser.getName() }) }}</h1>
-{% if not currentuser.isEmailVerified() %}
-    <div class="alert alert-info">
-        Note: your email address is not yet verified, please check your email and click the verification link.
-    </div>
-{% else %}
+    <h1>{{ "index.welcome_username"|trans({ '%username%': currentuser.getName() }) }}</h1>
     <a href="{{ path('portal_index') }}" class="btn btn-success btn-lg">{{ "common.action_portal"|trans }}</a><br />
     <br />
     {% if currentuser.isAdmin() %}
@@ -16,10 +11,7 @@
     <br />
     {% endif %}
 
-{% endif %}
-
     <a href="{{ path('logout') }}" class="btn btn-default btn-lg">{{ "common.action_logout"|trans }}</a><br />
-
 {% else %}
 <h1>{{ "index.pleaselogin"|trans }}</h1>
     <a href="{{ path('login') }}" class="btn btn-success btn-lg">{{ "common.action_login"|trans }}</a><br />

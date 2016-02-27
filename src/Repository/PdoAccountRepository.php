@@ -111,7 +111,10 @@ class PdoAccountRepository
             ->setDisplayName($row['display_name'])
             ->setAccountType($row['account_type'])
             ->setEmail($row['email'])
+            ->setEmailVerifiedAt($row['email_verified_at'])
             ->setMobile($row['mobile'])
+            ->setMobileCode($row['mobile_code'])
+            ->setMobileVerifiedAt($row['mobile_verified_at'])
             ->setUrl($row['url'])
         ;
     }
@@ -157,7 +160,7 @@ class PdoAccountRepository
             array(
                 ':name' => $account->getName(),
                 ':display_name' => $account->getDisplayName(),
-                ':about' => $account->getAbout(),              
+                ':about' => $account->getAbout(),
                 ':account_type' => $account->getAccountType(),
                 ':email' => $account->getEmail(),
                 ':mobile' => $account->getMobile(),
@@ -271,5 +274,66 @@ class PdoAccountRepository
             ':is_owner' =>$isOwner
         ));
         return $row;        
+    }
+    
+    public function setEmailVerifiedStamp(Account $account, $stamp)
+    {
+        if (!$account) {
+            throw new RuntimeException("Account not specified");
+        }
+        
+        $statement = $this->pdo->prepare(
+            "UPDATE account SET
+            email_verified_at = :stamp
+            WHERE name=:name"
+        );
+        
+        $statement->execute(
+            array(
+                ':stamp' => $stamp,
+                ':name' => $account->getName()
+            )
+        );
+    }
+
+    public function setMobileVerifiedStamp(Account $account, $stamp)
+    {
+        if (!$account) {
+            throw new RuntimeException("Account not specified");
+        }
+        
+        $statement = $this->pdo->prepare(
+            "UPDATE account SET
+            mobile_verified_at = :stamp
+            WHERE name=:name"
+        );
+        
+        $statement->execute(
+            array(
+                ':stamp' => $stamp,
+                ':name' => $account->getName()
+            )
+        );
+    }
+    
+    public function setMobileCode(Account $account)
+    {
+        if (!$account) {
+            throw new RuntimeException("Account not specified");
+        }
+        $code = rand(10000000, 99999999);
+        $statement = $this->pdo->prepare(
+            "UPDATE account SET
+            mobile_code = :code
+            WHERE name=:name"
+        );
+        
+        $statement->execute(
+            array(
+                ':code' => $code,
+                ':name' => $account->getName()
+            )
+        );
+        return $code;
     }
 }

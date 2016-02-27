@@ -23,6 +23,11 @@ herald:
     transport: my_herald_transport
     prefix: "my_herald_prefix/"
 
+sms:
+    provider: messagebird
+    apikey: secret
+    sender: "UserbaseDev"
+    
 oauth2:
     return_url: '/oauth2/confirm'
     scopes: [email]

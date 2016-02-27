@@ -29,16 +29,27 @@ signup_submit:
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupSubmitAction }
 
 signup_thankyou:
-    path: /signup/thankyou
+    path: /signup/thankyou/{accountName}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::signupThankYouAction }
 
-validate:
-    path: /validate/{username}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::validateAction }
+# ==== email validation ====
+verify_email:
+    path: /verify/email/{accountName}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyEmailAction }
 
-validate_success:
-    path: /validate/success
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::validateSuccessAction }
+verify_email_link:
+    path: /verify/email/{accountName}/{stamp}/{token}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyEmailLinkAction }
+# ==== mobile validation ====
+verify_mobile:
+    path: /verify/mobile/{accountName}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyMobileAction }
+
+#verify_mobile_link:
+#    path: /verify/mobile/{accountName}/{stamp}/{token}
+#    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyMobileLinkAction }
+# =========
+
 
 password_lost:
     path: /password/lost

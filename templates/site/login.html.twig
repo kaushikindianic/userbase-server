@@ -13,11 +13,11 @@
 
         {% if postfix is defined %}
             <div class="input-group">
-                <input name="_username" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+                <input name="_username" value="{{ last_username }}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
                 <div class="input-group-addon">{{ postfix|star|raw }}</div>
             </div>
         {% else %}
-            <input name="_username" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+            <input name="_username" value="{{ last_username }}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
         {% endif %}
 
     </div>

@@ -8,6 +8,7 @@
         <column name="email_verified_at" type="integer" />
         <column name="mobile" type="string" length="250" notnull="false" />
         <column name="mobile_verified_at" type="integer" />
+        <column name="mobile_code" type="string" length="32" notnull="false" />
         <column name="url" type="string" length="250" notnull="false" />
         <column name="about" type="text" notnull="false" />
         <column name="account_type" type="string" length="50" />

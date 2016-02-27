@@ -22,6 +22,7 @@
             <th></th>
             <th>Created</th>
             <th>Users</th>
+            <th>Validation</th>
             <th>Action</th>
         </tr>
         {% for account in accounts %}
@@ -40,6 +41,12 @@
                 {{ account.getCreatedAt()|mydate }}
             </td>
             <td> <a href="{{ path('admin_account_users', {"accountname": account.getName()}) }}" ><span class="fa fa-group"></span></a></td>
+            <td>
+                <span class="label label-{% if account.isEmailVerified() %}success{% else %}default{% endif %}">
+                    <i class="fa fa-envelope-o"></i></span>
+                <span class="label label-{% if account.isMobileVerified() %}success{% else %}default{% endif %}">
+                    <i class="fa fa-phone"></i></span>
+            </td>
             <td>
                 <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">
                  <span class="glyphicon glyphicon-edit"></span>
