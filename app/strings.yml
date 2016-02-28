@@ -17,7 +17,7 @@ common.label_email: E-mail
 common.label_mobile: Mobile
 common.label_passwordrepeat: Password (repeat)
 common.label_noaccountyet: Don't have an account yet?
-common.label_lostpassword: Forgot your password?
+common.label_reset_password: Forgot your password?
 common.label_alreadyhaveanaccount: Already have an account?
 
 common.error_incorrectcredentials: Incorrect username / password
@@ -25,11 +25,11 @@ common.error_incorrectcredentials: Incorrect username / password
 error.invalid_mobile: The provided mobile phone number is invalid. Please use only digits.
 error.account_exists: An account with the selected name already exists. Please try another name.
 error.account_not_found: Account not found.
-error.email_exists: An account with the selected email address already exists. Use the 'lost password' feature, or try another email.
-error.mobile_exists: An account with the selected mobile already exists. Use the 'lost password' feature, or try another mobile.
+error.email_exists: An account with the selected email address already exists. Use the 'Reset password' feature, or try another email.
+error.mobile_exists: An account with the selected mobile already exists. Use the 'Reset password' feature, or try another mobile.
 error.mobile_code_does_not_match: The code you entered does not match the one that was sent last to your mobile.
 error.password_not_matching: The passwords don't match.
-error.password_reset_link_invalid: This password reset-link is (no longer) valid. Please request a new password reset link using the "Lost password" feature.
+error.password_reset_link_invalid: This password reset-link is (no longer) valid. Please request a new password reset link using the "Reset password" feature.
 error.account_not_user: The entered account information is not a personal account.
 error.mobile_not_verified: This account does not have a verified mobile.
 

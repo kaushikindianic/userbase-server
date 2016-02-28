@@ -1,6 +1,10 @@
 index:
     path: /
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::indexAction }
+    defaults:  { _controller: UserBase\Server\Controller\LoginController::indexAction }
+
+picture:
+    path: /picture/{accountname}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::pictureAction }
 
 js:
     path: /js
@@ -10,82 +14,72 @@ bower:
 
 login:
     path: /login
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::loginAction }
+    defaults:  { _controller: UserBase\Server\Controller\LoginController::loginAction }
 
 login/success:
     path: /login/success
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::loginSuccessAction }
+    defaults:  { _controller: UserBase\Server\Controller\LoginController::loginSuccessAction }
 
 logout/success:
     path: /logout/success
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::logoutSuccessAction }
+    defaults:  { _controller: UserBase\Server\Controller\LoginController::logoutSuccessAction }
 
 signup:
     path: /signup
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::signupAction }
+    defaults:  { _controller: UserBase\Server\Controller\SignupController::signupAction }
 
 signup_submit:
     path: /signup/submit
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::signupSubmitAction }
+    defaults:  { _controller: UserBase\Server\Controller\SignupController::signupSubmitAction }
 
 signup_thankyou:
     path: /signup/thankyou/{accountName}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::signupThankYouAction }
+    defaults:  { _controller: UserBase\Server\Controller\SignupController::signupThankYouAction }
 
 # ==== email validation ====
 verify_email:
     path: /verify/email/{accountName}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyEmailAction }
+    defaults:  { _controller: UserBase\Server\Controller\VerifyController::verifyEmailAction }
 
 verify_email_link:
     path: /verify/email/{accountName}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyEmailLinkAction }
+    defaults:  { _controller: UserBase\Server\Controller\VerifyController::verifyEmailLinkAction }
 # ==== mobile validation ====
 verify_mobile:
     path: /verify/mobile/{accountName}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyMobileAction }
+    defaults:  { _controller: UserBase\Server\Controller\VerifyController::verifyMobileAction }
 
-#verify_mobile_link:
-#    path: /verify/mobile/{accountName}/{stamp}/{token}
-#    defaults:  { _controller: UserBase\Server\Controller\SiteController::verifyMobileLinkAction }
-# =========
-
-
-password_lost:
-    path: /password/lost
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordLostAction }
+password_reset:
+    path: /password/reset
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetAction }
 
 password_reset_request:
     path: /password/reset-request
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetRequestAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetRequestAction }
 
 password_reset:
     path: /password/reset/{username}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetAction }
 
 password_reset_submit:
     path: /password/reset-submit/{username}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSubmitAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetSubmitAction }
 
 password_reset_mobile_check:
     path: /password/mobile-check/{accountName}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetMobileCheckAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetMobileCheckAction }
 
 password_reset:
     path: /password/reset/{username}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetAction }
 
 password_reset_sent:
     path: /password/reset-sent
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSentAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetSentAction }
 
 password_reset_success:
     path: /password/reset-success
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSuccessAction }
-
-picture:
-    path: /picture/{accountname}
-    defaults:  { _controller: UserBase\Server\Controller\SiteController::pictureAction }
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetSuccessAction }
 
 # PORTAL
 portal_index:
