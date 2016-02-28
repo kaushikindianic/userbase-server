@@ -31,7 +31,7 @@
     <br />
     {{ "common.label_noaccountyet"|trans }} <a href="{{ path("signup") }}">{{ "common.action_signup"|trans }}</a><br />
     {{ "common.label_reset_password"|trans }} <a href="{{ path("password_reset") }}">{{ "common.action_clickhere"|trans }}</a><br />
-    {{ "common.label_need_help"|trans }} <a href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+    {{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
 </form>
 
 {% endblock %}

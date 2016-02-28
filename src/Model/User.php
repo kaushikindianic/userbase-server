@@ -30,7 +30,7 @@ final class User implements AdvancedUserInterface
 
         $this->name = $name;
         $this->password = null;
-        $this->enabled = true;
+        $this->enabled = false;
         $this->accountNonExpired = true;
         $this->credentialsNonExpired = true;
         $this->accountNonLocked = true;
@@ -166,6 +166,11 @@ final class User implements AdvancedUserInterface
     public function isEnabled()
     {
         return $this->enabled;
+    }
+    
+    public function setEnabled($enabled)
+    {
+        $this->enabled = $enabled;
     }
 
     /**

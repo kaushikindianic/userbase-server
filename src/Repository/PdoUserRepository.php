@@ -17,12 +17,17 @@ final class PdoUserRepository implements UserProviderInterface
     private $pdo;
     private $encoderFactory;
     private $oauth;
+    private $accountRepo;
+    private $enableMobile;
 
-    public function __construct(PDO $pdo, $oauth, $encoderFactory)
+    public function __construct(PDO $pdo, $oauth, $encoderFactory, $accountRepo, $enableMobile)
     {
         $this->pdo = $pdo;
         $this->oauth = $oauth;
         $this->encoderFactory = $encoderFactory;
+        $this->accountRepo = $accountRepo;
+        $this->enableMobile = $enableMobile;
+        
     }
     
     public function getByName($name)
@@ -68,6 +73,10 @@ final class PdoUserRepository implements UserProviderInterface
     
     private function row2user($row)
     {
+        $account = $this->accountRepo->getByName($row['name']);
+        if (!$account) {
+            throw new RuntimeException("No user account: " . $row['user']);
+        }
         $user = new User($row['name']);
         $user->setEmail($row['email']);
         $user->setCreatedAt($row['created_at']);
@@ -76,6 +85,17 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
         $user->setAlias($row['alias']);
+        $enabled = true;
+        if (!$account->isEmailVerified()) {
+            $enabled = false;
+        }
+        if ($this->enableMobile) {
+            if (!$account->isMobileVerified()) {
+                $enabled = false;
+            }
+        }
+        
+        $user->setEnabled($enabled);
 //      $user->setPictureUrl($row['picture_url']);
         if ($row['is_admin']>0) {
             $user->setAdmin(true);

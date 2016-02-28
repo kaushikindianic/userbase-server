@@ -184,6 +184,9 @@ class Account
 
     public function isMobileVerified()
     {
+        if (!$this->hasValidMobile()) {
+            return false;
+        }
         return $this->mobileVerifiedAt > 0;
     }
 
@@ -202,5 +205,14 @@ class Account
     {
         $this->mobileCode = $mobileCode;
         return $this;
+    }
+    
+    public function hasValidMobile()
+    {
+        $mobile = trim($this->getMobile());
+        if (strlen($mobile)!=13) {
+            return false;
+        }
+        return true;
     }
 }

@@ -10,20 +10,23 @@ common.action_signup: Signup
 common.action_clickhere: Click here
 common.action_loginhere: Login here
 common.action_next: Next
+common.action_reset_password: Reset password
+common.action_click_for_help: Click here for help
 
 common.label_username: Username
 common.label_password: Password
+common.label_displayname: Your full name
 common.label_email: E-mail
 common.label_mobile: Mobile
 common.label_passwordrepeat: Password (repeat)
 common.label_noaccountyet: Don't have an account yet?
 common.label_reset_password: Forgot your password?
 common.label_alreadyhaveanaccount: Already have an account?
-common.label_need_help: Need help loging in?
-common.action_click_for_help: Click here for help
+common.label_need_help: Need help logging in?
 
 common.error_incorrectcredentials: Incorrect username / password
 
+error.invalid_username: The username is invalid (only lowercase letters. min 3, max 32 characters)
 error.invalid_mobile: The provided mobile phone number is invalid. Please use only digits.
 error.account_exists: An account with the selected name already exists. Please try another name.
 error.account_not_found: Account not found.
@@ -34,6 +37,7 @@ error.password_not_matching: The passwords don't match.
 error.password_reset_link_invalid: This password reset-link is (no longer) valid. Please request a new password reset link using the "Reset password" feature.
 error.account_not_user: The entered account information is not a personal account.
 error.mobile_not_verified: This account does not have a verified mobile.
+error.no_valid_mobile: This account does not have a valid mobile.
 
 index.pleaselogin: Please login
 index.welcome_username: Hello %username%

@@ -70,6 +70,7 @@ class Application extends SilexApplication
         }
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
+        $this['userbase.help_url'] = $this->config['userbase']['help_url'];
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.enable_mobile'] = $this->config['userbase']['enable_mobile'];
@@ -112,9 +113,15 @@ class Application extends SilexApplication
         $pdo = Service::pdo();
 
         $factory = $this['security.encoder_factory'];
-        $this->oauthRepository = new PdoOAuthRepository($pdo);
-        $this->userRepository = new PdoUserRepository($pdo, $this->oauthRepository, $factory);
         $this->accountRepository = new PdoAccountRepository($pdo);
+        $this->oauthRepository = new PdoOAuthRepository($pdo);
+        $this->userRepository = new PdoUserRepository(
+            $pdo,
+            $this->oauthRepository,
+            $factory,
+            $this->accountRepository,
+            $this['userbase.enable_mobile']
+        );
         $this->appRepository = new PdoAppRepository($pdo);
         $this->identityRepository = new PdoIdentityRepository($pdo);
         $this->eventRepository = new \UserBase\Server\Repository\PdoEventRepository($pdo);

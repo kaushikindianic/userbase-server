@@ -23,4 +23,7 @@
     <button class="btn btn-success">{{ "common.action_next"|trans }}</button>
 </form>
 {% endif %}
+
+{{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+
 {% endblock %}

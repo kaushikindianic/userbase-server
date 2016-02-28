@@ -13,17 +13,14 @@
 <form action="{{ path("signup_submit") }}" method="post">
     <div class="form-group form-group form-group">
         
-        {% if postfix is defined %}
-            <div class="input-group">
-                <input name="_username" id="_username" value="{{ last_username|default("")}}"  autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
-                <div class="input-group-addon">{{ postfix|star|raw }}</div>
-            </div>
-        {% else %}
-            <input name="_username" id="_username" value="{{ last_username|default("")}}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
-        {% endif %}
-         <div id="chkUserExist" style="dispaly:none;"></div> 
+        <input name="_username" id="_username" value="{{ last_username|default("")}}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+        <div id="chkUserExist" style="display:none;"></div> 
     </div>
 
+    <div class="form-group form-group">
+         <input name="_displayname" value="{{ last_displayname|default("")}}" class="form-control" placeholder="{{ "common.label_displayname"|trans }}" type="text" required="required" />
+    </div>
+    
     <div class="form-group form-group">
          <input name="_email" value="{{ last_email|default("")}}" class="form-control" placeholder="{{ "common.label_email"|trans }}" type="email" required="required" />
     </div>
@@ -45,8 +42,8 @@
     <button type="submit" id = "btnSubmit" class="btn btn-success btn-lg">{{ "common.action_signup"|trans }}</button><br />
     <br />
     {{ "common.label_alreadyhaveanaccount"|trans }} <a href="{{ path("login") }}"" class="">{{ "common.action_loginhere"|trans }}</a><br />
-    {{ "common.label_reset_password"|trans }} <a href="{{ path("password_reset") }}">{{ "common.action_clickhere"|trans }}</a><br />
-    {{ "common.label_need_help"|trans }} <a href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+    {{ "common.label_reset_password"|trans }} <a href="{{ path("password_reset") }}">{{ "common.action_reset_password"|trans }}</a><br />
+    {{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
 </form>
 
 <script type="text/javascript">

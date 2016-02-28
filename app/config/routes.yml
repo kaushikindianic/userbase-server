@@ -4,7 +4,7 @@ index:
 
 help:
     path: /help
-    defaults:  { _controller: UserBase\Server\Controller\LoginController::helpAction }
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::helpAction }
 
 picture:
     path: /picture/{accountname}
@@ -110,22 +110,17 @@ portal_edit:
     path: /portal/accounts/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountEditAction }
 
-protal_account_members:
+portal_account_members:
     path: /portal/accounts/{accountname}/members
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountMembersAction }
     
-protal_account_user_add:
+portal_account_user_add:
     path: /portal/accounts/{accountname}/users/add
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountUserAddAction }
  
 portal_app_login:
     path: /portal/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
-
-#PORTAL SETTINGS
-protal_settings_password:
-    path: /portal/settings/password
-    defaults: { _controller: UserBase\Server\Controller\PortalController::passwordAction }
     
 # SPACE
 portal_spaces_add:

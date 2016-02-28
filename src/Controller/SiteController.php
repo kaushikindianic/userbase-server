@@ -13,6 +13,12 @@ use RunMyBusiness\Initialcon\Initialcon;
 
 class SiteController
 {
+    public function helpAction(Application $app, Request $request)
+    {
+        $url = $app['userbase.help_url'];
+        return $app->redirect($url);
+    }
+
     public function pictureAction(Application $app, Request $request, $accountname)
     {
         $repo = $app->getAccountRepository();

@@ -20,6 +20,7 @@ class SignupController
         $data['last_email'] = $session->get('_signup.last_email');
         $data['last_mobile'] = $session->get('_signup.last_mobile');
         $data['last_username'] = $session->get('_signup.last_username');
+        $data['last_displayname'] = $session->get('_signup.last_displayname');
         return new Response($app['twig']->render(
             'site/signup/start.html.twig',
             $data
@@ -28,13 +29,15 @@ class SignupController
 
     public function signupSubmitAction(Application $app, Request $request)
     {
-        $username = $request->request->get('_username');
+        $username = trim(strtolower($request->request->get('_username')));
         $email = $request->request->get('_email');
+        $displayname = $request->request->get('_displayname');
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
         
         $session = $app['session'];
         $session->set('_signup.last_username', $username);
+        $session->set('_signup.last_displayname', $displayname);
         $session->set('_signup.last_email', $email);
         
         $mobile = '';
@@ -55,9 +58,15 @@ class SignupController
             }
         }
         
+        if (!ctype_alpha($username)) {
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
+        }
+        if ((strlen($username)>32) || (strlen($username)<3)) {
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
+        }
 
         if ($password != $password2) {
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=passwords_dont_match');
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=password_not_matching');
         }
 
         $userRepo = $app->getUserRepository();
@@ -73,6 +82,22 @@ class SignupController
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=mobile_exists');
         }
         
+        
+        //--CREATE PERSONAL ACCOUNT--//
+        $account = new Account($username);
+        $account
+            ->setDisplayName($displayname)
+            ->setAbout('')
+            ->setPictureUrl('')
+            ->setAccountType('user')
+            ->setEmail($email)
+            ->setMobile($mobile)
+        ;
+        
+        if (!$accountRepo->add($account)) {
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=register_failed');
+        }
+
         try {
             $user = $userRepo->register($app, $username, $email);
         } catch (Exception $e) {
@@ -86,21 +111,9 @@ class SignupController
         $session->set('_signup.last_username', null);
         $session->set('_signup.last_email', null);
         $session->set('_signup.last_mobile', null);
+        $session->set('_signup.last_displayname', null);
         
-        //--CREATE PERSONAL ACCOUNT--//
-        $account = new Account($user->getUsername());
-        $account
-            ->setDisplayName($user->getUsername())
-            ->setAbout('')
-            ->setPictureUrl('')
-            ->setAccountType('user')
-            ->setEmail($user->getEmail())
-            ->setMobile($mobile)
-        ;
-        
-        if ($accountRepo->add($account)) {
-            $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
-        }
+        $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
         //--EVENT LOG --//
         $time = time();
         $sEventData = json_encode(
@@ -142,8 +155,10 @@ class SignupController
         if (!$account->isEmailVerified()) {
             return $app->redirect($app['url_generator']->generate('verify_email', ['accountName'=>$accountName]));
         }
-        if (!$account->isMobileVerified()) {
-            return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]));
+        if ($app['userbase.enable_mobile']) {
+            if (!$account->isMobileVerified()) {
+                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]));
+            }
         }
 
         $data = array();

@@ -11,5 +11,8 @@
 
 
 
-<a class="btn btn-primary" href="{{path('verify_email', {'accountName': accountName })}}?resend">{{ "verify_email.resend"|trans }}</a>
+<a class="btn btn-primary" href="{{path('verify_email', {'accountName': accountName })}}?resend">{{ "verify_email.resend"|trans }}</a><br />
+
+{{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+
 {% endblock %}

@@ -9,6 +9,7 @@ use Service;
 use Exception;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
+use RuntimeException;
 
 class LoginController
 {
@@ -46,7 +47,7 @@ class LoginController
             case 'Bad credentials.':
                 $data['errormessage'] = $app['translator']->trans('common.error_incorrectcredentials');
                 break;
-            case 'User account is locked.':
+            case 'User account is disabled.':
                 $app['session']->set('_security.last_username', null);
                 if ($last_username) {
                     return $app->redirect(
@@ -55,6 +56,11 @@ class LoginController
                             ['accountName' => $last_username]
                         )
                     );
+                }
+                break;
+            default:
+                if ($error) {
+                    throw new RuntimeException("Unsupported error: " . $error);
                 }
         }
 

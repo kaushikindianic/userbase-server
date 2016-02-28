@@ -63,6 +63,9 @@ class VerifyController
         }
         $data = array();
         if ($request->query->has('send')) {
+            if (!$account->hasValidMobile()) {
+                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_valid_mobile');
+            }
             $code = $accountRepo->setMobileCode($account);
             $app->sendSms('verify', $accountName, ['code'=>$code]);
             $data['sent'] = true;
