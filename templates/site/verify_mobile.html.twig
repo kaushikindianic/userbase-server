@@ -2,16 +2,25 @@
 
 {% block content %}
 
-{% if resent is defined %}
-<div class="alert alert-success">{{ "verify_mobile.resent"|trans }}</div>
+{% if sent is defined %}
+<div class="alert alert-success">{{ "verify_mobile.sent"|trans }}</div>
 {% endif %}
 
 <h1>{{ "verify_mobile.header"|trans }}</h1>
 <p>{{ "verify_mobile.description"|trans }}</p>
+
+{% if error_string is defined %}
+<div class="alert alert-warning">
+    {{ error_string }}
+</div>
+{% endif %}
+
+<a class="btn btn-primary" href="{{path('verify_mobile', {'accountName': accountName })}}?send">{{ "verify_mobile.send"|trans }}</a>
+<hr />
+{% if sent is defined %}
 <form action="{{path('verify_mobile', {'accountName': accountName })}}" method="post">
     <input autofocus type="text" name="mobile_code" class="form-control" style="margin-bottom: 5px;"/>
-    <button class="btn btn-primary">{{ "common.action_next"|trans }}</button>
+    <button class="btn btn-success">{{ "common.action_next"|trans }}</button>
 </form>
-<hr />
-<a class="btn btn-default" href="{{path('verify_mobile', {'accountName': accountName })}}?resend">{{ "verify_mobile.resend"|trans }}</a>
+{% endif %}
 {% endblock %}

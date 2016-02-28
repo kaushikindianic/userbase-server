@@ -69,6 +69,15 @@ $application->before(function (Request $request) use ($application) {
         }
         */
     }
+    
+    if ($request->query->has('errorcode')) {
+        $errorcode = $request->query->get('errorcode');
+        $errorString = $application['translator']->trans('error.' . $errorcode);
+        if ('error.' . $errorcode==$errorString) {
+            throw new RuntimeException("Undefinded error code: " . $errorcode);
+        }
+        $application['twig']->addGlobal('error_string', $errorString);
+    }
 
     //$application['twig']->addGlobal('site', $application['site']);
 });

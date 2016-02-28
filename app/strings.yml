@@ -22,6 +22,12 @@ common.label_alreadyhaveanaccount: Already have an account?
 
 common.error_incorrectcredentials: Incorrect username / password
 
+error.invalid_mobile: The provided mobile phone number is invalid. Please use only digits.
+error.account_exists: An account with the selected name already exists. Please try another name.
+error.email_exists: An account with the selected email address already exists. Use the 'lost password' feature, or try another email.
+error.mobile_exists: An account with the selected mobile already exists. Use the 'lost password' feature, or try another mobile.
+error.mobile_code_does_not_match: The code you entered does not match the one that was sent last to your mobile.
+
 index.pleaselogin: Please login
 index.welcome_username: Hello %username%
 
@@ -30,6 +36,12 @@ logout.header: Goodbye!
 logout.message: You have been successfully logged out. Thank you for using our services!
 
 signup.header: Signup
+signup.description: >
+    Using this screen you can create a personal account.
+    You can optionally create an account for your organization in a later step.
+    For both e-mail and mobile, please enter the contact information for you personally as-well.
+    For security purposes, do not enter a shared e-mail account (info@...) or shared mobile phone.
+    We will only use this information for security purposes.
 signup.thankyou: Thanks for signing up!
 signup.thankyou_details: You can now login using the button below.
 
@@ -39,9 +51,9 @@ verify_email.resent: We've just re-sent you the verification email.
 verify_email.resend: Resend
 
 verify_mobile.header: Mobile verification required
-verify_mobile.description: Please enter the verification code that was sent to your mobile phone.
-verify_mobile.resent: We've just re-sent you the verification code.
-verify_mobile.resend: Resend
+verify_mobile.description: Please click the button below to send a verification code to your mobile. Then enter the code that you received.
+verify_mobile.sent: We've just sent a verification code to your mobile.
+verify_mobile.send: Send code
 
 password_lost.header: Lost password
 password_lost.description: Enter your username below, and we'll send you a password-reset link.

@@ -2,27 +2,35 @@
 
 {% block content %}
 <h1>{{ "signup.header"|trans }}</h1>
+<div class="alert alert-info" style="text-align: left;">{{ "signup.description"|trans }}</div>
+
+{% if error_string is defined %}
+<div class="alert alert-warning">
+    {{ error_string }}
+</div>
+{% endif %}
+
 <form action="{{ path("signup_submit") }}" method="post">
     <div class="form-group form-group form-group">
         
         {% if postfix is defined %}
             <div class="input-group">
-                <input name="_username" id="_username" value="{{_username|default("")}}"  autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+                <input name="_username" id="_username" value="{{ last_username|default("")}}"  autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
                 <div class="input-group-addon">{{ postfix|star|raw }}</div>
             </div>
         {% else %}
-            <input name="_username" id="_username"  value="{{_username|default("")}}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
+            <input name="_username" id="_username" value="{{ last_username|default("")}}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
         {% endif %}
          <div id="chkUserExist" style="dispaly:none;"></div> 
     </div>
 
     <div class="form-group form-group">
-         <input name="_email" value="{{ _email|default("") }}" class="form-control" placeholder="{{ "common.label_email"|trans }}" type="email" required="required" />
+         <input name="_email" value="{{ last_email|default("")}}" class="form-control" placeholder="{{ "common.label_email"|trans }}" type="email" required="required" />
     </div>
     
     {% if enable_mobile %}
     <div class="form-group form-group">
-         <input name="_mobile" value="{{ _mobile|default("") }}" class="form-control" placeholder="{{ "common.label_mobile"|trans }}" type="text" required="required" />
+         <input name="_mobile" value="{{ last_mobile|default("")}}" class="form-control" placeholder="{{ "common.label_mobile"|trans }}" type="text" required="required" />
     </div>
     {% endif %}
 
@@ -36,7 +44,8 @@
 
     <button type="submit" id = "btnSubmit" class="btn btn-success btn-lg">{{ "common.action_signup"|trans }}</button><br />
     <br />
-    {{ "common.label_alreadyhaveanaccount"|trans }} <a href="{{ path("login") }}"" class="">{{ "common.action_loginhere"|trans }}</a>
+    {{ "common.label_alreadyhaveanaccount"|trans }} <a href="{{ path("login") }}"" class="">{{ "common.action_loginhere"|trans }}</a><br />
+    {{ "common.label_lostpassword"|trans }} <a href="{{ path("password_lost") }}">{{ "common.action_clickhere"|trans }}</a><br />
 </form>
 
 <script type="text/javascript">

@@ -26,6 +26,28 @@ class PdoAccountRepository
         return $row ? $this->rowToAccount($row) : null;
     }
     
+    public function getByEmail($email)
+    {
+        $statement = $this->pdo->prepare(
+            "SELECT * FROM account WHERE email=:email AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+        );
+        $statement->execute(array('email' => $email));
+        $row = $statement->fetch();
+
+        return $row ? $this->rowToAccount($row) : null;
+    }
+    
+    public function getByMobile($mobile)
+    {
+        $statement = $this->pdo->prepare(
+            "SELECT * FROM account WHERE mobile=:mobile AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+        );
+        $statement->execute(array('mobile' => $mobile));
+        $row = $statement->fetch();
+
+        return $row ? $this->rowToAccount($row) : null;
+    }
+    
     public function getAccountUsersByType($accountname, $type)
     {   
         $statement = $this->pdo->prepare(
