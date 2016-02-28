@@ -201,16 +201,35 @@ class Application extends SilexApplication
 
         if ($this['userbase.template_override']) {
             $path = $this['userbase.template_override'] . '/preauth';
-            $this['twig.loader.filesystem']->addPath(
-                $path,
-                'PreAuth'
-            );
+            if (file_exists($path)) {
+                $this['twig.loader.filesystem']->addPath(
+                    $path,
+                    'PreAuth'
+                );
+            }
         }
         
         $path = __DIR__ . '/../templates/preauth';
         $this['twig.loader.filesystem']->addPath(
             $path,
             'PreAuth'
+        );
+        
+        
+        if ($this['userbase.template_override']) {
+            $path = $this['userbase.template_override'] . '/portal';
+            if (file_exists($path)) {
+                $this['twig.loader.filesystem']->addPath(
+                    $path,
+                    'Portal'
+                );
+            }
+        }
+        
+        $path = __DIR__ . '/../templates/portal';
+        $this['twig.loader.filesystem']->addPath(
+            $path,
+            'Portal'
         );
         
 
