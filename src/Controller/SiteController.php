@@ -332,31 +332,55 @@ class SiteController
 
     public function passwordResetRequestAction(Application $app, Request $request)
     {
-        $username = $request->request->get('_username');
+        $search = $request->request->get('_search');
 
         $userRepo = $app->getUserRepository();
         $accountRepo = $app->getAccountRepository();
 
-        $user = $userRepo->getByName($username);
-        $account = $accountRepo->getByName($username);
-        if (!$user) {
-            // no such user
-            return $app->redirect($app['url_generator']->generate('password_lost') . '?errorcode=E06');
+        $account = null;
+        $account = $accountRepo->getByName($search);
+        if (!$account) {
+            $account = $accountRepo->getByEmail($search);
+        }
+        if (!$account) {
+            $account = $accountRepo->getByMobile($search);
+        }
+        
+        if (!$account) {
+            return $app->redirect($app['url_generator']->generate('password_lost') . '?errorcode=account_not_found');
+        }
+        
+        if ($account->getAccountType()!='user') {
+            return $app->redirect($app['url_generator']->generate('password_lost') . '?errorcode=account_not_user');
         }
 
+
+        $user = $userRepo->getByName($account->getName());
         $baseUrl = $app['userbase.baseurl'];
+        
+        if ($app['userbase.enable_mobile']) {
+            if (!$account->getMobile() || !$account->isMobileVerified()) {
+                return $app->redirect($app['url_generator']->generate('password_lost') . '?errorcode=mobile_not_verified');
+            }
 
-        $stamp = time();
-        $token = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
-        $link = $baseUrl . '/password/reset/' . $user->getUsername() . '/' . $stamp . '/' . $token;
+            $code = $accountRepo->setMobileCode($account);
+            $app->sendSms('verify', $account->getName(), ['code'=>$code]);
+            $data['sent'] = true;
+            
+            return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName' => $account->getName()]));
+        } else {
+            $stamp = time();
+            $token = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+            $link = $baseUrl . '/password/reset/' . $user->getUsername() . '/' . $stamp . '/' . $token;
 
-        $data = array();
-        $data['link'] = $link;
-        $data['username'] = $username;
+            $data = array();
+            $data['link'] = $link;
+            $data['username'] = $username;
 
-        $app['mailer']->sendTemplate('password-reset', $account, $data);
+            $app['mailer']->sendTemplate('password-reset', $account, $data);
 
-        return $app->redirect($app['url_generator']->generate('password_reset_sent'));
+            return $app->redirect($app['url_generator']->generate('password_reset_sent'));
+        }
     }
 
     public function passwordResetSentAction(Application $app, Request $request)
@@ -396,12 +420,12 @@ class SiteController
         $account = $accountRepo->getByName($username);
         if (!$user) {
             // user does not exist
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E10');
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=account_not_found');
         }
 
         if ($password != $password2) {
             // passwords not the same
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E11');
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_not_matching');
         }
 
 
@@ -409,17 +433,17 @@ class SiteController
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E12');
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_reset_link_invalid');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E12');
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
         $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=E14');
+            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
         $accountRepo->setEmailVerifiedStamp($account, $stamp);
@@ -437,6 +461,47 @@ class SiteController
             $data
         ));
     }
+    
+    public function passwordResetMobileCheckAction(Application $app, Request $request, $accountName)
+    {
+        $accountRepo = $app->getAccountRepository();
+        $account = $accountRepo->getByName($accountName);
+        if (!$account) {
+            // no such user
+            return $app->redirect($app['url_generator']->generate('password_reset') . '?errorcode=account_not_found');
+        }
+        if (!$account->isMobileVerified()) {
+            return $app->redirect($app['url_generator']->generate('password_reset') . '?errorcode=mobile_not_verified');
+        }
+        
+        if ($request->request->has('mobile_code')) {
+            $code = $request->request->get('mobile_code');
+            if ($code == '') {
+                return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
+            }
+            if ($account->getMobileCode() == '') {
+                return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
+            }
+            if ($code != $account->getMobileCode()) {
+                return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=mobile_code_does_not_match');
+            }
+            $accountRepo->setMobileVerifiedStamp($account, time());
+
+            $baseUrl = $app['userbase.baseurl'];
+            $stamp = time();
+            $token = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
+            $link = $baseUrl . '/password/reset/' . $account->getName() . '/' . $stamp . '/' . $token;
+            return $app->redirect($link);
+        }
+        $data = array();
+        $data['accountName'] = $account->getName();
+        return new Response($app['twig']->render(
+            'site/password_reset_mobile_check.html.twig',
+            $data
+        ));
+    }
+
+
     
     public function pictureAction(Application $app, Request $request, $accountname)
     {

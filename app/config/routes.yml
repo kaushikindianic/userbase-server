@@ -67,6 +67,14 @@ password_reset_submit:
     path: /password/reset-submit/{username}/{stamp}/{token}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSubmitAction }
 
+password_reset_mobile_check:
+    path: /password/mobile-check/{accountName}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetMobileCheckAction }
+
+password_reset:
+    path: /password/reset/{username}/{stamp}/{token}
+    defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetAction }
+
 password_reset_sent:
     path: /password/reset-sent
     defaults:  { _controller: UserBase\Server\Controller\SiteController::passwordResetSentAction }

@@ -24,9 +24,14 @@ common.error_incorrectcredentials: Incorrect username / password
 
 error.invalid_mobile: The provided mobile phone number is invalid. Please use only digits.
 error.account_exists: An account with the selected name already exists. Please try another name.
+error.account_not_found: Account not found.
 error.email_exists: An account with the selected email address already exists. Use the 'lost password' feature, or try another email.
 error.mobile_exists: An account with the selected mobile already exists. Use the 'lost password' feature, or try another mobile.
 error.mobile_code_does_not_match: The code you entered does not match the one that was sent last to your mobile.
+error.password_not_matching: The passwords don't match.
+error.password_reset_link_invalid: This password reset-link is (no longer) valid. Please request a new password reset link using the "Lost password" feature.
+error.account_not_user: The entered account information is not a personal account.
+error.mobile_not_verified: This account does not have a verified mobile.
 
 index.pleaselogin: Please login
 index.welcome_username: Hello %username%
@@ -55,14 +60,18 @@ verify_mobile.description: Please click the button below to send a verification 
 verify_mobile.sent: We've just sent a verification code to your mobile.
 verify_mobile.send: Send code
 
-password_lost.header: Lost password
-password_lost.description: Enter your username below, and we'll send you a password-reset link.
+password_reset.header: Password reset
+password_reset.description: Enter your username, email or mobile below, and we'll send you a password-reset information.
+password_reset.placeholder: Username, email or mobile
 
 password_reset_sent.header: Email sent
 password_reset_sent.description: We've sent you an e-mail containing the password-reset link associated with this account.
 
-password_reset.header: Password reset
-password_reset.description: Please choose a new password below:
+password_reset_new.header: New password
+password_reset_new.description: Please choose a new password below:
 
 password_reset_success.header: Password updated
-password_reset_success.description: Your new password has been saved. Please use the link below to login with your new password.
+password_reset_success.description: Your new password has been update. Please use the link below to login with your new password.
+
+password_reset_mobile_check.header: Mobile check
+password_reset_mobile_check.description: Please enter the code that was just sent to your mobile
