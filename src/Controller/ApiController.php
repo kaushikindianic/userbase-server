@@ -108,7 +108,10 @@ class ApiController
             $data['display_name'] = $account->getDisplayName();
             $data['about'] = $account->getAbout();
             $data['picture_url'] = $account->getPictureUrl();
+            $data['mobile'] = $account->getMobile();
+            $data['mobile_verified'] = $account->isMobileVerified();
             $data['email'] = $account->getEmail();
+            $data['email_verified'] = $account->isEmailVerified();
             $data['created_at'] = $account->getCreatedAt();
             $data['deleted_at'] = $account->getDeletedAt();
             
