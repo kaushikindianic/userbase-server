@@ -21,7 +21,7 @@ class SignupController
         $data['last_mobile'] = $session->get('_signup.last_mobile');
         $data['last_username'] = $session->get('_signup.last_username');
         return new Response($app['twig']->render(
-            'site/signup.html.twig',
+            'site/signup/start.html.twig',
             $data
         ));
     }
@@ -148,9 +148,8 @@ class SignupController
 
         $data = array();
         return new Response($app['twig']->render(
-            'site/signup_thankyou.html.twig',
+            'site/signup/thankyou.html.twig',
             $data
         ));
     }
-    
 }

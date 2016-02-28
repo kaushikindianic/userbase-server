@@ -19,6 +19,8 @@ common.label_passwordrepeat: Password (repeat)
 common.label_noaccountyet: Don't have an account yet?
 common.label_reset_password: Forgot your password?
 common.label_alreadyhaveanaccount: Already have an account?
+common.label_need_help: Need help loging in?
+common.action_click_for_help: Click here for help
 
 common.error_incorrectcredentials: Incorrect username / password
 
@@ -71,7 +73,7 @@ password_reset_new.header: New password
 password_reset_new.description: Please choose a new password below:
 
 password_reset_success.header: Password updated
-password_reset_success.description: Your new password has been update. Please use the link below to login with your new password.
+password_reset_success.description: Your new password has been updated. Please use the link below to login with your new password.
 
 password_reset_mobile_check.header: Mobile check
 password_reset_mobile_check.description: Please enter the code that was just sent to your mobile

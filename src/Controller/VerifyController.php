@@ -30,7 +30,7 @@ class VerifyController
         }
         $data['accountName'] = $accountName;
         return new Response($app['twig']->render(
-            'site/verify_email.html.twig',
+            'site/verify/email.html.twig',
             $data
         ));
     }
@@ -69,7 +69,7 @@ class VerifyController
         }
         $data['accountName'] = $accountName;
         return new Response($app['twig']->render(
-            'site/verify_mobile.html.twig',
+            'site/verify/mobile.html.twig',
             $data
         ));
     }

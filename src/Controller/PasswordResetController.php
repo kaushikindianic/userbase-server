@@ -12,11 +12,11 @@ use UserBase\Server\Model\Account;
 
 class PasswordResetController
 {
-    public function passwordResetAction(Application $app, Request $request)
+    public function passwordResetStartAction(Application $app, Request $request)
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/password_reset.html.twig',
+            'site/password_reset/start.html.twig',
             array($data)
         ));
     }
@@ -62,7 +62,7 @@ class PasswordResetController
         } else {
             $stamp = time();
             $token = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
-            $link = $baseUrl . '/password/reset/' . $user->getUsername() . '/' . $stamp . '/' . $token;
+            $link = $baseUrl . '/password-reset/' . $user->getUsername() . '/' . $stamp . '/' . $token;
 
             $data = array();
             $data['link'] = $link;
@@ -78,20 +78,20 @@ class PasswordResetController
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/password_reset_sent.html.twig',
+            'site/password_reset/sent.html.twig',
             $data
         ));
     }
 
 
-    public function passwordResetAction(Application $app, Request $request, $username, $stamp, $token)
+    public function passwordResetUpdateAction(Application $app, Request $request, $username, $stamp, $token)
     {
         $data = array();
         $data['stamp'] = $stamp;
         $data['username'] = $username;
         $data['token'] = $token;
         return new Response($app['twig']->render(
-            'site/password_reset.html.twig',
+            'site/password_reset/update.html.twig',
             $data
         ));
     }
@@ -111,12 +111,12 @@ class PasswordResetController
         $account = $accountRepo->getByName($username);
         if (!$user) {
             // user does not exist
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=account_not_found');
+            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=account_not_found');
         }
 
         if ($password != $password2) {
             // passwords not the same
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_not_matching');
+            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_not_matching');
         }
 
 
@@ -124,17 +124,17 @@ class PasswordResetController
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_reset_link_invalid');
+            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_reset_link_invalid');
+            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
         $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
-            return $app->redirect($app['url_generator']->generate('password_reset', $urldata) . '?errorcode=password_reset_link_invalid');
+            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
         $accountRepo->setEmailVerifiedStamp($account, $stamp);
@@ -148,7 +148,7 @@ class PasswordResetController
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/password_reset_success.html.twig',
+            'site/password_reset/success.html.twig',
             $data
         ));
     }
@@ -181,15 +181,14 @@ class PasswordResetController
             $baseUrl = $app['userbase.baseurl'];
             $stamp = time();
             $token = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
-            $link = $baseUrl . '/password/reset/' . $account->getName() . '/' . $stamp . '/' . $token;
+            $link = $baseUrl . '/password-reset/' . $account->getName() . '/' . $stamp . '/' . $token;
             return $app->redirect($link);
         }
         $data = array();
         $data['accountName'] = $account->getName();
         return new Response($app['twig']->render(
-            'site/password_reset_mobile_check.html.twig',
+            'site/password_reset/mobile_check.html.twig',
             $data
         ));
     }
-
 }

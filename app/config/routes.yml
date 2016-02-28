@@ -2,6 +2,10 @@ index:
     path: /
     defaults:  { _controller: UserBase\Server\Controller\LoginController::indexAction }
 
+help:
+    path: /help
+    defaults:  { _controller: UserBase\Server\Controller\LoginController::helpAction }
+
 picture:
     path: /picture/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\SiteController::pictureAction }
@@ -50,35 +54,31 @@ verify_mobile:
     defaults:  { _controller: UserBase\Server\Controller\VerifyController::verifyMobileAction }
 
 password_reset:
-    path: /password/reset
-    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetAction }
+    path: /password-reset
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetStartAction }
 
 password_reset_request:
-    path: /password/reset-request
+    path: /password-reset/request
     defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetRequestAction }
 
-password_reset:
-    path: /password/reset/{username}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetAction }
+password_reset_update:
+    path: /password-reset/{username}/{stamp}/{token}
+    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetUpdateAction }
 
 password_reset_submit:
-    path: /password/reset-submit/{username}/{stamp}/{token}
+    path: /password-reset/submit/{username}/{stamp}/{token}
     defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetSubmitAction }
 
 password_reset_mobile_check:
-    path: /password/mobile-check/{accountName}
+    path: /password-reset/mobile-check/{accountName}
     defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetMobileCheckAction }
 
-password_reset:
-    path: /password/reset/{username}/{stamp}/{token}
-    defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetAction }
-
 password_reset_sent:
-    path: /password/reset-sent
+    path: /password-reset/sent
     defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetSentAction }
 
 password_reset_success:
-    path: /password/reset-success
+    path: /password-reset/success
     defaults:  { _controller: UserBase\Server\Controller\PasswordResetController::passwordResetSuccessAction }
 
 # PORTAL
