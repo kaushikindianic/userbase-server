@@ -26,6 +26,7 @@ $application->before(function (Request $request) use ($application) {
                 $application['currentaccount'] = $account;
                 
                 $application['twig']->addGlobal('currentuser', $token->getUser());
+                $application['twig']->addGlobal('currentaccount', $account);
             }
         }
     }
