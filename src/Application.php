@@ -71,6 +71,7 @@ class Application extends SilexApplication
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
         $this['userbase.help_url'] = $this->config['userbase']['help_url'];
+        $this['userbase.template_override'] = $this->config['userbase']['template_override'];
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.enable_mobile'] = $this->config['userbase']['enable_mobile'];
@@ -146,6 +147,18 @@ class Application extends SilexApplication
             $this->strings[$key] = $value;
             //$this->strings[$key] = "#" . $value . "#";
         }
+        
+        if ($this['userbase.template_override']) {
+            if (file_exists($this['userbase.template_override'] . '/strings.yml')) {
+                $lines = $parser->parse(file_get_contents($this['userbase.template_override'] . '/strings.yml'));
+                foreach ($lines as $key => $value) {
+                    $this->strings[$key] = $value;
+                    //$this->strings[$key] = "#" . $value . "#";
+                }
+            }
+        }
+        
+
     }
 
     private function configureStrings()
@@ -186,11 +199,21 @@ class Application extends SilexApplication
         ));
 
 
+        if ($this['userbase.template_override']) {
+            $path = $this['userbase.template_override'] . '/preauth';
+            $this['twig.loader.filesystem']->addPath(
+                $path,
+                'PreAuth'
+            );
+        }
+        
         $path = __DIR__ . '/../templates/preauth';
         $this['twig.loader.filesystem']->addPath(
             $path,
             'PreAuth'
         );
+        
+
     }
 
     private function configureSecurity()
