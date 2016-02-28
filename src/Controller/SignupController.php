@@ -22,7 +22,7 @@ class SignupController
         $data['last_username'] = $session->get('_signup.last_username');
         $data['last_displayname'] = $session->get('_signup.last_displayname');
         return new Response($app['twig']->render(
-            'site/signup/start.html.twig',
+            '@PreAuth/signup/start.html.twig',
             $data
         ));
     }
@@ -163,7 +163,7 @@ class SignupController
 
         $data = array();
         return new Response($app['twig']->render(
-            'site/signup/thankyou.html.twig',
+            '@PreAuth/signup/thankyou.html.twig',
             $data
         ));
     }

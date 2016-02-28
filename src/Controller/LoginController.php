@@ -26,7 +26,7 @@ class LoginController
         $error = $app['security.last_error']($request);
 
         return new Response($app['twig']->render(
-            'site/index.html.twig',
+            '@PreAuth/index.html.twig',
             $data
         ));
     }
@@ -65,7 +65,7 @@ class LoginController
         }
 
         return new Response($app['twig']->render(
-            'site/login.html.twig',
+            '@PreAuth/login.html.twig',
             $data
         ));
     }
@@ -80,7 +80,7 @@ class LoginController
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/logout_success.html.twig',
+            '@PreAuth/logout_success.html.twig',
             $data
         ));
     }

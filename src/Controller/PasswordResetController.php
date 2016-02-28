@@ -16,7 +16,7 @@ class PasswordResetController
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/password_reset/start.html.twig',
+            '@PreAuth/password_reset/start.html.twig',
             array($data)
         ));
     }
@@ -78,7 +78,7 @@ class PasswordResetController
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/password_reset/sent.html.twig',
+            '@PreAuth/password_reset/sent.html.twig',
             $data
         ));
     }
@@ -91,7 +91,7 @@ class PasswordResetController
         $data['username'] = $username;
         $data['token'] = $token;
         return new Response($app['twig']->render(
-            'site/password_reset/update.html.twig',
+            '@PreAuth/password_reset/update.html.twig',
             $data
         ));
     }
@@ -148,7 +148,7 @@ class PasswordResetController
     {
         $data = array();
         return new Response($app['twig']->render(
-            'site/password_reset/success.html.twig',
+            '@PreAuth/password_reset/success.html.twig',
             $data
         ));
     }
@@ -187,7 +187,7 @@ class PasswordResetController
         $data = array();
         $data['accountName'] = $account->getName();
         return new Response($app['twig']->render(
-            'site/password_reset/mobile_check.html.twig',
+            '@PreAuth/password_reset/mobile_check.html.twig',
             $data
         ));
     }

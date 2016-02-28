@@ -185,16 +185,11 @@ class Application extends SilexApplication
             ),
         ));
 
-        if (!isset($this->config['userbase']['theme'])) {
-            $this->config['userbase']['theme'] = 'themes/default';
-        }
-        $path = $this->config['userbase']['theme'];
-        if ($path[0]!='/') {
-            $path = __DIR__ . '/../' . $path;
-        }
+
+        $path = __DIR__ . '/../templates/preauth';
         $this['twig.loader.filesystem']->addPath(
             $path,
-            'Theme'
+            'PreAuth'
         );
     }
 
