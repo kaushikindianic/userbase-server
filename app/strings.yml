@@ -27,7 +27,7 @@ common.label_need_help: Need help logging in?
 
 common.error_incorrectcredentials: Incorrect username / password
 
-error.invalid_username: The username is invalid (only lowercase letters. min 3, max 32 characters)
+error.invalid_username: The username is invalid (only lowercase letters. min 3, max 15 characters)
 error.invalid_mobile: The provided mobile phone number is invalid. Please use only digits.
 error.account_exists: An account with the selected name already exists. Please try another name.
 error.account_not_found: Account not found.
