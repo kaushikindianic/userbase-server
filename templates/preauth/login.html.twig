@@ -10,16 +10,7 @@
 
 <form action="{{ path("login_check") }}" method="post">
     <div class="form-group form-group form-group">
-
-        {% if postfix is defined %}
-            <div class="input-group">
-                <input name="_username" value="{{ last_username }}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
-                <div class="input-group-addon">{{ postfix|star|raw }}</div>
-            </div>
-        {% else %}
-            <input name="_username" value="{{ last_username }}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
-        {% endif %}
-
+        <input name="_username" value="{{ last_username }}" autofocus class="form-control" placeholder="{{ "common.label_username_or_email"|trans }}" required="required" />
     </div>
 
     <div class="form-group form-group">
