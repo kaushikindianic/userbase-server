@@ -61,7 +61,7 @@ class SignupController
         if (!ctype_alpha($username)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
         }
-        if ((strlen($username)>32) || (strlen($username)<3)) {
+        if ((strlen($username)>15) || (strlen($username)<3)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
         }
 
