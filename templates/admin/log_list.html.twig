@@ -13,7 +13,7 @@
         </tr>
         {% for aEvent in aEvents %}
         <tr>
-            <td>{{aEvent.user_name}}</td>
+            <td><a href="{{path('admin_account_view', {'accountname': aEvent.user_name })}}">{{aEvent.user_name}}</a></td>
             <td  style="text-align: center" >{{ aEvent.event_name }}</td>
             <td   style="text-align: center" >{{ aEvent.occured_at|mydate }} {{ aEvent.occured_at|date("H:i:s") }} </td>
             <td  style="text-align: center">{{ aEvent.admin_name }}</td>
