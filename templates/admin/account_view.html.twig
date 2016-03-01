@@ -7,8 +7,14 @@
 <span class="badge badge-default">{{ account.getAccountType()}}</span>
 <p class="lead">{{ account.getAbout()|raw|nl2br }}</p>
 <ul>
-    <li>Email: {{ account.getEmail() }}</li>
-    <li>Mobile: {{ account.getMobile() }}</li>
+    <li>Email: {{ account.getEmail() }}
+        <span class="label label-{% if account.isEmailVerified() %}success{% else %}default{% endif %}">
+            <i class="fa fa-envelope-o"></i></span>
+    </li>
+    <li>Mobile: {{ account.getMobile() }}
+        <span class="label label-{% if account.isMobileVerified() %}success{% else %}default{% endif %}">
+            <i class="fa fa-phone"></i></span>
+    </li>
 </ul>
 <div style="clear: both;"></div>
 <div class="buttonbox">
