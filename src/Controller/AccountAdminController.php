@@ -270,6 +270,7 @@ class AccountAdminController
                 ->setDisplayName($data['displayName'])
                 ->setAbout($data['about'])
                 ->setMobile($data['mobile'])
+                ->setEmail($data['email'])
             ;
     
             if ($add) {
