@@ -101,7 +101,7 @@ class PdoAccountRepository
     }
 
     public function getAll($limit = 10, $search = '')
-    {   
+    {
         $aVal = array();
         $sql = 'SELECT * FROM account WHERE (deleted_at IS NULL OR deleted_at=0) ';
         
@@ -109,7 +109,7 @@ class PdoAccountRepository
             $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
             $aVal[':search'] = "%".$search."%";
         }
-        $sql .= '  ORDER BY name DESC';
+        $sql .= '  ORDER BY created_at DESC';
         
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
