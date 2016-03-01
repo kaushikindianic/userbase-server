@@ -53,9 +53,15 @@ signup.description: >
     You can optionally create an account for your organization in a later step.
     For both e-mail and mobile, please enter the contact information for you personally as-well.
     For security purposes, do not enter a shared e-mail account (info@...) or shared mobile phone.
-    We will only use this information for security purposes.
+    We will only use this information <b>for security purposes</b>.
 signup.thankyou: Thanks for signing up!
 signup.thankyou_details: You can now login using the button below.
+signup.tooltip.username: Min 3 max 15 characters.
+signup.tooltip.displayname: Your first + lastname.<br />Used in communications with others.
+signup.tooltip.email: Your personal e-mail address.<br />For security purposes, don't use a<br />shared e-mail address (like info@)
+signup.tooltip.mobile: Your personal mobile number.<br />Used for security purposes and SMS login.
+signup.tooltip.password: Choose a secure password, including letters, digits<br />and special characters.
+signup.tooltip.password2: Re-enter the same password<br />for verification purposes.
 
 verify_email.header: E-mail verification required
 verify_email.description: Please click the link that was sent to your e-mail address.

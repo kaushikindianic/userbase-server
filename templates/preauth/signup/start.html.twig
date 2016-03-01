@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>{{ "signup.header"|trans }}</h1>
-<div class="alert alert-info" style="text-align: left;">{{ "signup.description"|trans }}</div>
+<div class="alert alert-info" style="text-align: left;">{{ "signup.description"|trans|raw }}</div>
 
 {% if error_string is defined %}
 <div class="alert alert-warning">
@@ -10,33 +10,76 @@
 </div>
 {% endif %}
 
+{% set stickTo = 'right' %}
+
 <form action="{{ path("signup_submit") }}" method="post">
     <div class="form-group form-group form-group">
         
-        <input name="_username" id="_username" value="{{ last_username|default("")}}" autofocus class="form-control" placeholder="{{ "common.label_username"|trans }}" required="required" />
-        <div id="chkUserExist" style="display:none;"></div> 
+        <input name="_username"
+            data-tooltip="{{ "signup.tooltip.username"|trans }}"
+            data-tooltip-stickto="{{ stickTo }}"
+            id="_username" maxlength="15"
+            value="{{ last_username|default("")}}"
+            class="form-control"
+            placeholder="{{ "common.label_username"|trans }}"
+            autofocus
+            required="required" />
+        <div id="chkUserExist" style="display: none;"></div> 
     </div>
 
     <div class="form-group form-group">
-         <input name="_displayname" value="{{ last_displayname|default("")}}" class="form-control" placeholder="{{ "common.label_displayname"|trans }}" type="text" required="required" />
+         <input name="_displayname"
+            data-tooltip="{{ "signup.tooltip.displayname"|trans }}"
+            data-tooltip-stickto="{{ stickTo }}"
+            value="{{ last_displayname|default("")}}"
+            class="form-control"
+            placeholder="{{ "common.label_displayname"|trans }}"
+            type="text"
+            required="required" />
     </div>
     
     <div class="form-group form-group">
-         <input name="_email" value="{{ last_email|default("")}}" class="form-control" placeholder="{{ "common.label_email"|trans }}" type="email" required="required" />
+         <input name="_email"
+            data-tooltip="{{ "signup.tooltip.email"|trans }}"
+            data-tooltip-stickto="{{ stickTo }}"
+            value="{{ last_email|default("")}}"
+            class="form-control"
+            placeholder="{{ "common.label_email"|trans }}"
+            type="email"
+            required="required" />
     </div>
     
     {% if enable_mobile %}
     <div class="form-group form-group">
-         <input name="_mobile" value="{{ last_mobile|default("")}}" class="form-control" placeholder="{{ "common.label_mobile"|trans }}" type="text" required="required" />
+         <input name="_mobile"
+            data-tooltip="{{ "signup.tooltip.mobile"|trans }}"
+            data-tooltip-stickto="{{ stickTo }}"
+            value="{{ last_mobile|default("")}}"
+            class="form-control"
+            placeholder="{{ "common.label_mobile"|trans }}"
+            type="text"
+            required="required" />
     </div>
     {% endif %}
 
     <div class="form-group form-group">
-         <input name="_password" class="form-control" placeholder="{{ "common.label_password"|trans }}" type="password" required="required" />
+         <input name="_password"
+            data-tooltip="{{ "signup.tooltip.password"|trans }}"
+            data-tooltip-stickto="{{ stickTo }}"
+            class="form-control"
+            placeholder="{{ "common.label_password"|trans }}"
+            type="password"
+            required="required" />
     </div>
     
     <div class="form-group form-group">
-         <input name="_password2" class="form-control" placeholder="{{ "common.label_passwordrepeat"|trans }}" type="password" required="required" />
+         <input name="_password2"
+            data-tooltip="{{ "signup.tooltip.password2"|trans }}"
+            data-tooltip-stickto="{{ stickTo }}"
+            class="form-control"
+            placeholder="{{ "common.label_passwordrepeat"|trans }}"
+            type="password"
+            required="required" />
     </div>
 
     <button type="submit" id = "btnSubmit" class="btn btn-success btn-lg">{{ "common.action_signup"|trans }}</button><br />
@@ -48,5 +91,7 @@
 
 <script type="text/javascript">
     window.checkUser = {url: "{{ path('admin_user_check') }}" };
+    
+    
 </script>
 {% endblock %}
