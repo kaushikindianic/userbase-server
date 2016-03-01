@@ -204,7 +204,7 @@ admin_user_update_displayname:
 # ACCOUNT MODULE
 
 admin_account_list:
-    path: /admin/account
+    path: /admin/accounts
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction }
 
 admin_account_apikeys:
@@ -212,43 +212,43 @@ admin_account_apikeys:
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::apikeysAction }
 
 admin_account_add:
-    path: /admin/account/add
+    path: /admin/accounts/add
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
 
 admin_account_view:
-    path: /admin/account/{accountname}
+    path: /admin/accounts/{accountname}
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountViewAction }
 
 admin_account_edit:
-    path: /admin/account/{accountname}/edit
+    path: /admin/accounts/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountEditAction }
 
 admin_account_delete:
-    path: /admin/account/{accountname}/delete
+    path: /admin/accounts/{accountname}/delete
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountDeleteAction }
 
 admin_account_add_apikey:
-    path: /admin/account/{accountname}/addapikey
+    path: /admin/accounts/{accountname}/addapikey
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addApikeyAction }
 
 admin_account_edit_apikey:
-    path: /admin/account/{accountname}/{id}/editapikey
+    path: /admin/accounts/{accountname}/{id}/editapikey
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::editApikeyAction }
 
 admin_account_add_property:
-    path: /admin/account/{accountname}/addproperty
+    path: /admin/accounts/{accountname}/addproperty
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addPropertyAction }
 
 admin_account_delete_property:
-    path: /admin/account/{accountname}/deleteproperty/{propertyId}
+    path: /admin/accounts/{accountname}/deleteproperty/{propertyId}
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::deletePropertyAction }
 
 admin_account_users:
-    path: /admin/account/{accountname}/users
+    path: /admin/accounts/{accountname}/users
     defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountUsersAction }
 
 admin_account_searchuser:
-    path: /admin/account/{accountname}/searchuser
+    path: /admin/accounts/{accountname}/searchuser
     defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountSearchUserAction }
 
 # APPLICATION MODULE
