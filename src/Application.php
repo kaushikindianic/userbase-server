@@ -71,7 +71,9 @@ class Application extends SilexApplication
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
         $this['userbase.help_url'] = $this->config['userbase']['help_url'];
-        $this['userbase.template_override'] = $this->config['userbase']['template_override'];
+        if (isset($this->config['userbase']['template_override'])) {
+            $this['userbase.template_override'] = $this->config['userbase']['template_override'];
+        }
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.enable_mobile'] = $this->config['userbase']['enable_mobile'];
@@ -148,7 +150,7 @@ class Application extends SilexApplication
             //$this->strings[$key] = "#" . $value . "#";
         }
         
-        if ($this['userbase.template_override']) {
+        if (isset($this['userbase.template_override'])) {
             if (file_exists($this['userbase.template_override'] . '/strings.yml')) {
                 $lines = $parser->parse(file_get_contents($this['userbase.template_override'] . '/strings.yml'));
                 foreach ($lines as $key => $value) {
@@ -199,7 +201,7 @@ class Application extends SilexApplication
         ));
 
 
-        if ($this['userbase.template_override']) {
+        if (isset($this['userbase.template_override'])) {
             $path = $this['userbase.template_override'] . '/preauth';
             if (file_exists($path)) {
                 $this['twig.loader.filesystem']->addPath(
@@ -216,7 +218,7 @@ class Application extends SilexApplication
         );
         
         
-        if ($this['userbase.template_override']) {
+        if (isset($this['userbase.template_override'])) {
             $path = $this['userbase.template_override'] . '/portal';
             if (file_exists($path)) {
                 $this['twig.loader.filesystem']->addPath(
