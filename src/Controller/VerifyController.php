@@ -86,23 +86,23 @@ class VerifyController
         
         if (!$account) {
             // no such user
-            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E03&detail=noaccount');
+            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E03&detail=noaccount');
         }
-        $leeway = 60 * 60; // +/- 60 minutes
+        $leeway = 60 * 60 * 24; // +/- 60 minutes * 24
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E05&detail=expired');
+            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E05&detail=expired');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E05&detail=early');
+            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E05&detail=early');
         }
 
         $test = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
-            return $app->redirect($app['url_generator']->generate('verify_email') . '?errorcode=E04');
+            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E04');
         }
 
         $accountRepo->setEmailVerifiedStamp($account, $stamp);
