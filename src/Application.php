@@ -70,13 +70,14 @@ class Application extends SilexApplication
         }
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
-        $this['userbase.help_url'] = $this->config['userbase']['help_url'];
+        $this['userbase.help_url'] = isset($this->config['userbase']['help_url']) ? $this->config['userbase']['help_url'] : null;
         if (isset($this->config['userbase']['template_override'])) {
             $this['userbase.template_override'] = $this->config['userbase']['template_override'];
         }
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
-        $this['userbase.enable_mobile'] = $this->config['userbase']['enable_mobile'];
+        $this['userbase.enable_mobile'] = isset($this->config['userbase']['enable_mobile']) ?
+            $this->config['userbase']['enable_mobile'] : false;
         $this['userbase.partition'] = $this->config['userbase']['partition'];
         $this['userbase.salt'] = $this->config['userbase']['salt'];
         $this['picturePath'] = $this->config['picturePath'];
@@ -131,7 +132,7 @@ class Application extends SilexApplication
         $this->apikeyRepository = new PdoApikeyRepository($pdo);
         $this->accountPropertyRepository = new PdoAccountPropertyRepository($pdo);
         $this->spaceRepository = new  PdoSpaceRepository($pdo);
-        
+
         $mailer = Service::mailer();
 
         $this['mailer'] = $mailer;
@@ -149,7 +150,7 @@ class Application extends SilexApplication
             $this->strings[$key] = $value;
             //$this->strings[$key] = "#" . $value . "#";
         }
-        
+
         if (isset($this['userbase.template_override'])) {
             if (file_exists($this['userbase.template_override'] . '/strings.yml')) {
                 $lines = $parser->parse(file_get_contents($this['userbase.template_override'] . '/strings.yml'));
@@ -159,7 +160,7 @@ class Application extends SilexApplication
                 }
             }
         }
-        
+
 
     }
 
@@ -210,14 +211,14 @@ class Application extends SilexApplication
                 );
             }
         }
-        
+
         $path = __DIR__ . '/../templates/preauth';
         $this['twig.loader.filesystem']->addPath(
             $path,
             'PreAuth'
         );
-        
-        
+
+
         if (isset($this['userbase.template_override'])) {
             $path = $this['userbase.template_override'] . '/portal';
             if (file_exists($path)) {
@@ -227,13 +228,13 @@ class Application extends SilexApplication
                 );
             }
         }
-        
+
         $path = __DIR__ . '/../templates/portal';
         $this['twig.loader.filesystem']->addPath(
             $path,
             'Portal'
         );
-        
+
 
     }
 
@@ -301,51 +302,51 @@ class Application extends SilexApplication
     {
         return $this->accountRepository;
     }
-    
+
     public function getIdentityRepository()
     {
         return $this->identityRepository;
     }
-    
+
     public function getEventRepository()
     {
         return $this->eventRepository;
     }
-    
+
     public function getApikeyRepository()
     {
         return $this->apikeyRepository;
     }
-    
+
     public function getAccountPropertyRepository()
     {
         return $this->accountPropertyRepository;
     }
-    
+
     public function getSpaceRepository()
     {
         return $this->spaceRepository;
     }
-    
+
     public function sendMail($templateName, $username)
     {
         $userRepo = $this->getUserRepository();
         $accountRepo = $this->getAccountRepository();
         $user = $userRepo->getByName($username);
         $account = $accountRepo->getByName($username);
-        
+
         $salt = $this['userbase.salt'];
         $stamp = time();
         $baseUrl = $this['userbase.baseurl'];
-        
+
         $verifyToken = sha1($stamp . ':' . $account->getEmail() . ':' . $salt);
         $link = $baseUrl . '/verify/email/' . $account->getName() . '/' . $stamp . '/' . $verifyToken;
-        
+
         $data = array();
         $data['link'] = $link;
         $data['username'] = $username;
         $this['mailer']->sendTemplate($templateName, $account, $data);
-        
+
     }
 
 
@@ -359,20 +360,20 @@ class Application extends SilexApplication
         $accountRepo = $this->getAccountRepository();
         $user = $userRepo->getByName($username);
         $account = $accountRepo->getByName($username);
-        
+
         $stamp = time();
-        
+
         $data['username'] = $username;
-        
+
         $apiKey = $this['sms.apikey'];
         $gw = new MessageBirdGateway($apiKey);
         $service = new SmsService($gw);
-        
+
         $sender = $this['sms.sender'];
         $to = $account->getMobile();
-        
+
         $message='code: ' . $data['code'];
-        
+
         $msg = new SmsMessage($message, $sender, $to);
         $service->send($msg);
     }

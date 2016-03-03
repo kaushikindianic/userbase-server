@@ -41,7 +41,7 @@ class LoginController
         //echo $error;
         $last_username = $app['session']->get('_security.last_username');
         $data['last_username'] = $last_username;
-        
+
         $error = $app['security.last_error']($request);
         switch ($error) {
             case 'Bad credentials.':
@@ -69,7 +69,7 @@ class LoginController
             $data
         ));
     }
-    
+
     public function loginSuccessAction(Application $app, Request $request)
     {
         $next = $app['session']->get('next');
