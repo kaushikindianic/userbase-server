@@ -78,8 +78,11 @@ class SignupController
         if ($accountRepo->getByEmail($email)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=email_exists');
         }
-        if ($accountRepo->getByMobile($mobile)) {
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=mobile_exists');
+        
+        if ($app['userbase.enable_mobile']) {
+            if ($accountRepo->getByMobile($mobile)) {
+                return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=mobile_exists');
+            }
         }
         
         
