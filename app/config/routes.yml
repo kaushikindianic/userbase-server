@@ -85,7 +85,7 @@ password_reset_success:
 portal_index:
     path: /portal
     defaults:  { _controller: UserBase\Server\Controller\PortalController::indexAction }
-    
+
 portal_add:
     path: /portal/accounts/new
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountAddAction }
@@ -105,7 +105,7 @@ portal_view:
 portal_cropimag:
     path: /portal/accounts/{accountname}/crop
     defaults:  { _controller: UserBase\Server\Controller\PortalController::cropImageAction }
-    
+
 portal_edit:
     path: /portal/accounts/{accountname}/edit
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountEditAction }
@@ -113,32 +113,32 @@ portal_edit:
 portal_account_members:
     path: /portal/accounts/{accountname}/members
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountMembersAction }
-    
+
 portal_account_user_add:
     path: /portal/accounts/{accountname}/users/add
     defaults:  { _controller: UserBase\Server\Controller\PortalController::accountUserAddAction }
- 
+
 portal_app_login:
     path: /portal/applogin/{appname}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::appLoginAction }
-    
+
 # SPACE
 portal_spaces_add:
     path: /portal/accounts/{accountname}/spaces/add
     defaults:  { _controller: UserBase\Server\Controller\PortalController::addSpaceAction }
-    
+
 portal_spaces_view:
     path: /portal/spaces/{id}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::spaceViewAction }
-    
+
 portal_spaces_edit:
     path: /portal/spaces/edit/{id}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::editSpaceAction }
-    
+
 portal_spaces_delete:
     path: /portal/spaces/delete/{id}
     defaults:  { _controller: UserBase\Server\Controller\PortalController::deleteSpaceAction }
-    
+
 # API
 api_v1_root:
     path: /api/v1
@@ -204,8 +204,8 @@ admin_user_update_displayname:
 # ACCOUNT MODULE
 
 admin_account_list:
-    path: /admin/accounts
-    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction }
+    path: /admin/accounts/{accountType}
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction, accountType: user }
 
 admin_account_apikeys:
     path: /admin/apikeys

@@ -27,9 +27,8 @@ final class PdoUserRepository implements UserProviderInterface
         $this->encoderFactory = $encoderFactory;
         $this->accountRepo = $accountRepo;
         $this->enableMobile = $enableMobile;
-        
     }
-    
+
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
@@ -39,31 +38,31 @@ final class PdoUserRepository implements UserProviderInterface
             WHERE (u.name=:name OR a.email=:email)
             LIMIT 1"
         );
-        
+
         $statement->execute(array('name' => $name, 'email' => $name));
         $row = $statement->fetch();
 
         if (!$row) {
             return null;
         }
-        
+
         return $this->row2user($row);
     }
-    
+
     public function getAll($limit = 10, $search = '')
     {
         $aVal = array();
         $sql = 'SELECT * FROM user WHERE 1 ';
-        
+
         if ($search) {
             $sql .= ' AND name LIKE  :search  OR  email LIKE :search ';
             $aVal[':search'] = "%".$search."%";
-        }        
+        }
         $sql .= ' ORDER BY name DESC';
-        
+
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
-        
+
         $users = array();
         while ($row = $statement->fetch()) {
             $user = $this->row2user($row);
@@ -71,7 +70,7 @@ final class PdoUserRepository implements UserProviderInterface
         }
         return $users;
     }
-    
+
     private function row2user($row)
     {
         $account = $this->accountRepo->getByName($row['name']);
@@ -95,23 +94,23 @@ final class PdoUserRepository implements UserProviderInterface
                 $enabled = false;
             }
         }
-        
+
         $user->setEnabled($enabled);
 //      $user->setPictureUrl($row['picture_url']);
         if ($row['is_admin']>0) {
             $user->setAdmin(true);
         }
-        
+
         return $user;
     }
-    
+
     public function register(Application $app, $name, $email)
     {
         $user = $this->getByName($name);
         if ($user) {
             throw new RuntimeException("Name already taken: " . $name);
         }
-                
+
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $statement = $this->pdo->prepare(
@@ -128,17 +127,17 @@ final class PdoUserRepository implements UserProviderInterface
         $userObj = $this->getByName($name);
 
         $this->oauth->registerUser($app, $userObj);
-        
+
         return $userObj;
     }
 
-    
+
     public function setPassword(User $user, $password)
     {
         if (!$user) {
             throw new RuntimeException("User not specified");
         }
-        
+
         $encoder = $this->encoderFactory->getEncoder($user);
         $hash = $encoder->encodePassword($password, $user->getSalt());
 
@@ -147,7 +146,7 @@ final class PdoUserRepository implements UserProviderInterface
             password = :password, password_updated_at = :stamp
             WHERE name=:name"
         );
-        
+
         return  $statement->execute(
             array(
                 ':password' => $hash,
@@ -156,20 +155,20 @@ final class PdoUserRepository implements UserProviderInterface
             )
         );
     }
-    
+
     public function setEmail(User $user, $email)
     {
         if (!$user) {
             throw new RuntimeException("User not specified");
         }
-        
-        
+
+
         $statement = $this->pdo->prepare(
             "UPDATE user SET
             email = :email
             WHERE name=:name"
         );
-        
+
         $statement->execute(
             array(
                 ':email' => $email,
@@ -177,20 +176,20 @@ final class PdoUserRepository implements UserProviderInterface
             )
         );
     }
-    
+
     public function setDisplayName(User $user, $displayname)
     {
         if (!$user) {
             throw new RuntimeException("User not specified");
         }
-        
-        
+
+
         $statement = $this->pdo->prepare(
             "UPDATE user SET
             display_name = :displayname
             WHERE name=:name"
         );
-        
+
         $statement->execute(
             array(
                 ':displayname' => $displayname,
@@ -226,14 +225,14 @@ final class PdoUserRepository implements UserProviderInterface
     {
         return $class === 'Symfony\Component\Security\Core\User\User';
     }
-    
+
     public function update($username, $data)
     {
         if (isset($data['displayname'])) {
             $statement = $this->pdo->prepare(
                 "UPDATE user SET displayname = :displayname WHERE name=:name"
             );
-            
+
             $statement->execute(
                 array(
                     ':displayname' => $data['displayname'],
@@ -246,7 +245,7 @@ final class PdoUserRepository implements UserProviderInterface
             $statement = $this->pdo->prepare(
                 "UPDATE user SET bio = :bio WHERE name=:name"
             );
-            
+
             $statement->execute(
                 array(
                     ':bio' => $data['bio'],
@@ -259,7 +258,7 @@ final class PdoUserRepository implements UserProviderInterface
             $statement = $this->pdo->prepare(
                 "UPDATE user SET picture_url = :pictureurl WHERE name=:name"
             );
-            
+
             $statement->execute(
                 array(
                     ':pictureurl' => $data['pictureurl'],
@@ -268,10 +267,10 @@ final class PdoUserRepository implements UserProviderInterface
             );
         }
     }
-    
+
     public function getSearchUsers($search = null)
-    {   
-        $statement = $this->pdo->prepare("SELECT u.* FROM user AS u ".(($search)? ' WHERE name LIKE "%'.$search.'%"'  : '' )." ORDER BY name DESC");
+    {
+        $statement = $this->pdo->prepare("SELECT u.* FROM user AS u ".(($search)? ' WHERE name LIKE "%'.$search.'%"'  : '')." ORDER BY name DESC");
         $statement->execute();
         $users = array();
         while ($row = $statement->fetch()) {
@@ -280,7 +279,7 @@ final class PdoUserRepository implements UserProviderInterface
         }
         return $users;
     }
-    
+
     public function encodePassword(User $user, $password)
     {
         $encoder = $this->encoderFactory->getEncoder($user);
