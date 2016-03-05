@@ -2,13 +2,20 @@
     "name": "linkorb/userbase-server",
     "description": "UserBase: Identity + Login + Signup Service",
     "homepage": "http://www.github.com/linkorb/userbase-server",
-    "keywords": ["login", "signup", "user", "account"],
+    "keywords": ["login", "signup", "user", "account", "linkorb"],
     "type": "library",
+    "license": "MIT",
     "authors": [{
         "name": "Joost Faassen",
         "email": "j.faassen@linkorb.com",
         "role": "Development"
     }],
+    "authors" : [{
+            "name" : "LinkORB",
+            "email" : "engineering@linkorb.com",
+            "role" : "Development"
+        }
+    ],
     "require": {
         "php": ">=5.3.0",
         "symfony/console": "2.7.*",

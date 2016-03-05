@@ -1,9 +1,11 @@
 # UserBase
 
+## Brought to you by the LinkORB Engineering team
+
 ## Install dependencies
 
     composer install
-    
+
 ## Initializing the database
 
     vendor/bin/dbtk-schema-loader schema:load app/schema.xml mysql://username:password@localhost/userbase
@@ -11,7 +13,7 @@
 ## Configuration
 
     cp app/config/parameters.yml.dist app/config/parameters.yml
-    
+
 Now edit the `app/config/parameters.yml` file to your preferences.
 
 ### userbase:

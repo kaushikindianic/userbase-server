@@ -2,7 +2,7 @@
 
 {% block content %}
 
-<h2>Account: {{ accountCount }}</h2>
+<h2>Account: {{ totalUsers + totalOrganizations + totalAPIKeys }}</h2>
 <div class="buttonbox">
     <a href="{{ path('admin_account_add') }}" class="btn btn-primary" role="button">
         <i class="fa fa-plus"></i>
@@ -12,9 +12,18 @@
 
 <form action ="" name="frmAccList" id="frmAccList" method="post" >
     <div id="form">
-        <div class="form-group">                    
+        <div class="form-group">
             <input type="text" placeholder="Search" value="{{ searchText }}" id="searchText" name="searchText">
             <button type="submit" ><span aria-hidden="true" class="glyphicon glyphicon-search"></span></button>
+
+            <a href="{{ path("admin_account_list", {'accountType' : 'user' })}}"
+                class="btn  btn-{% if accountType == 'user' %}success  {% else %}primary{% endif %}" role="button">Users {{ totalUsers }}</a>
+
+            <a href="{{ path("admin_account_list", {'accountType' : 'organization' })}}"
+             class="btn btn- btn-{% if accountType == 'organization' %}success  {% else %}primary{% endif %}" role="button">Organizations {{ totalOrganizations }}</a>
+
+            <a href="{{ path("admin_account_list", {'accountType': 'apikey' })}}"
+                class="btn btn- btn-{% if accountType == 'apikey' %}success  {% else %}primary{% endif %}" role="button">API Keys {{ totalAPIKeys }}</a>
         </div>
     </div>
     <table class="table">
@@ -51,7 +60,7 @@
                 <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">
                  <span class="glyphicon glyphicon-edit"></span>
                 </a>
-            </td> 
+            </td>
         </tr>
         {% endfor %}
     </table>
