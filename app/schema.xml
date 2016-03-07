@@ -34,7 +34,7 @@
         <column name="is_owner" type="integer" />
 
         <!-- store account specific user data here, like roles, join-status, etc -->
-        <index name="unique_account_user" unique="unique" columns="account_name,user_name" />
+        <index name="unique_account_user" unique="true" columns="account_name,user_name" />
     </table>
 
     <table name="app">
