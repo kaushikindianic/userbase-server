@@ -23,8 +23,9 @@
         <column name="account_name" type="string" length="128" />
         <column name="name" type="string" length="128" />
         <column name="value" type="text" />
-        
+
         <index name="primary" primary="true" columns="id" />
+        <index name="unique_account_property" unique="true" columns="account_name,name" />
     </table>
 
     <table name="account_user">
@@ -53,7 +54,7 @@
         <column name="user_name" type="string" length="128" />
 
         <!-- store account specific user data here, like roles, join-status, etc -->
-        <index name="unique_app_user" unique="unique" columns="app_name,user_name" />
+        <index name="unique_app_user" unique="true" columns="app_name,user_name" />
     </table>
 
     <!--
@@ -75,7 +76,7 @@
         <column name="identity_object" type="text"/>
         <column name="identity_avatar" type="text"/>
 
-        
+
         <index name="primary" primary="true" columns="identity_id" />
         <index name="user_name_lookup" columns="user_name,service" />
         <index name="fast_look_by_uid" columns="service,identity_id" />
@@ -151,7 +152,7 @@
 
         <index name="primary" primary="true" columns="username" />
     </table>
-    
+
     <table name="user">
         <column name="name" type="string" length="128" />
         <column name="alias" type="string" length="128" />
@@ -167,7 +168,7 @@
 
         <index name="primary" primary="true" columns="name" />
     </table>
-    
+
     <table name="event">
         <column name="id" type="integer" autoincrement="true" />
         <column name="occured_at" type="integer" />
@@ -175,7 +176,7 @@
         <column name="user_name" type="string" length="128" />
         <column name="event_name" type="string" length="128" />
         <column name="admin_name" type="string" length="128" />
-        
+
         <index name="primary" primary="true" columns="id" />
     </table>
 

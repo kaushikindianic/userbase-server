@@ -8,7 +8,7 @@ use PDO;
 class PdoAccountPropertyRepository
 {
     private $pdo;
-    
+
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
@@ -26,7 +26,7 @@ class PdoAccountPropertyRepository
         }
         return $this->rowToAccountProperty($rows[0]);
     }
-    
+
     public function getByAccountName($accountName)
     {
         $statement = $this->pdo->prepare("SELECT * FROM account_property WHERE account_name=:account_name");
@@ -40,7 +40,7 @@ class PdoAccountPropertyRepository
         }
         return $objs;
     }
-    
+
     private function rowToAccountProperty($row)
     {
         $obj = new AccountProperty();
@@ -50,30 +50,45 @@ class PdoAccountPropertyRepository
         $obj->setValue($row['value']);
         return $obj;
     }
-    
+
     public function add(AccountProperty $property)
     {
         $sql = 'INSERT INTO account_property(account_name, name, value)
                 VALUES(:account_name, :name, :value)';
-        
+
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
-                'account_name' => $property->getAccountName() ,
+                'account_name' => $property->getAccountName(),
                 'name' => $property->getName(),
                 'value' => $property->getValue()
         ));
         return $row;
     }
-        
+
     public function delete(AccountProperty $property)
     {
         $sql = 'DELETE FROM account_property WHERE id=:id
                 AND account_name=:account_name';
-        
+
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
                 'account_name' => $property->getAccountName(),
                 'id' => $property->getId()
+        ));
+        return $row;
+    }
+
+    public function insertOrUpdate(AccountProperty $property)
+    {
+        $sql = 'INSERT INTO account_property(account_name, name, value)
+                VALUES(:account_name, :name, :value)
+                ON DUPLICATE KEY UPDATE `value` = values(value)';
+
+        $statement = $this->pdo->prepare($sql);
+        $row = $statement->execute(array(
+                'account_name' => $property->getAccountName(),
+                'name' => $property->getName(),
+                'value' => $property->getValue()
         ));
         return $row;
     }
