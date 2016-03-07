@@ -240,8 +240,7 @@ class ApiController
             return $this->getErrorResponse(404, "Account not found");
         }
         if (in_array($oAccount->getAccountType(), ['organization', 'group'])) {
-
-            $isOwner =  ( strtolower($isAdmin) == 'true')? 1 : 0;
+            $isOwner =  (strtolower($isAdmin) == 'true')? 1 : 0;
             $oAccRepo->addAccUser($accountName, $userName, $isOwner);
             $data = ['status' => 'ok'];
             return new JsonResponse($data);
@@ -260,7 +259,6 @@ class ApiController
             return $this->getErrorResponse(404, "Account not found");
         }
         if (in_array($oAccount->getAccountType(), ['organization', 'group'])) {
-
             $oAccRepo->delAccUsers($accountName, $userName);
             $data = ['status' => 'ok'];
             return new JsonResponse($data);
