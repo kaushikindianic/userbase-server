@@ -6,12 +6,13 @@ use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use RuntimeException;
+use UserBase\Server\Model\AccountProperty;
 
 class ApiController
 {
     private $baseUrl;
-    
-    
+
+
     public function indexAction(Application $app)
     {
         $data = array(
@@ -21,7 +22,7 @@ class ApiController
 
         return new JsonResponse($data);
     }
-    
+
     private function user2array(Application $app, $user, $details = false)
     {
         if (!isset($app['userbase.partition'])) {
@@ -42,11 +43,11 @@ class ApiController
             $data['lastseen_at'] = $user->getLastSeenAt();
             $data['deleted_at'] = $user->getDeletedAt();
             $data['passwordupdated_at'] = $user->getPasswordUpdatedAt();
-            
+
             // GET USER ACCOUNTS //
             $oAccRepo = $app->getAccountRepository();
             $aAccounts = $oAccRepo->getByUserName($user->getUsername());
-            
+
             $data['accounts'] = array();
             foreach ($aAccounts as $oAccount) {
                 $accountData = array();
@@ -58,7 +59,7 @@ class ApiController
                 $accountData['created_at'] = $oAccount->getCreatedAt();
                 $accountData['deleted_at'] = $oAccount->getDeletedAt();
                 $accountData['account_type'] = $oAccount->getAccountType();
-                
+
                 $statement = array(
                     'effect' => 'allow',
                     'action' => ['userbase:manage_account', 'userbase:use_account'],
@@ -71,13 +72,12 @@ class ApiController
                 $accountData['roles'][] = 'ROLE_ADMIN';
                 $accountData['roles'][] = 'ROLE_USER';
                 */
-                
-                
-                $data['accounts'][] = $accountData;
 
+
+                $data['accounts'][] = $accountData;
             }
             $data['policies'] = $rolesData;
-            
+
             // GET USER SPACES //
             /*
             $oSpaceRepo = $app->getSpaceRepository();
@@ -103,7 +103,7 @@ class ApiController
         $data['href'] = $this->baseUrl . '/api/v1/accounts/' . $account->getName();
         $data['name'] = $account->getName();
         $data['type'] = $account->getAccountType();
-        
+
         if ($details) {
             $data['display_name'] = $account->getDisplayName();
             $data['about'] = $account->getAbout();
@@ -114,18 +114,17 @@ class ApiController
             $data['email_verified'] = $account->isEmailVerified();
             $data['created_at'] = $account->getCreatedAt();
             $data['deleted_at'] = $account->getDeletedAt();
-            
+
             // GET USER ACCOUNTS //
             $members = $accountRepo->getAccountMembers($account->getName());
-            
+
             $data['members'] = array();
             foreach ($members as $member) {
                 $memberData = array();
                 $memberData['user_name'] = $member['user_name'];
                 $memberData['is_owner'] = $member['is_owner'];
-                
-                $data['members'][] = $memberData;
 
+                $data['members'][] = $memberData;
             }
             $data['properties'] = array();
             $accountPropertyRepo = $app->getAccountPropertyRepository();
@@ -136,20 +135,18 @@ class ApiController
                 $propertyData['value'] = $accountProperty->getValue();
                 $data['properties'][] = $propertyData;
             }
-            
-            
         }
-    
+
         return $data;
     }
-    
+
     public function userIndexAction(Application $app, Request $request)
     {
         $details = false;
         if ($request->query->has('details')) {
             $details = true;
         }
-        
+
         $this->baseUrl = $app['userbase.baseurl'];
         $repo = $app->getUserRepository();
         $users = $repo->getAll();
@@ -175,7 +172,7 @@ class ApiController
 
         return new JsonResponse($data);
     }
-    
+
     public function accountIndexAction(Application $app, Request $request)
     {
         $this->baseUrl = $app['userbase.baseurl'];
@@ -183,7 +180,7 @@ class ApiController
         if ($request->query->has('details')) {
             $details = true;
         }
-        
+
         $repo = $app->getAccountRepository();
         $accounts = $repo->getAll();
         $data = array();
@@ -195,7 +192,7 @@ class ApiController
         $data['items'] = $items;
         return new JsonResponse($data);
     }
-    
+
     public function accountViewAction(Application $app, $accountName)
     {
         $this->baseUrl = $app['userbase.baseurl'];
@@ -208,9 +205,7 @@ class ApiController
 
         return new JsonResponse($data);
     }
-    
 
-    
     private function getErrorResponse($code, $message)
     {
         $data = array();
@@ -218,5 +213,19 @@ class ApiController
         $data['error']['code'] = $code;
         $data['error']['message'] = $message;
         return new JsonResponse($data, $code);
+    }
+
+    public function propertyAction(Application $app, $accountName, $propertyName, $propertyValue)
+    {
+        $oPropertyRepo = $app->getAccountPropertyRepository();
+
+        $property = new AccountProperty();
+        $property->setAccountName($accountName);
+        $property->setName($propertyName);
+        $property->setValue($propertyValue);
+        $oPropertyRepo->insertOrUpdate($property);
+
+        $data = ['status' => 'ok'];
+        return new JsonResponse($data);
     }
 }

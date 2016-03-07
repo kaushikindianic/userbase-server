@@ -160,6 +160,10 @@ api_v1_account_view:
     path: /api/v1/accounts/{accountName}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::accountViewAction }
 
+api_v1_account_property:
+    path: /api/v1/accounts/{accountName}/setProperty/{propertyName}/{propertyValue}
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::propertyAction }
+
 admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
@@ -203,10 +207,6 @@ admin_user_update_displayname:
 
 # ACCOUNT MODULE
 
-admin_account_list:
-    path: /admin/accounts/{accountType}
-    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction, accountType: user }
-
 admin_account_apikeys:
     path: /admin/apikeys
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::apikeysAction }
@@ -215,8 +215,12 @@ admin_account_add:
     path: /admin/accounts/add
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
 
+admin_account_list:
+    path: /admin/accounts/{accountType}
+    defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction, accountType: user }
+
 admin_account_view:
-    path: /admin/accounts/{accountname}
+    path: /admin/accounts/{accountname}/view
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountViewAction }
 
 admin_account_edit:
