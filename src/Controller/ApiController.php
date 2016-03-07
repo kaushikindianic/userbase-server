@@ -228,4 +228,41 @@ class ApiController
         $data = ['status' => 'ok'];
         return new JsonResponse($data);
     }
+
+    /**
+    * user assing to account
+    */
+    public function userAssignAccountAction(Application $app, $accountName, $userName, $isAdmin)
+    {
+        $oAccRepo = $app->getAccountRepository();
+
+        if (!$oAccount = $oAccRepo->getByName($accountName)) {
+            return $this->getErrorResponse(404, "Account not found");
+        }
+        if (in_array($oAccount->getAccountType(), ['organization', 'group'])) {
+            $isOwner =  (strtolower($isAdmin) == 'true')? 1 : 0;
+            $oAccRepo->addAccUser($accountName, $userName, $isOwner);
+            $data = ['status' => 'ok'];
+            return new JsonResponse($data);
+        }
+        return $this->getErrorResponse(500, "Account is not organization OR group");
+    }
+
+    /**
+    * @ User Remove form account
+    */
+    public function userRemoveAccountAction(Application $app, $accountName, $userName)
+    {
+        $oAccRepo = $app->getAccountRepository();
+
+        if (!$oAccount = $oAccRepo->getByName($accountName)) {
+            return $this->getErrorResponse(404, "Account not found");
+        }
+        if (in_array($oAccount->getAccountType(), ['organization', 'group'])) {
+            $oAccRepo->delAccUsers($accountName, $userName);
+            $data = ['status' => 'ok'];
+            return new JsonResponse($data);
+        }
+        return $this->getErrorResponse(500, "Account is not organization OR group");
+    }
 }
