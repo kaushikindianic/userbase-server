@@ -115,6 +115,7 @@ class ApiController
             $data['email_verified'] = $account->isEmailVerified();
             $data['created_at'] = $account->getCreatedAt();
             $data['deleted_at'] = $account->getDeletedAt();
+            $data['status'] = $account->getStatus();
 
             // GET USER ACCOUNTS //
             $members = $accountRepo->getAccountMembers($account->getName());
