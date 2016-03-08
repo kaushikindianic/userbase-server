@@ -203,4 +203,13 @@
         <index name="primary" primary="true" columns="id" />
     </table>
 
+    <!-- accountname blacklist  -->
+    <table name="blacklist">
+    	<column name="id" type="integer" autoincrement="true" />
+        <column name="account_name" type="string" length="128" />
+        <column name="description" type="text" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
+
 </schema>

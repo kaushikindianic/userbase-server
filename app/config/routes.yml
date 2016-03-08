@@ -317,3 +317,21 @@ oauth2:
 admin_app_delete:
     path: /admin/apps/{appname}/delete
     defaults: { _controller: UserBase\Server\Controller\AdminController::appDeleteAction }
+
+# APPLICATION BLACKLIST #
+
+admin_blacklist_index:
+    path: /admin/blacklist
+    defaults: { _controller: UserBase\Server\Controller\BlacklistController::indexAction }
+
+admin_blacklist_add:
+    path: /admin/blacklist/add
+    defaults: { _controller: UserBase\Server\Controller\BlacklistController::addAction }
+
+admin_blacklist_edit:
+    path: /admin/blacklist/edit/{id}
+    defaults: { _controller: UserBase\Server\Controller\BlacklistController::editAction }
+
+admin_blacklist_delete:
+    path: /admin/blacklist/delete/{id}
+    defaults: { _controller: UserBase\Server\Controller\BlacklistController::deleteAction }
