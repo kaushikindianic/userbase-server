@@ -164,7 +164,6 @@ api_v1_account_property:
     path: /api/v1/accounts/{accountName}/setProperty/{propertyName}/{propertyValue}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::propertyAction }
 
-
 api_v1_account_add_user:
     path: /api/v1/accounts/{accountName}/addUser/{userName}/{isAdmin}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userAssignAccountAction }
@@ -173,6 +172,9 @@ api_v1_account_delete_user:
     path: /api/v1/accounts/{accountName}/removeUser/{userName}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::userRemoveAccountAction }
 
+api_v1_event_add:
+    path: /api/v1/accounts/{accountName}/addEvent/{eventName}
+    defaults: { _controller: UserBase\Server\Controller\ApiController::addEventAction }
 
 admin_index:
     path: /admin

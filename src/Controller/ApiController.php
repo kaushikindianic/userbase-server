@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use RuntimeException;
 use UserBase\Server\Model\AccountProperty;
+use UserBase\Server\Model\Event;
 
 class ApiController
 {
@@ -264,5 +265,23 @@ class ApiController
             return new JsonResponse($data);
         }
         return $this->getErrorResponse(500, "Account is not organization OR group");
+    }
+
+    public function addEventAction(Application $app, Request $request, $accountName, $eventName)
+    {
+        $sEventData = json_encode($request->query->all());
+
+        $oEvent = new Event();
+        $oEvent->setName($accountName);
+        $oEvent->setEventName($eventName);
+        $oEvent->setOccuredAt(time());
+        $oEvent->setData($sEventData);
+        $oEvent->setAdminName($request->getUser());
+
+        $oEventRepo = $app->getEventRepository();
+        $oEventRepo->add($oEvent);
+
+        $data = ['status' => 'ok'];
+        return new JsonResponse($data);
     }
 }
