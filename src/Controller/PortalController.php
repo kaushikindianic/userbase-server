@@ -32,7 +32,6 @@ class PortalController
 
     public function pictureAction(Application $app, Request $request, $accountname)
     {
-
         $accountRepo = $app->getAccountRepository();
         $oAccount = $accountRepo->getByName($accountname);
 
@@ -133,7 +132,7 @@ class PortalController
                 }
             }
         }
-        
+
         return new Response(
             $app['twig']->render(
                 'portal/account/picture.html.twig',
@@ -259,15 +258,15 @@ class PortalController
     {
         return $this->accountForm($app, $request, $accountname);
     }
-    
+
     public function accountMembersAction(Application $app, Request $request, $accountname)
     {
         $accountRepo = $app->getAccountRepository();
-        
+
         if (!$aAccAssignUser = $accountRepo->userAssignToAccount($accountname, $app['currentuser']->getName())) {
             return $app->redirect($app['url_generator']->generate('portal_index', array()));
         }
-        
+
         if ($request->isMethod('post')) {
             $roleUserName = $request->get('frm_username');
             $role = $request->get('frm_role');
@@ -278,7 +277,7 @@ class PortalController
         $oAccount = $accountRepo->getByName($accountname);
         $aAccUsers = $accountRepo->getAccountMembers($accountname);
         $aRole  = ['0' => 'Member', '1' => 'Owner'];
-        
+
         return new Response(
             $app['twig']->render(
                 'portal/account/members.html.twig',
@@ -351,16 +350,16 @@ class PortalController
                 'error_bubbling' => true,
                 'attr' => array(
                     'placeholder' => 'Name',
-                    (($add)? 'autofocus' : '' ) => '' ,
+                    (($add)? 'autofocus' : '') => '',
                 )
             ))
             ->add('displayName', 'text', array(
-                'required' => false, 
+                'required' => false,
                 'label' => 'Display name',
                 'attr' => array(
                     'placeholder' => 'Display name',
-                    ((!$add)? 'autofocus' : '' ) => '' ,
-                )    
+                    ((!$add)? 'autofocus' : '') => '',
+                )
             ))
             ->add('email', 'email', array(
                 'required' => false,
@@ -383,7 +382,7 @@ class PortalController
                 'attr' => array(
                    'placeholder' => 'URL',
                     'class' => 'form-control'
-                 )   
+                 )
             ))
             ->add('about', 'text', array(
                 'required' => false,
@@ -397,27 +396,26 @@ class PortalController
         $form->handleRequest($request);
         if ($form->isValid()) {
             $data = $form->getData();
-            $oAccModel = new Account( (($add)? $data['name'] : $accountname));
+            $oAccModel = new Account((($add)? $data['name'] : $accountname));
 
             if ($add) {
                 $oAccModel->setDisplayName($data['displayName'])
                     ->setAbout($data['about'])
                     ->setEmail($data['email'])
                     ->setUrl($data['url'])
-                    ->setAccountType('organization');
+                    ->setAccountType('organization')
+                    ->setStatus('new');
 
-               if (! $repo->add($oAccModel)) {
-                   $error = 'Name exists';
-                   return $app->redirect($app['url_generator']->generate('portal_add', array(
+                if (!$repo->add($oAccModel)) {
+                    $error = 'Name exists';
+                    return $app->redirect($app['url_generator']->generate('portal_add', array(
                        'error' => 'Name exists'
-                   )));
-
-               } else {
-                   //-- ASSIGN MEMEBR TO USER --//
-                   $repo->addAccUser($data['name'], $user->getName(), 1);
-                   return $app->redirect($app['url_generator']->generate('portal_index'));
-               }
-
+                    )));
+                } else {
+                    //-- ASSIGN MEMEBR TO USER --//
+                    $repo->addAccUser($data['name'], $user->getName(), 1);
+                    return $app->redirect($app['url_generator']->generate('portal_index'));
+                }
             } else {
                 $oAccModel->setDisplayName($data['displayName'])
                     ->setAbout($data['about'])
@@ -441,7 +439,7 @@ class PortalController
         return $this->spaceFormAction($app, $request, $accountname, 0);
     }
 
-    public function editSpaceAction(Application $app, Request $request,$id)
+    public function editSpaceAction(Application $app, Request $request, $id)
     {
         return $this->spaceFormAction($app, $request, null, $id);
     }
@@ -526,10 +524,7 @@ class PortalController
         $oSpaceRepo = $app->getSpaceRepository();
         $aSpace = $oSpaceRepo->getById($id);
 
-        return new Response($app['twig']->render('portal/space_view.html.twig', array(
-                'aSpace' => $aSpace
-            )
-        ));
+        return new Response($app['twig']->render('portal/space_view.html.twig', array('aSpace' => $aSpace)));
     }
 
     public function deleteSpaceAction(Application $app, Request $request, $id)

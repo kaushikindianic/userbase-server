@@ -17,6 +17,7 @@ class Account
     private $mobileVerifiedAt;
     private $mobileCode;
     private $url;
+    private $status;
 
     public function __construct($name)
     {
@@ -26,7 +27,7 @@ class Account
 
         $this->setCreatedAt(time())->name = $name;
     }
-    
+
     public function getName()
     {
         return $this->name;
@@ -36,16 +37,16 @@ class Account
     {
         return $this->about;
     }
-    
+
     public function getEmail()
     {
         return $this->email;
     }
-    
+
     public function setEmail($email)
     {
         $this->email = $email;
-        return $this;        
+        return $this;
     }
 
     public function setAbout($about)
@@ -80,7 +81,7 @@ class Account
         $url = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email))) . "?d=retro";
         return $url;
     }
-    
+
     public function setPictureUrl($url)
     {
         $this->pictureUrl = $url;
@@ -114,26 +115,26 @@ class Account
     public function setAccountType($accountType)
     {
         $this->accountType = $accountType;
-    
+
         return $this;
     }
-    
+
     public function getAccountType()
     {
         return $this->accountType;
     }
-    
+
     public function setUrl($url)
     {
         $this->url = $url;
         return $this;
     }
-    
+
     public function getUrl()
     {
         return $this->url;
     }
-    
+
     public function getInitials()
     {
         $parts = explode(' ', $this->getDisplayName());
@@ -148,28 +149,28 @@ class Account
         }
         return strtoupper($initials);
     }
-    
+
     public function getMobile()
     {
         return $this->mobile;
     }
-    
+
     public function setMobile($mobile)
     {
         $this->mobile = $mobile;
         return $this;
     }
-    
+
     public function getEmailVerifiedAt()
     {
         return $this->emailVerifiedAt;
     }
-    
+
     public function isEmailVerified()
     {
         return $this->emailVerifiedAt > 0;
     }
-    
+
     public function setEmailVerifiedAt($emailVerifiedAt)
     {
         $this->emailVerifiedAt = $emailVerifiedAt;
@@ -195,18 +196,18 @@ class Account
         $this->mobileVerifiedAt = $mobileVerifiedAt;
         return $this;
     }
-    
+
     public function getMobileCode()
     {
         return $this->mobileCode;
     }
-    
+
     public function setMobileCode($mobileCode)
     {
         $this->mobileCode = $mobileCode;
         return $this;
     }
-    
+
     public function hasValidMobile()
     {
         $mobile = trim($this->getMobile());
@@ -214,5 +215,16 @@ class Account
             return false;
         }
         return true;
+    }
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
     }
 }

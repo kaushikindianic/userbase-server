@@ -142,6 +142,7 @@ class PdoAccountRepository
             ->setMobileCode($row['mobile_code'])
             ->setMobileVerifiedAt($row['mobile_verified_at'])
             ->setUrl($row['url'])
+            ->setStatus($row['status'])
         ;
     }
 
@@ -152,8 +153,8 @@ class PdoAccountRepository
 
         if ($exists === null) {
             $statement = $this->pdo->prepare(
-                'INSERT INTO account (name, display_name, about, created_at, account_type, email, mobile, url)
-                    VALUES (:name, :display_name, :about, :created_at, :account_type, :email, :mobile, :url)'
+                'INSERT INTO account (name, display_name, about, created_at, account_type, email, mobile, url, status)
+                    VALUES (:name, :display_name, :about, :created_at, :account_type, :email, :mobile, :url, :status)'
             );
             $row = $statement->execute(
                 array(
@@ -164,7 +165,8 @@ class PdoAccountRepository
                     ':account_type' => $account->getAccountType(),
                     ':email' => $account->getEmail(),
                     ':mobile' => $account->getMobile(),
-                    ':url' => $account->getUrl()
+                    ':url' => $account->getUrl(),
+                    ':status' =>$account->getStatus()
                 )
             );
             return $row;
@@ -179,7 +181,7 @@ class PdoAccountRepository
             'UPDATE account
              SET display_name=:display_name, about=:about,
               account_type=:account_type,
-              email=:email, mobile=:mobile, url=:url
+              email=:email, mobile=:mobile, url=:url, status=:status
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
         $statement->execute(
@@ -190,7 +192,8 @@ class PdoAccountRepository
                 ':account_type' => $account->getAccountType(),
                 ':email' => $account->getEmail(),
                 ':mobile' => $account->getMobile(),
-                ':url' => $account->getUrl()
+                ':url' => $account->getUrl(),
+                ':status' => $account->getStatus()
             )
         );
     }
@@ -378,7 +381,7 @@ class PdoAccountRepository
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
         $rows = $statement->fetch();
-        
+
         return $rows? $rows['totRec'] : 0;
     }
 }

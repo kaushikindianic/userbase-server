@@ -184,9 +184,13 @@ class AccountAdminController
                 'about' => $account->getAbout(),
                 'email' => $account->getEmail(),
                 'mobile' => $account->getMobile(),
-                'accountType' => $account->getAccountType()
+                'accountType' => $account->getAccountType(),
+                'url' => $account->getUrl(),
+                'status' => $account->getStatus()
             );
         }
+        //-- GENERATE FORM --//
+        $aStatus = [ 'new' => 'NEW', 'active' => 'ACTIVE', 'inactive' => 'INACTIVE'];
         $form = $app['form.factory']->createBuilder('form', $defaults)
         ->add('name', 'text', array(
             'required' => true,
@@ -197,7 +201,6 @@ class AccountAdminController
                 (($add)? 'autofocus' : '') => '',
             )
         ))
-
         ->add('accountType', 'choice', array('required' => true,
             'label' => 'Account type',
             'trim' => true,
@@ -259,6 +262,17 @@ class AccountAdminController
                 'placeholder' => 'About',
             )
         ))
+        ->add('status', 'choice', array(
+            'required' => true,
+            'label' => 'Status',
+            'trim' => true,
+            'choices' => $aStatus,
+            'empty_data' => null,
+            'empty_value' => '-- Select --',
+            'attr' => array(
+                'class' => 'form-control'
+            ),
+        ))
         ->getForm();
 
         // handle form submission
@@ -286,6 +300,8 @@ class AccountAdminController
                 ->setAbout($data['about'])
                 ->setMobile($data['mobile'])
                 ->setEmail($data['email'])
+                ->setUrl($data['url'])
+                ->setStatus($data['status'])
             ;
 
             if ($add) {

@@ -9,16 +9,13 @@ use Silex\Provider\FormServiceProvider;
 use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\RoutingServiceProvider;
 use Silex\Provider\MonologServiceProvider;
-
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\Routing\Loader\YamlFileLoader;
 use Symfony\Component\Yaml\Parser as YamlParser;
 use Symfony\Component\Security\Core\Encoder\PlaintextPasswordEncoder;
-
 use Symfony\Component\Translation\Translator;
 use Symfony\Component\Translation\MessageSelector;
 use Symfony\Component\Translation\Loader\ArrayLoader;
-
 use UserBase\Server\Repository\PdoUserRepository;
 use UserBase\Server\Repository\PdoAppRepository;
 use UserBase\Server\Repository\PdoAccountRepository;
@@ -36,6 +33,7 @@ use UserBase\Server\Repository\PdoSpaceRepository;
 use Xi\Sms\SmsService;
 use Xi\Sms\SmsMessage;
 use Xi\Sms\Gateway\MessageBirdGateway;
+use UserBase\Server\Repository\PdoBlacklistRepository;
 
 class Application extends SilexApplication
 {
@@ -48,6 +46,7 @@ class Application extends SilexApplication
     private $eventRepository;
     private $apikeyRepository;
     private $spaceRepository;
+    private $blacklistRepository;
 
     public function __construct(array $values = array())
     {
@@ -70,7 +69,8 @@ class Application extends SilexApplication
         }
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
-        $this['userbase.help_url'] = isset($this->config['userbase']['help_url']) ? $this->config['userbase']['help_url'] : null;
+        $this['userbase.help_url'] = isset($this->config['userbase']['help_url']) ?
+         $this->config['userbase']['help_url'] : null;
         if (isset($this->config['userbase']['template_override'])) {
             $this['userbase.template_override'] = $this->config['userbase']['template_override'];
         }
@@ -132,6 +132,7 @@ class Application extends SilexApplication
         $this->apikeyRepository = new PdoApikeyRepository($pdo);
         $this->accountPropertyRepository = new PdoAccountPropertyRepository($pdo);
         $this->spaceRepository = new  PdoSpaceRepository($pdo);
+        $this->blacklistRepository = new PdoBlacklistRepository($pdo);
 
         $mailer = Service::mailer();
 
@@ -160,8 +161,6 @@ class Application extends SilexApplication
                 }
             }
         }
-
-
     }
 
     private function configureStrings()
@@ -183,7 +182,6 @@ class Application extends SilexApplication
                 'en' => $this->strings
             )
         );
-
     }
 
     private function configureRoutes()
@@ -234,8 +232,6 @@ class Application extends SilexApplication
             $path,
             'Portal'
         );
-
-
     }
 
     private function configureSecurity()
@@ -328,6 +324,11 @@ class Application extends SilexApplication
         return $this->spaceRepository;
     }
 
+    public function getBlacklistRepository()
+    {
+        return $this->blacklistRepository;
+    }
+
     public function sendMail($templateName, $username)
     {
         $userRepo = $this->getUserRepository();
@@ -346,7 +347,6 @@ class Application extends SilexApplication
         $data['link'] = $link;
         $data['username'] = $username;
         $this['mailer']->sendTemplate($templateName, $account, $data);
-
     }
 
 
