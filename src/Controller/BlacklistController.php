@@ -4,6 +4,7 @@ namespace UserBase\Server\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
 use UserBase\Server\Model\Blacklist;
 use Exception;

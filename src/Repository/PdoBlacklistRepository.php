@@ -16,7 +16,7 @@ class PdoBlacklistRepository
 
     public function add(Blacklist $oBlacklistModel)
     {
-        $sql = 'INSERT INTO blacklist(account_name, description) VALUES (:account_name, :description)';
+        $sql = 'INSERT IGNORE INTO blacklist(account_name, description) VALUES (:account_name, :description)';
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
             'account_name' => $oBlacklistModel->getAccountName(),
@@ -27,7 +27,7 @@ class PdoBlacklistRepository
 
     public function update(Blacklist $oBlacklistModel)
     {
-        $statement = $this->pdo->prepare('UPDATE blacklist SET
+        $statement = $this->pdo->prepare('UPDATE IGNORE blacklist SET
             account_name =:account_name, description =:description
              WHERE id =:id');
 
