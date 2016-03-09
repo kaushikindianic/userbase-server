@@ -5,6 +5,7 @@ class Blacklist
 {
     private $id;
     private $accountName;
+    private $description;
 
     public function setId($id)
     {
