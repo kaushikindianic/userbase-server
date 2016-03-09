@@ -34,12 +34,20 @@ class SignupController
         $displayname = $request->request->get('_displayname');
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
-        
+
         $session = $app['session'];
         $session->set('_signup.last_username', $username);
         $session->set('_signup.last_displayname', $displayname);
         $session->set('_signup.last_email', $email);
-        
+
+        //-- CHECK ACCOUNTNAME BLCKLIST--//
+        $oBlacklistRepo = $app->getBlacklistRepository();
+
+        if ($oBlacklistRepo->checkExist($username)) {
+            return $app->redirect($app['url_generator']->generate('signup') .
+                '?errorcode=invalid_accountname_word&word=' . $username);
+        }
+
         $mobile = '';
         if ($request->request->has('_mobile')) {
             $mobile = $request->request->get('_mobile');
@@ -48,16 +56,17 @@ class SignupController
             $mobile = str_replace(' ', '', $mobile);
             $mobile = str_replace('-', '', $mobile);
             $mobile = str_replace('+', '00', $mobile);
-            
+
             if (substr($mobile, 0, 2) == '06') {
                 $mobile = '00316' . substr($mobile, 2);
             }
-            
+
             if (strlen($mobile)!=13) {
-                return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_mobile&mobile=' . $mobile);
+                return $app->redirect($app['url_generator']->generate('signup') .
+                 '?errorcode=invalid_mobile&mobile=' . $mobile);
             }
         }
-        
+
         if (!ctype_alpha($username)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
         }
@@ -71,21 +80,21 @@ class SignupController
 
         $userRepo = $app->getUserRepository();
         $accountRepo = $app->getAccountRepository();
-        
+
         if ($accountRepo->getByName($username)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=account_exists');
         }
         if ($accountRepo->getByEmail($email)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=email_exists');
         }
-        
+
         if ($app['userbase.enable_mobile']) {
             if ($accountRepo->getByMobile($mobile)) {
                 return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=mobile_exists');
             }
         }
-        
-        
+
+
         //--CREATE PERSONAL ACCOUNT--//
         $account = new Account($username);
         $account
@@ -96,7 +105,7 @@ class SignupController
             ->setEmail($email)
             ->setMobile($mobile)
         ;
-        
+
         if (!$accountRepo->add($account)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=register_failed');
         }
@@ -109,13 +118,13 @@ class SignupController
         $user = $userRepo->getByName($username);
 
         $userRepo->setPassword($user, $password);
-        
+
         //--CLEAR SIGNUP SESSION DATA
         $session->set('_signup.last_username', null);
         $session->set('_signup.last_email', null);
         $session->set('_signup.last_mobile', null);
         $session->set('_signup.last_displayname', null);
-        
+
         $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
         //--EVENT LOG --//
         $time = time();
@@ -126,17 +135,17 @@ class SignupController
                 'time' => $time
             )
         );
-        
+
         $event = new Event();
         $event->setName($user->getUsername());
         $event->setEventName('user.create');
         $event->setOccuredAt($time);
         $event->setData($sEventData);
         $event->setAdminName('');
-        
+
         $eventRepo = $app->getEventRepository();
         $eventRepo->add($event);
-        
+
         $app->sendMail('welcome', $username);
 
         //-- END EVENT LOG --//
