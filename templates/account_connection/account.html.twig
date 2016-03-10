@@ -1,0 +1,40 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>@{{ accountName }}: connections({{ entities|length }})</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        {{ error }}
+    </div>
+{% endif %}
+
+<div class="buttonbox">
+    <a href="{{ path('admin_account_connection_add', { 'accountName' : accountName }) }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Connection
+    </a>
+</div>
+
+    <table class="table">
+        <tr>
+            <th style=" text-align: center">#id</th>
+            <th style=" text-align: center">Connection name</th>
+            <th style=" text-align: center">Type</th>
+            <th style=" text-align: center">Action</th>
+        </tr>
+        {% for entity in entities %}
+        <tr>
+            <td style="text-align: center" >{{ entity.id }}</td>
+            <td style="text-align: center" >
+                <a href="{{ path('admin_account_view', { 'accountname' : accountName }) }}" >    {{ entity.connection_name }} </a>
+            </td>
+            <td style="text-align: center" >{{ entity.connection_type }}</td>
+            <td>
+                <a href="#" onclick="return confirm('Are you sure?');" title="Delete" ><i class="fa fa-remove"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

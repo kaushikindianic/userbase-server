@@ -229,4 +229,15 @@
         <index name="primary" primary="true" columns="id" />
         <index name="unique_account_name_tag_id" unique="true" columns="account_name, tag_id" />
     </table>
+
+    <table name="account_connection">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="account_name" type="string" length="128" />
+        <column name="connection_name" type="string" length="128"  comment="account.name of 'other' account" />
+        <column name="connection_type" type="string" length="32"  comment=" colleague, classmate, work partner, friend, other"/>
+        <column name="created_at" type="datetime" notnull="false" />
+        <column name="deleted_at" type="datetime" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
 </schema>

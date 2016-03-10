@@ -19,6 +19,9 @@
 <div style="clear: both;"></div>
 <div class="buttonbox">
     <a class="btn btn-primary" href="{{ path('admin_account_edit', {'accountname': account.getName()})}}">Edit</a>
+    {% if account.getAccountType() == 'user' %}
+        <a class="btn btn-primary" href="{{ path('admin_account_connection_index', {'accountName': account.getName()})}}">Connections ({{ totalAccountConnect }})</a>
+    {% endif %}
 </div>
 
 {#  ACCOUNT ASSIGN TAGS #}

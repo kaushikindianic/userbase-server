@@ -380,6 +380,9 @@ class AccountAdminController
         $oAccountTagRepo = $app->getAccountTagRepository();
         $aAssignTags =  $oAccountTagRepo->findByAccountName($accountname);
 
+        $oAccountConnectionRepo = $app->getAccountConnectionRepository();
+        $totalAccountConnect = $oAccountConnectionRepo->totConnection($accountname);
+
         return new Response(
             $app['twig']->render(
                 'admin/account_view.html.twig',
@@ -389,7 +392,8 @@ class AccountAdminController
                     'users' => $users,
                     'organizations' => $organizations,
                     'accountProperties' => $accountProperties,
-                    'aAssignTags' => $aAssignTags
+                    'aAssignTags' => $aAssignTags,
+                    'totalAccountConnect' => $totalAccountConnect
                 )
             )
         );
