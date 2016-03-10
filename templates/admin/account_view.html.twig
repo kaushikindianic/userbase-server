@@ -21,6 +21,17 @@
     <a class="btn btn-primary" href="{{ path('admin_account_edit', {'accountname': account.getName()})}}">Edit</a>
 </div>
 
+{#  ACCOUNT ASSIGN TAGS #}
+<h3>Account Tags ({{ aAssignTags|length }})</h3>
+<ul>
+    {% for aTag in aAssignTags %}
+     <li><b>{{ aTag.name }}</b></li>
+    {% endfor %}
+</ul>
+<div class="buttonbox">
+    <a class="btn btn-primary" href="{{ path('admin_account_tags', {'accountName': account.getName()})}}">Assign Tags</a>
+</div>
+
 <h3>Account Properties ({{ accountProperties|length }})</h3>
 <ul>
     {% for p in accountProperties %}

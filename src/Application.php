@@ -34,6 +34,8 @@ use Xi\Sms\SmsService;
 use Xi\Sms\SmsMessage;
 use Xi\Sms\Gateway\MessageBirdGateway;
 use UserBase\Server\Repository\PdoBlacklistRepository;
+use UserBase\Server\Repository\PdoTagRepository;
+use UserBase\Server\Repository\PdoAccountTagRepository;
 
 class Application extends SilexApplication
 {
@@ -47,6 +49,8 @@ class Application extends SilexApplication
     private $apikeyRepository;
     private $spaceRepository;
     private $blacklistRepository;
+    private $tagRepository;
+    private $accountTagRepository;
 
     public function __construct(array $values = array())
     {
@@ -133,6 +137,8 @@ class Application extends SilexApplication
         $this->accountPropertyRepository = new PdoAccountPropertyRepository($pdo);
         $this->spaceRepository = new  PdoSpaceRepository($pdo);
         $this->blacklistRepository = new PdoBlacklistRepository($pdo);
+        $this->tagRepository = new PdoTagRepository($pdo);
+        $this->accountTagRepository  = new PdoAccountTagRepository($pdo);
 
         $mailer = Service::mailer();
 
@@ -327,6 +333,16 @@ class Application extends SilexApplication
     public function getBlacklistRepository()
     {
         return $this->blacklistRepository;
+    }
+
+    public function getTagRepository()
+    {
+        return $this->tagRepository;
+    }
+
+    public function getAccountTagRepository()
+    {
+        return $this->accountTagRepository;
     }
 
     public function sendMail($templateName, $username)

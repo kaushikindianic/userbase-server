@@ -377,6 +377,9 @@ class AccountAdminController
         $accountPropertyRepository = $app->getAccountPropertyRepository();
         $accountProperties = $accountPropertyRepository->getByAccountName($accountname);
 
+        $oAccountTagRepo = $app->getAccountTagRepository();
+        $aAssignTags =  $oAccountTagRepo->findByAccountName($accountname);
+
         return new Response(
             $app['twig']->render(
                 'admin/account_view.html.twig',
@@ -385,7 +388,8 @@ class AccountAdminController
                     'apikeys' => $apikeys,
                     'users' => $users,
                     'organizations' => $organizations,
-                    'accountProperties' => $accountProperties
+                    'accountProperties' => $accountProperties,
+                    'aAssignTags' => $aAssignTags
                 )
             )
         );
