@@ -335,3 +335,29 @@ admin_blacklist_edit:
 admin_blacklist_delete:
     path: /admin/blacklist/delete/{id}
     defaults: { _controller: UserBase\Server\Controller\BlacklistController::deleteAction }
+
+# ACCOUNT TAGS  #
+admin_tag_index:
+    path: /admin/tags
+    defaults: { _controller: UserBase\Server\Controller\TagController::indexAction }
+
+admin_tag_add:
+        path: /admin/tags/add
+        defaults: { _controller: UserBase\Server\Controller\TagController::addAction }
+
+admin_tag_edit:
+    path: /admin/tags/edit/{id}
+    defaults: { _controller: UserBase\Server\Controller\TagController::editAction }
+
+admin_account_tags:
+    path: /admin/accounts/{accountName}/tags
+    defaults: { _controller: UserBase\Server\Controller\AccountTagController::tagAction }
+
+# ACCOUNT CONNECTION #
+admin_account_connection_add:
+    path: /admin/accounts/{accountName}/connections/add
+    defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::addAction }
+
+admin_account_connection_index:
+    path: /admin/accounts/{accountName}/connections
+    defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::indexAction }

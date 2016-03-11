@@ -71,4 +71,18 @@ class PdoBlacklistRepository
         $statement = $this->pdo->prepare('DELETE FROM blacklist  WHERE id =:id');
         return $statement->execute(array('id' => (int) $id ));
     }
+
+    public function checkNameExist($accountName)
+    {
+        $aVal = array();
+        $accountName = "%".$accountName;
+        $sql = "SELECT * FROM blacklist
+            WHERE :account_name REGEXP concat( '.*', account_name , '$' ) ";
+
+        $aVal[':account_name'] = $accountName;
+
+        $statement = $this->pdo->prepare($sql);
+        $statement->execute($aVal);
+        return $statement->fetch();
+    }
 }

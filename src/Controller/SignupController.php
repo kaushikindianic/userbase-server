@@ -43,7 +43,7 @@ class SignupController
         //-- CHECK ACCOUNTNAME BLCKLIST--//
         $oBlacklistRepo = $app->getBlacklistRepository();
 
-        if ($oBlacklistRepo->checkExist($username)) {
+        if ($oBlacklistRepo->checkNameExist($username)) {
             return $app->redirect($app['url_generator']->generate('signup') .
                 '?errorcode=invalid_accountname_word&word=' . $username);
         }

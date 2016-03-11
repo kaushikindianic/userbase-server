@@ -276,82 +276,91 @@ class AccountAdminController
         ->getForm();
 
         // handle form submission
-        $form->handleRequest($request);
-        if ($form->isValid()) {
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
             $data = $form->getData();
 
-            if ($add) {
-                $account = new Account($data['name']);
-                $account->setAccountType($data['accountType']);
-                $userRepo = $app->getUserRepository();
+            //-- CHECK ACCOUNTNAME BLCKLIST--//
+            $oBlacklistRepo = $app->getBlacklistRepository();
 
-                switch ($data['accountType']) {
-                    case 'user':
-                        $user = $userRepo->register($app, $data['name'], $data['email']);
-                        $user = $userRepo->getByName($data['name']);
-                        $repo->addAccUser($data['name'], $data['name'], 'user');
-                        break;
-                }
-                //$userRepo->setPassword($user, $formData['_password']);
+            if ($oBlacklistRepo->checkNameExist($data['name'])) {
+                $form->get('name')->addError(new FormError('error.invalid_accountname_word'));
             }
 
-            $account
-                ->setDisplayName($data['displayName'])
-                ->setAbout($data['about'])
-                ->setMobile($data['mobile'])
-                ->setEmail($data['email'])
-                ->setUrl($data['url'])
-                ->setStatus($data['status'])
-            ;
+            if ($form->isValid()) {
+                if ($add) {
+                    $account = new Account($data['name']);
+                    $account->setAccountType($data['accountType']);
+                    $userRepo = $app->getUserRepository();
 
-            if ($add) {
-                if (! $repo->add($account)) {
-                    return $app->redirect($app['url_generator']->generate('admin_account_add', array(
-                        'error' => 'Name exists'
-                    )));
+                    switch ($data['accountType']) {
+                        case 'user':
+                            $user = $userRepo->register($app, $data['name'], $data['email']);
+                            $user = $userRepo->getByName($data['name']);
+                            $repo->addAccUser($data['name'], $data['name'], 'user');
+                            break;
+                    }
+                    //$userRepo->setPassword($user, $formData['_password']);
                 }
-                //-- ASSIGN MEMEBR TO USER --//
-                //$repo->addAccUser($data['name'], $request->getUser(), 1);
 
-                //--EVENT LOG --//
-                $time = time();
-                $sEventData = json_encode(
-                    array('accountname' => $data['name'], 'displayName' => $data['displayName'], 'time' => $time)
-                );
+                $account
+                    ->setDisplayName($data['displayName'])
+                    ->setAbout($data['about'])
+                    ->setMobile($data['mobile'])
+                    ->setEmail($data['email'])
+                    ->setUrl($data['url'])
+                    ->setStatus($data['status'])
+                ;
 
-                $oEvent = new Event();
-                $oEvent->setName($data['name']);
-                $oEvent->setEventName('account.create');
-                $oEvent->setOccuredAt($time);
-                $oEvent->setData($sEventData);
-                $oEvent->setAdminName($request->getUser());
+                if ($add) {
+                    if (! $repo->add($account)) {
+                        return $app->redirect($app['url_generator']->generate('admin_account_add', array(
+                            'error' => 'Name exists'
+                        )));
+                    }
+                    //-- ASSIGN MEMEBR TO USER --//
+                    //$repo->addAccUser($data['name'], $request->getUser(), 1);
 
-                $oEventRepo = $app->getEventRepository();
-                $oEventRepo->add($oEvent);
-                //-- END EVENT LOG --//
-            } else {
-                $repo->update($account);
+                    //--EVENT LOG --//
+                    $time = time();
+                    $sEventData = json_encode(
+                        array('accountname' => $data['name'], 'displayName' => $data['displayName'], 'time' => $time)
+                    );
 
-                //--EVENT LOG --//
-                $time = time();
-                $sEventData = json_encode(
-                    array('accountname' => $data['name'], 'displayName' => $data['displayName'], 'time' => $time)
-                );
+                    $oEvent = new Event();
+                    $oEvent->setName($data['name']);
+                    $oEvent->setEventName('account.create');
+                    $oEvent->setOccuredAt($time);
+                    $oEvent->setData($sEventData);
+                    $oEvent->setAdminName($request->getUser());
 
-                $oEvent = new Event();
-                $oEvent->setName($data['name']);
-                $oEvent->setEventName('account.update');
-                $oEvent->setOccuredAt($time);
-                $oEvent->setData($sEventData);
-                $oEvent->setAdminName($request->getUser());
+                    $oEventRepo = $app->getEventRepository();
+                    $oEventRepo->add($oEvent);
+                    //-- END EVENT LOG --//
+                } else {
+                    $repo->update($account);
 
-                $oEventRepo = $app->getEventRepository();
-                $oEventRepo->add($oEvent);
-                //-- END EVENT LOG --//
+                    //--EVENT LOG --//
+                    $time = time();
+                    $sEventData = json_encode(
+                        array('accountname' => $data['name'], 'displayName' => $data['displayName'], 'time' => $time)
+                    );
+
+                    $oEvent = new Event();
+                    $oEvent->setName($data['name']);
+                    $oEvent->setEventName('account.update');
+                    $oEvent->setOccuredAt($time);
+                    $oEvent->setData($sEventData);
+                    $oEvent->setAdminName($request->getUser());
+
+                    $oEventRepo = $app->getEventRepository();
+                    $oEventRepo->add($oEvent);
+                    //-- END EVENT LOG --//
+                }
+
+                return $app->redirect($app['url_generator']->
+                generate('admin_account_view', ['accountname'=>$account->getName()]));
             }
-
-            return $app->redirect($app['url_generator']->
-            generate('admin_account_view', ['accountname'=>$account->getName()]));
         }
 
         return new Response($app['twig']->render('admin/account_edit.html.twig', array(
@@ -377,6 +386,12 @@ class AccountAdminController
         $accountPropertyRepository = $app->getAccountPropertyRepository();
         $accountProperties = $accountPropertyRepository->getByAccountName($accountname);
 
+        $oAccountTagRepo = $app->getAccountTagRepository();
+        $aAssignTags =  $oAccountTagRepo->findByAccountName($accountname);
+
+        $oAccountConnectionRepo = $app->getAccountConnectionRepository();
+        $totalAccountConnect = $oAccountConnectionRepo->totConnection($accountname);
+
         return new Response(
             $app['twig']->render(
                 'admin/account_view.html.twig',
@@ -385,7 +400,9 @@ class AccountAdminController
                     'apikeys' => $apikeys,
                     'users' => $users,
                     'organizations' => $organizations,
-                    'accountProperties' => $accountProperties
+                    'accountProperties' => $accountProperties,
+                    'aAssignTags' => $aAssignTags,
+                    'totalAccountConnect' => $totalAccountConnect
                 )
             )
         );

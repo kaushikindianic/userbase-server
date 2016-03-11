@@ -1,0 +1,38 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>Tags: {{ entities|length }}</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        {{ error }}
+    </div>
+{% endif %}
+
+<div class="buttonbox">
+    <a href="{{ path('admin_tag_add') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Create Tag
+    </a>
+</div>
+
+    <table class="table">
+        <tr>
+            <th style=" text-align: center">#id</th>
+            <th style=" text-align: center">Name</th>
+            <th style=" text-align: center">Description</th>
+            <th style=" text-align: center">Action</th>
+        </tr>
+        {% for entity in entities %}
+        <tr>
+            <td style="text-align: center" >{{ entity.id }}</td>
+            <td style="text-align: center" >{{ entity.name }}</td>
+            <td style="text-align: center" >{{ entity.description }}</td>
+            <td>
+                <a href="{{path('admin_tag_edit', { 'id': entity.id })}}"  title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
