@@ -361,3 +361,7 @@ admin_account_connection_add:
 admin_account_connection_index:
     path: /admin/accounts/{accountName}/connections
     defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::indexAction }
+
+admin_account_connection_delete:
+    path: /admin/accounts/{accountName}/connections/{id}/delete
+    defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::deleteAction }

@@ -32,7 +32,7 @@
             </td>
             <td style="text-align: center" >{{ entity.connection_type }}</td>
             <td>
-                <a href="#" onclick="return confirm('Are you sure?');" title="Delete" ><i class="fa fa-remove"></i></a>
+                <a href="{{ path('admin_account_connection_delete', { 'accountName' : accountName, 'id':  entity.id }) }}" onclick="return confirm('Are you sure?');" title="Delete" ><i class="fa fa-remove"></i></a>
             </td>
         </tr>
         {% endfor %}
