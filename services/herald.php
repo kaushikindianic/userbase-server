@@ -18,6 +18,8 @@ function getHerald(Array $config)
         $config['username'],
         $config['password'],
         $config['baseurl'],
+        $config['account'],
+        $config['library'],
         $config['transport']
     );
     $herald->setTemplateNamePrefix($config['prefix']);

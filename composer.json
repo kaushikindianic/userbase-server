@@ -31,7 +31,7 @@
         "monolog/monolog": "~1.6",
         "swiftmailer/swiftmailer": "~5.3",
         "html2text/html2text": "~2.0",
-        "herald-project/client-php": "~1.0",
+        "herald-project/client-php": "~2.0",
         "symfony/translation": "2.7.*",
         "firebase/php-jwt": "~2.0",
         "bshaffer/oauth2-server-php": "^1.7",
