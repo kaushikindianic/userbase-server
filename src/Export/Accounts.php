@@ -26,7 +26,7 @@ class Accounts
         $displayNameColumn = $table->getColumnByName('display_name');
         $aboutColumn = $table->getColumnByName('about');
         $createdAtColumn = $table->getColumnByName('created_at');
-        $deletedAtColumn = $table->getColumnByName('deleted_at');
+
         $accountTypeColumn = $table->getColumnByName('account_type');
         $statusColumn = $table->getColumnByName('status');
         $urlColumn = $table->getColumnByName('url');
@@ -49,10 +49,8 @@ class Accounts
             $aboutColumn->setValue($oAccounts[$i]->getAbout());
 
             $createdAtColumn = $row->getCellByColumnName('created_at');
-            $createdAtColumn->setValue($oAccounts[$i]->getCreatedAt());
-
-            $deletedAtColumn = $row->getCellByColumnName('deleted_at');
-            $deletedAtColumn->setValue($oAccounts[$i]->getDeletedAt());
+            $createdAtColumn->setValue((($oAccounts[$i]->getCreatedAt())?
+                date('Y-m-d H:i:s', $oAccounts[$i]->getCreatedAt()):0));
 
             $accountTypeColumn = $row->getCellByColumnName('account_type');
             $accountTypeColumn->setValue($oAccounts[$i]->getAccountType());
@@ -70,10 +68,12 @@ class Accounts
             $mobileColumn->setValue($oAccounts[$i]->getMobile());
 
             $emailVerifiedAt = $row->getCellByColumnName('email_verified_at');
-            $emailVerifiedAt->setValue($oAccounts[$i]->getEmailVerifiedAt());
+            $emailVerifiedAt->setValue(($oAccounts[$i]->getEmailVerifiedAt())?
+                date('Y-m-d H:i:s', $oAccounts[$i]->getEmailVerifiedAt()) : 0);
 
             $mobileVerfiedAt = $row->getCellByColumnName('mobile_verfied_at');
-            $mobileVerfiedAt->setValue($oAccounts[$i]->getMobileVerifiedAt());
+            $mobileVerfiedAt->setValue(($oAccounts[$i]->getMobileVerifiedAt())?
+            date('Y-m-d H:i:s', $oAccounts[$i]->getMobileVerifiedAt()) : 0);
         }
         // use a writer to export the datatable to a .csv file
         $writer = new CsvWriter();
