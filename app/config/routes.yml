@@ -227,6 +227,10 @@ admin_account_add:
     path: /admin/accounts/add
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
 
+admin_account_export:
+    path: /admin/accounts/export
+    defaults: { _controller: UserBase\Server\Controller\AccountAdminController::accountExportAction }
+
 admin_account_list:
     path: /admin/accounts/{accountType}
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction, accountType: user }

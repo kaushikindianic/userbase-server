@@ -12,6 +12,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Apikey;
 use UserBase\Server\Model\AccountProperty;
+use UserBase\Server\Export\Accounts;
 
 class AccountAdminController
 {
@@ -595,5 +596,11 @@ class AccountAdminController
         $property = $accountPropertyRepository->find($propertyId);
         $accountPropertyRepository->delete($property);
         return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
+    }
+
+    public function accountExportAction(Application $app, Request $request)
+    {
+        $export = new Accounts($app);
+        return $export->csvExport();
     }
 }
