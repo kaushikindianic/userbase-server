@@ -49,10 +49,12 @@ class Accounts
             $aboutColumn->setValue($oAccounts[$i]->getAbout());
 
             $createdAtColumn = $row->getCellByColumnName('created_at');
-            $createdAtColumn->setValue($oAccounts[$i]->getCreatedAt());
+            $createdAtColumn->setValue((($oAccounts[$i]->getCreatedAt())?
+                date('Y-m-d H:i:s', $oAccounts[$i]->getCreatedAt()):0));
 
             $deletedAtColumn = $row->getCellByColumnName('deleted_at');
-            $deletedAtColumn->setValue($oAccounts[$i]->getDeletedAt());
+            $deletedAtColumn->setValue((($oAccounts[$i]->getDeletedAt())?
+                date('Y-m-d H:i:s', $oAccounts[$i]->getDeletedAt()):0));
 
             $accountTypeColumn = $row->getCellByColumnName('account_type');
             $accountTypeColumn->setValue($oAccounts[$i]->getAccountType());
