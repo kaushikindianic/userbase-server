@@ -25,14 +25,24 @@ class AccountConnectionController
         )));
     }
 
+
+    public function deleteAction(Application $app, Request $request, $id)
+    {
+        $oAccountConnectionRepo = $app->getAccountConnectionRepository();
+        $accountName = $request->get('accountName');
+
+        if ($oConnection = $oAccountConnectionRepo->getById($id)) {
+            $oAccountConnectionRepo->deleteRecord($accountName, $oConnection['connection_name']);
+            $oAccountConnectionRepo->deleteRecord($oConnection['connection_name'], $accountName);
+        }
+        return $app->redirect($app['url_generator']->generate('admin_account_connection_index', array(
+            'accountName' => $accountName
+        )));
+    }
+
     public function addAction(Application $app, Request $request)
     {
         return $this->getEditForm($app, $request, null);
-    }
-
-    public function editAction(Application $app, Request $request, $id)
-    {
-        return $this->getEditForm($app, $request, $id);
     }
 
     protected function getEditForm(Application $app, Request $request, $id)
@@ -76,7 +86,7 @@ class AccountConnectionController
         $form = $app['form.factory']->createBuilder('form', $defaults)
             ->add('connection_name', 'text', array(
                 'required' => true,
-                'label' => 'name',
+                'label' => 'Account name',
                 'read_only' => false,
                 'trim' => true,
                 'constraints' =>  new Assert\NotBlank(array('message' => 'Name value should not be blank.')),
@@ -104,6 +114,9 @@ class AccountConnectionController
             $formData = $form->getData();
 
             //--check connection account type --//
+            if ($accountName == $formData['connection_name']) {
+                $form->get('connection_name')->addError(new FormError('Not allow to self connection.'));
+            }
             if ($oConnectAccount = $oAccountRepo->getByName($formData['connection_name'])) {
                 if ($oConnectAccount->getAccountType() != 'user') {
                     $form->get('connection_name')->addError(new FormError('Allow only User type account'));
@@ -112,23 +125,31 @@ class AccountConnectionController
                 $form->get('connection_name')->addError(new FormError('Account not exist'));
             }
 
+            //-- CHECK ACCOUNT CONNECTED --//
+            if ($oAccountConnectionRepo->checkExist($accountName, $formData['connection_name'])) {
+                $form->get('connection_name')->addError(new FormError('Account already connected'));
+            }
+
             if ($form->isValid()) {
                 $oAccountConnectionModel = new AccountConnection();
 
                 if ($add) {
-                    $oAccountConnectionModel->setAccountName($accountName)
-                        ->setConnectionName($formData['connection_name'])
-                        ->setConnectionType($formData['connection_type'])
-                        ->setCreatedAt(date('Y-m-d H:i:s'));
+                    // CHCEK RECORD NOT CONNECTED //
+                    if (!$oAccountConnectionRepo->checkExist($accountName, $formData['connection_name'])) {
+                        $oAccountConnectionModel->setAccountName($accountName)
+                            ->setConnectionName($formData['connection_name'])
+                            ->setConnectionType($formData['connection_type'])
+                            ->setCreatedAt(date('Y-m-d H:i:s'));
 
-                    $oAccountConnectionRepo->add($oAccountConnectionModel);
+                        $oAccountConnectionRepo->add($oAccountConnectionModel);
 
-                    //-- SWAPPED RECORD --//
-                    $oAccountConnectionModel->setAccountName($formData['connection_name'])
-                        ->setConnectionName($accountName)
-                        ->setConnectionType($formData['connection_type'])
-                        ->setCreatedAt(date('Y-m-d H:i:s'));
-                    $oAccountConnectionRepo->add($oAccountConnectionModel);
+                        //-- SWAPPED RECORD --//
+                        $oAccountConnectionModel->setAccountName($formData['connection_name'])
+                            ->setConnectionName($accountName)
+                            ->setConnectionType($formData['connection_type'])
+                            ->setCreatedAt(date('Y-m-d H:i:s'));
+                        $oAccountConnectionRepo->add($oAccountConnectionModel);
+                    }
                 } else {
                     $oAccountConnectionModel->setId($id);
                     $oAccountConnectionRepo->update($oAccountConnectionModel);

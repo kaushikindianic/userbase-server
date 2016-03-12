@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "800fce99daff85431fb9d88f4fcfb913",
-    "content-hash": "7bd5624b1aa5b8ed1ca17f0717f481ac",
+    "hash": "41e5d2f62e0f2cc3d69510e6918a3c93",
+    "content-hash": "40937f1489fcf56dbfabe0a0e7fad67f",
     "packages": [
         {
             "name": "bshaffer/oauth2-server-httpfoundation-bridge",
@@ -330,6 +330,45 @@
             ],
             "description": "Watch files and directories for changes",
             "time": "2016-01-05 01:09:59"
+        },
+        {
+            "name": "datatable/core",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/DataTable/Core.git",
+                "reference": "18f543b966f8da99656711169d38bd9166303e02"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/DataTable/Core/zipball/18f543b966f8da99656711169d38bd9166303e02",
+                "reference": "18f543b966f8da99656711169d38bd9166303e02",
+                "shasum": ""
+            },
+            "require": {
+                "symfony/console": "~2.4"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "DataTable\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "description": "DataTable core and command-line tools",
+            "homepage": "http://www.github.com/datatable/core",
+            "keywords": [
+                "core",
+                "data",
+                "datatable",
+                "export",
+                "import",
+                "php"
+            ],
+            "time": "2015-12-23 11:19:04"
         },
         {
             "name": "firebase/php-jwt",
@@ -4967,7 +5006,8 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "silex/silex": 20
+        "silex/silex": 20,
+        "datatable/core": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

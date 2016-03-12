@@ -39,7 +39,8 @@
         "bshaffer/oauth2-server-httpfoundation-bridge": "^1.0",
         "symfony/validator": "2.7.*",
         "runmybusiness/initialcon": "~0.0",
-        "xi/sms": "~0.3"
+        "xi/sms": "~0.3",
+        "datatable/core" : "dev-master"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",

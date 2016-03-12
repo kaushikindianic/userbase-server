@@ -227,6 +227,10 @@ admin_account_add:
     path: /admin/accounts/add
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountAddAction }
 
+admin_account_export:
+    path: /admin/accounts/export
+    defaults: { _controller: UserBase\Server\Controller\AccountAdminController::accountExportAction }
+
 admin_account_list:
     path: /admin/accounts/{accountType}
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::accountListAction, accountType: user }
@@ -361,3 +365,7 @@ admin_account_connection_add:
 admin_account_connection_index:
     path: /admin/accounts/{accountName}/connections
     defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::indexAction }
+
+admin_account_connection_delete:
+    path: /admin/accounts/{accountName}/connections/{id}/delete
+    defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::deleteAction }
