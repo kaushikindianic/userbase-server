@@ -291,7 +291,7 @@ class ApiController
     {
         $accountName = urldecode($request->get('accountName'));
         $accountType =  urldecode($request->get('accountType'));
-        $oAccountRepo = urldecode($app->getAccountRepository());
+        $oAccountRepo = $app->getAccountRepository();
 
         //-- CHECK ACCOUNTNAME BLCKLIST--//
         $oBlacklistRepo = $app->getBlacklistRepository();
