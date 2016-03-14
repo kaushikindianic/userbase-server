@@ -187,13 +187,15 @@ class AccountAdminController
                 'mobile' => $account->getMobile(),
                 'accountType' => $account->getAccountType(),
                 'url' => $account->getUrl(),
-                'status' => $account->getStatus()
+                'status' => $account->getStatus(),
             );
         }
         //-- GENERATE FORM --//
         $aStatus = [ 'new' => 'NEW', 'active' => 'ACTIVE', 'inactive' => 'INACTIVE'];
-        $form = $app['form.factory']->createBuilder('form', $defaults)
-        ->add('name', 'text', array(
+
+
+        $form = $app['form.factory']->createBuilder('form', $defaults);
+        $form->add('name', 'text', array(
             'required' => true,
             'read_only' => ($add)? false: true,
             'error_bubbling' => true,
@@ -235,8 +237,17 @@ class AccountAdminController
                 'placeholder' => 'E-mail',
                 'class' => 'form-control'
             )
-        ))
-        ->add('mobile', 'text', array(
+        ));
+        if (!$add) {
+            $form->add('email_verified', 'checkbox', array(
+                'required' => false,
+                'trim' => true,
+                'label' => 'email verified',
+                'data' => ($account->getEmailVerifiedAt())? true : false,
+            ));
+        }
+
+        $form->add('mobile', 'text', array(
             'required' => false,
             'label' => 'Mobile',
             'trim' => true,
@@ -247,8 +258,18 @@ class AccountAdminController
                 'placeholder' => 'Mobile',
                 'class' => 'form-control'
             )
-        ))
-        ->add('url', 'url', array(
+        ));
+
+        if (!$add) {
+            $form->add('mobile_verified', 'checkbox', array(
+                'required' => false,
+                'trim' => true,
+                'label' => 'Mobile verified',
+                'data' => ($account->getMobileVerifiedAt())? true : false,
+            ));
+        }
+
+        $form->add('url', 'url', array(
             'required' => false,
             'label' => 'URL',
             'error_bubbling' => true,
@@ -273,8 +294,8 @@ class AccountAdminController
             'attr' => array(
                 'class' => 'form-control'
             ),
-        ))
-        ->getForm();
+        ));
+        $form = $form->getForm();
 
         // handle form submission
         if ($request->isMethod('POST')) {
@@ -340,6 +361,8 @@ class AccountAdminController
                     //-- END EVENT LOG --//
                 } else {
                     $repo->update($account);
+                    $repo->setEmailVerifiedStamp($account, (($data['email_verified'])? time() : 0));
+                    $repo->setMobileVerifiedStamp($account, (($data['mobile_verified'])? time() : 0));
 
                     //--EVENT LOG --//
                     $time = time();
