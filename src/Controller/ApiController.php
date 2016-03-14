@@ -8,6 +8,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use RuntimeException;
 use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Model\Event;
+use UserBase\Server\Model\Account;
 
 class ApiController
 {
@@ -281,6 +282,57 @@ class ApiController
 
         $oEventRepo = $app->getEventRepository();
         $oEventRepo->add($oEvent);
+
+        $data = ['status' => 'ok'];
+        return new JsonResponse($data);
+    }
+
+    public function accountAddAction(Application $app, Request $request)
+    {
+        $accountName = urldecode($request->get('accountName'));
+        $accountType =  urldecode($request->get('accountType'));
+        $oAccountRepo = urldecode($app->getAccountRepository());
+
+        //-- CHECK ACCOUNTNAME BLCKLIST--//
+        $oBlacklistRepo = $app->getBlacklistRepository();
+        if ($status = $oBlacklistRepo->checkNameExist($accountName)) {
+            return $this->getErrorResponse(500, 'error.invalid_accountname_word');
+        }
+        $oAccountModel = new Account($accountName);
+        $oAccountModel->setAccountType($accountType)
+                    ->setStatus('new');
+
+        if (!$oAccountRepo->add($oAccountModel)) {
+            return $this->getErrorResponse(500, 'Account name already exist');
+        }
+        $data = ['status' => 'ok'];
+        return new JsonResponse($data);
+    }
+
+    public function accountEditAction(Application $app, Request $request)
+    {
+        $accountName =  urldecode($request->get('accountName'));
+        $displayName =  urldecode($request->get('displayName'));
+        $email =  urldecode($request->get('email'));
+        $mobile =  urldecode($request->get('mobile'));
+        $about =  urldecode($request->get('about'));
+        $oAccountRepo = $app->getAccountRepository();
+
+        if (!$email || !$mobile || !$about) {
+            return $this->getErrorResponse(500, 'email, mobile and about value required.');
+        }
+        if (!$oAccountRepo->getByName($accountName)) {
+            return $this->getErrorResponse(500, 'Account name does not exist.');
+        }
+        $oAccountModel = new Account($accountName);
+        $oAccountModel->setEmail($email)
+            ->setMobile($mobile)
+            ->setAbout($about);
+
+        if ($displayName) {
+            $oAccountModel->setDisplayName($displayName);
+        }
+        $oAccountRepo->update($oAccountModel);
 
         $data = ['status' => 'ok'];
         return new JsonResponse($data);

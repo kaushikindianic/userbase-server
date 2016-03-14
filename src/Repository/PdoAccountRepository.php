@@ -184,7 +184,7 @@ class PdoAccountRepository
               email=:email, mobile=:mobile, url=:url, status=:status
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
-        $statement->execute(
+        return $statement->execute(
             array(
                 ':name' => $account->getName(),
                 ':display_name' => $account->getDisplayName(),

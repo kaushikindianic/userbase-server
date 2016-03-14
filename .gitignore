@@ -8,3 +8,4 @@ composer.phar
 .project
 web/tmp
 web/account_picture
+web/router.php
