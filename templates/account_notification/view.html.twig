@@ -1,0 +1,14 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+    <h2>@{{ accountName }}: Notifications #{{ entity.id }}</h2>
+
+    <ul>
+        <li>Source Account Name: {{ entity.source_account_name }}</li>
+        <li>Notification Type: {{ entity.notification_type }}</li>
+        <li>Subject: {{ entity.subject }}</li>
+        <li>Link: {{ entity.link }} </li>
+        <li>Body: {{ entity.body|raw|nl2br }}</li>
+    </ul>
+
+{% endblock %}

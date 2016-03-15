@@ -240,4 +240,18 @@
 
         <index name="primary" primary="true" columns="id" />
     </table>
+
+    <table name="account_notification">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="created_at" type="datetime" notnull="false" />
+        <column name="seen_at" type="datetime" notnull="false" />
+        <column name="account_name" type="string" length="128" />
+        <column name="source_account_name" type="string" length="128" />
+        <column name="notification_type" type="string" length="32" />
+        <column name="subject" type="string" length="128" />
+        <column name="link" type="string" length="255" />
+        <column name="body" type="text" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
 </schema>
