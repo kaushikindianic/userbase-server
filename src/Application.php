@@ -37,6 +37,7 @@ use UserBase\Server\Repository\PdoBlacklistRepository;
 use UserBase\Server\Repository\PdoTagRepository;
 use UserBase\Server\Repository\PdoAccountTagRepository;
 use UserBase\Server\Repository\PdoAccountConnectionRepository;
+use UserBase\Server\Repository\PdoAccountNotificationRepository;
 
 class Application extends SilexApplication
 {
@@ -53,6 +54,7 @@ class Application extends SilexApplication
     private $tagRepository;
     private $accountTagRepository;
     private $accountConnectionRepository;
+    private $accountNotificationRepository;
 
     public function __construct(array $values = array())
     {
@@ -142,6 +144,7 @@ class Application extends SilexApplication
         $this->tagRepository = new PdoTagRepository($pdo);
         $this->accountTagRepository  = new PdoAccountTagRepository($pdo);
         $this->accountConnectionRepository = new PdoAccountConnectionRepository($pdo);
+        $this->accountNotificationRepository = new  PdoAccountNotificationRepository($pdo);
 
         $mailer = Service::mailer();
 
@@ -352,7 +355,12 @@ class Application extends SilexApplication
     {
         return $this->accountConnectionRepository;
     }
-    
+
+    public function getAccountNotificationRepository()
+    {
+        return $this->accountNotificationRepository;
+    }
+
     public function sendMail($templateName, $username)
     {
         $userRepo = $this->getUserRepository();

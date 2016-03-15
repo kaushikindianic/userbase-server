@@ -9,6 +9,7 @@ use RuntimeException;
 use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
+use UserBase\Server\Model\AccountNotification;
 
 class ApiController
 {
@@ -335,6 +336,63 @@ class ApiController
         $oAccountRepo->update($oAccountModel);
 
         $data = ['status' => 'ok'];
+        return new JsonResponse($data);
+    }
+
+    public function addNotificationAction(Application $app, Request $request)
+    {
+        $accountName =  urldecode($request->get('accountName'));
+        $jsonData = file_get_contents('php://input');
+        $aData = [];
+        if ($jsonData) {
+            $aData =  json_decode($jsonData, true);
+        } else {
+            return $this->getErrorResponse(500, 'Provide all data');
+        }
+        $oAccountNotificationRepo = $app->getAccountNotificationRepository();
+        $oAccountnotificationModel = new AccountNotification();
+
+        $oAccountnotificationModel->setAccountName($accountName)
+            ->setSourceAccountName($aData['sourceAccountName'])
+            ->setNotificationType($aData['notificationType'])
+            ->setLink($aData['link'])
+            ->setSubject($aData['subject'])
+            ->setBody($aData['body'])
+            ->setCreatedAt(date('Y-m-d H:i:s'));
+        $oAccountNotificationRepo->add($oAccountnotificationModel);
+
+        $data = ['status' => 'ok'];
+        return new JsonResponse($data);
+    }
+
+    public function notificationAction(Application $app, Request $request)
+    {
+        $accountName =  urldecode($request->get('accountName'));
+        $jsonData = file_get_contents('php://input');
+
+        $notificationType = '';
+        $status = '';
+        if ($jsonData) {
+            $aData =  json_decode($jsonData, true);
+            $notificationType = ($aData['notificationType'])? $aData['notificationType']: '';
+        }
+        $oAccountNotificationRepo = $app->getAccountNotificationRepository();
+        $entities = $oAccountNotificationRepo->searchData($accountName, $notificationType, $status);
+        $data = array();
+
+        if ($entities) {
+            foreach ($entities as $entity) {
+                $data[] = [
+                    'notificationType' => $entity['notification_type'],
+                    'sourceAccountName' => $entity['source_account_name'],
+                    'subject' => $entity['subject'],
+                    'body' => $entity['body'],
+                    'link' => $entity['link'],
+                    'createdAt' => $entity['created_at'],
+                    'seenAt' => $entity['seen_at']
+                ];
+            }
+        }
         return new JsonResponse($data);
     }
 }

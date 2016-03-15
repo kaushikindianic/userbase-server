@@ -184,6 +184,14 @@ api_v1_event_add:
     path: /api/v1/accounts/{accountName}/addEvent/{eventName}
     defaults: { _controller: UserBase\Server\Controller\ApiController::addEventAction }
 
+api_v1_notification_add:
+    path: /api/v1/accounts/{accountName}/notifications/add
+    defaults: { _controller: UserBase\Server\Controller\ApiController::addNotificationAction }
+
+api_v1_notification:
+    path: /api/v1/accounts/{accountName}/notifications
+    defaults: { _controller: UserBase\Server\Controller\ApiController::notificationAction }
+
 admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
@@ -377,3 +385,17 @@ admin_account_connection_index:
 admin_account_connection_delete:
     path: /admin/accounts/{accountName}/connections/{id}/delete
     defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::deleteAction }
+
+
+# NOTIFICATION #
+admin_account_notification_index:
+    path: /admin/accounts/{accountName}/notifications
+    defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::indexAction }
+
+admin_account_notification_add:
+    path: /admin/acounts/{accountName}/notifications/add
+    defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::addAction }
+
+admin_account_notification_view:
+    path: /admin/acounts/{accountName}/notifications/{id}/view
+    defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::viewAction }

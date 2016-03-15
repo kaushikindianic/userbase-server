@@ -1,0 +1,40 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>@{{ accountName }}: Notifications({{ entities|length }})</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        {{ error }}
+    </div>
+{% endif %}
+
+<div class="buttonbox">
+    <a href="{{ path('admin_account_notification_add', { 'accountName' : accountName }) }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Notification
+    </a>
+</div>
+
+    <table class="table">
+        <tr>
+            <th style=" text-align: center">#id</th>
+            <th style=" text-align: center">Source Accout Name</th>
+            <th style=" text-align: center">Type</th>
+            <th style=" text-align: center">Subject</th>
+            <th style=" text-align: center">Created At</th>
+        </tr>
+        {% for entity in entities %}
+        <tr>
+            <td style="text-align: center" >
+                <a href="{{ path('admin_account_notification_view', {'accountName': accountName, 'id': entity.id }) }}" title="View" >{{ entity.id }}</a>
+            </td>
+            <td style="text-align: center" >{{ entity.source_account_name }}</td>
+            <td style="text-align: center" >{{ entity.notification_type }}</td>
+            <td style="text-align: center" >{{ entity.subject }}</td>
+            <td style="text-align: center" >{{ entity.created_at }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
