@@ -1,0 +1,19 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+    <h2>@{{ accountName }}: Address #{{ entity.id }}</h2>
+
+    <ul>
+        <li>Address Line 1: {{ entity.addressline1 }}</li>
+        <li>Address Line 2: {{ entity.addressline2 }}</li>
+        <li>postalcode: {{ entity.postalcode }}</li>
+        <li>city: {{ entity.city }} </li>
+        <li>Country: {{ entity.country }}</li>
+    </ul>
+
+    <a href="{{ path('account_address_index', { 'accountName': accountName }) }}" class="btn btn-default" role="button">
+        <i class="fa fa-arrow-left"></i>
+        Back
+    </a>
+
+{% endblock %}

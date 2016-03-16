@@ -254,4 +254,26 @@
 
         <index name="primary" primary="true" columns="id" />
     </table>
+
+    <table name="mobile_alias">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="mobile" type="string" length="32" />
+        <column name="mobile_alias" type="string" length="32" />
+        <column name="description" type="text" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
+
+    <table name="account_address">
+        <!-- allow multiple addresses per account -->
+        <column name="id" type="integer" unsigned="true" autoincrement="true"/>
+        <column name="account_name" type="string" length="128" />
+        <column name="addressline1" type="string" length="128" />
+        <column name="addressline2" type="string" length="128" notnull="false" />
+        <column name="postalcode" type="string" length="32" />
+        <column name="city" type="string" length="32" />
+        <column name="country" type="string" length="32" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
 </schema>

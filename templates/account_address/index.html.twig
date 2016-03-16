@@ -1,0 +1,45 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>@{{ accountName }}: Addresses({{ entities|length }})</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        {{ error }}
+    </div>
+{% endif %}
+
+<div class="buttonbox">
+    <a href="{{ path('account_address_add', { 'accountName' : accountName }) }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Address
+    </a>
+</div>
+
+    <table class="table">
+        <tr>
+            <th style=" text-align: center">#id</th>
+            <th style=" text-align: center">address Line 1</th>
+            <th style=" text-align: center">postalcode</th>
+            <th style=" text-align: center">city</th>
+            <th style=" text-align: center">country</th>
+            <th style=" text-align: center">Action</th>
+        </tr>
+        {% for entity in entities %}
+        <tr>
+            <td style="text-align: center" >
+                <a href="{{ path('account_address_view', {'accountName': accountName, 'id': entity.id }) }}" title="View" >{{ entity.id }}</a>
+            </td>
+            <td style="text-align: center" >{{ entity.addressline1 }}</td>
+            <td style="text-align: center" >{{ entity.postalcode }}</td>
+            <td style="text-align: center" >{{ entity.city }}</td>
+            <td style="text-align: center" >{{ entity.country }}</td>
+            <td>
+                <a href="{{path('account_address_edit', { 'accountName' : accountName, 'id':  entity.id })}}"  title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{ path('account_address_delete', { 'accountName' : accountName, 'id':  entity.id }) }}" onclick="return confirm('Are you sure?');" title="Delete" ><i class="fa fa-remove"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}
