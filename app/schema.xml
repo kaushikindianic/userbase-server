@@ -254,4 +254,13 @@
 
         <index name="primary" primary="true" columns="id" />
     </table>
+
+    <table name="mobile_alias">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="mobile" type="string" length="32" />
+        <column name="mobile_alias" type="string" length="32" />
+        <column name="description" type="text" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
 </schema>

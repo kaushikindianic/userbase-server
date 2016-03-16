@@ -386,7 +386,6 @@ admin_account_connection_delete:
     path: /admin/accounts/{accountName}/connections/{id}/delete
     defaults: { _controller: UserBase\Server\Controller\AccountConnectionController::deleteAction }
 
-
 # NOTIFICATION #
 admin_account_notification_index:
     path: /admin/accounts/{accountName}/notifications
@@ -399,3 +398,20 @@ admin_account_notification_add:
 admin_account_notification_view:
     path: /admin/acounts/{accountName}/notifications/{id}/view
     defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::viewAction }
+
+# MOBILE ALIASES #
+mobile_alias_index:
+    path: /admin/mobilealiases
+    defaults: { _controller: UserBase\Server\Controller\MobileAliasController::indexAction }
+
+mobile_alias_add:
+    path: /admin/mobilealiases/add
+    defaults: { _controller: UserBase\Server\Controller\MobileAliasController::addAction }
+
+mobile_alias_edit:
+    path: /admin/mobilealiases/edit/{id}
+    defaults: { _controller: UserBase\Server\Controller\MobileAliasController::editAction }
+
+mobile_alias_delete:
+    path: /admin/mobilealiases/delete/{id}
+    defaults: { _controller: UserBase\Server\Controller\MobileAliasController::deleteAction }
