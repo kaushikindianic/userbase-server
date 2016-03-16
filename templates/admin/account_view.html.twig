@@ -23,6 +23,7 @@
         <a class="btn btn-primary" href="{{ path('admin_account_connection_index', {'accountName': account.getName()})}}">Connections ({{ totalAccountConnect }})</a>
     {% endif %}
     <a class="btn btn-primary" href="{{ path('admin_account_notification_index', {'accountName': account.getName()})}}"><i class="fa fa-bell-o"></i> Notification</a>
+    <a class="btn btn-primary" href="{{ path('account_address_index', {'accountName': account.getName()})}}"><i class="fa fa-building-o"></i> Addresses</a>
 </div>
 
 {#  ACCOUNT ASSIGN TAGS #}

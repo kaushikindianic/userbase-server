@@ -39,6 +39,7 @@ use UserBase\Server\Repository\PdoAccountTagRepository;
 use UserBase\Server\Repository\PdoAccountConnectionRepository;
 use UserBase\Server\Repository\PdoAccountNotificationRepository;
 use UserBase\Server\Repository\PdoMobileAliasRepository;
+use UserBase\Server\Repository\PdoAccountAddressRepository;
 
 class Application extends SilexApplication
 {
@@ -57,6 +58,7 @@ class Application extends SilexApplication
     private $accountConnectionRepository;
     private $accountNotificationRepository;
     private $mobileAliasRepository;
+    private $accountAddressRepository;
 
     public function __construct(array $values = array())
     {
@@ -148,6 +150,7 @@ class Application extends SilexApplication
         $this->accountConnectionRepository = new PdoAccountConnectionRepository($pdo);
         $this->accountNotificationRepository = new  PdoAccountNotificationRepository($pdo);
         $this->mobileAliasRepository = new PdoMobileAliasRepository($pdo);
+        $this->accountAddressRepository = new PdoAccountAddressRepository($pdo);
 
         $mailer = Service::mailer();
 
@@ -369,6 +372,10 @@ class Application extends SilexApplication
         return $this->mobileAliasRepository;
     }
 
+    public function getAccountAddressRepository()
+    {
+        return $this->accountAddressRepository;
+    }
     public function sendMail($templateName, $username)
     {
         $userRepo = $this->getUserRepository();

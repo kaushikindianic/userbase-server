@@ -415,3 +415,25 @@ mobile_alias_edit:
 mobile_alias_delete:
     path: /admin/mobilealiases/delete/{id}
     defaults: { _controller: UserBase\Server\Controller\MobileAliasController::deleteAction }
+
+
+# ACCOUNT CONTACT #
+account_address_index:
+    path: /admin/accounts/{accountName}/address
+    defaults: { _controller: UserBase\Server\Controller\AccountAddressController::indexAction }
+
+account_address_add:
+    path: /admin/accounts/{accountName}/address/add
+    defaults: { _controller: UserBase\Server\Controller\AccountAddressController::addAction }
+
+account_address_edit:
+    path: /admin/accounts/{accountName}/address/{id}/edit
+    defaults: { _controller: UserBase\Server\Controller\AccountAddressController::editAction }
+
+account_address_view:
+    path: /admin/accounts/{accountName}/address/{id}/view
+    defaults: { _controller: UserBase\Server\Controller\AccountAddressController::viewAction }
+
+account_address_delete:
+    path: /admin/accounts/{accountName}/address/{id}/delete
+    defaults: { _controller: UserBase\Server\Controller\AccountAddressController::deleteAction }
