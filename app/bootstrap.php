@@ -15,7 +15,7 @@ $application = new Application();
 $application->before(function (Request $request) use ($application) {
     $token = $application['security.token_storage']->getToken();
     if ($token) {
-        if ($request->getRequestUri()!='/login') {
+        if ($request->get('_route') != 'login') {
             if ($token->getUser() == 'anon.') {
                 //exit('anon!');
                 //return $app->redirect('/login');
@@ -24,7 +24,7 @@ $application->before(function (Request $request) use ($application) {
                 $account = $accountRepo->getByName($token->getUser()->getUsername());
                 $application['currentuser'] = $token->getUser();
                 $application['currentaccount'] = $account;
-                
+
                 $application['twig']->addGlobal('currentuser', $token->getUser());
                 $application['twig']->addGlobal('currentaccount', $account);
             }
@@ -52,7 +52,7 @@ $application->before(function (Request $request) use ($application) {
         return $value;
     });
     $application['twig']->addFilter($filter);
-    
+
     // Secure admin and api urls
     if (strpos($request->getUri(), '/admin') || strpos($request->getUri(), '/api/')) {
         if (!isset($application['currentuser'])) {
@@ -62,7 +62,7 @@ $application->before(function (Request $request) use ($application) {
             return $application->redirect('/?errcode=noadmin2');
         }
     }
-    
+
     if (!strpos($request->getUri(), '/api/')) {
         /*
         if ($application['currentaccount']->getAccountType()!='apikey') {
@@ -70,7 +70,7 @@ $application->before(function (Request $request) use ($application) {
         }
         */
     }
-    
+
     if ($request->query->has('errorcode')) {
         $errorcode = $request->query->get('errorcode');
         $errorString = $application['translator']->trans('error.' . $errorcode);
