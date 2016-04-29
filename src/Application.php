@@ -92,8 +92,6 @@ class Application extends SilexApplication
             $this->config['userbase']['enable_mobile'] : false;
         $this['userbase.partition'] = $this->config['userbase']['partition'];
         $this['userbase.salt'] = $this->config['userbase']['salt'];
-        $this['picturePath'] = $this->config['picturePath'];
-        $this['tmpDirPath'] = $this->config['tmpDirPath'];
 
         if (isset($this->config['sms'])) {
             $this['sms.provider'] = $this->config['sms']['provider'];

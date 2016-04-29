@@ -6,6 +6,7 @@ composer.phar
 /.settings
 .buildpath
 .project
-web/tmp
-web/account_picture
+**/.DS_Store
+web/account_picture/*
+!web/account_picture/.gitkeep
 web/router.php

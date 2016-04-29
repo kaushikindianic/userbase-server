@@ -27,7 +27,7 @@ sms:
     provider: messagebird
     apikey: secret
     sender: "UserbaseDev"
-    
+
 oauth2:
     return_url: '/oauth2/confirm'
     scopes: [email]
@@ -39,5 +39,3 @@ oauth2:
         facebook:
             clientId: <facebookClientId>
             secretSecret: <secret>
-picturePath: account_picture 
-tmpDirPath: tmp
