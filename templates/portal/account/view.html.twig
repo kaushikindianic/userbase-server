@@ -12,7 +12,7 @@
 
 
 <div class="buttonbox">
-    <a href="{{ path('protal_account_members', { 'accountname': accountname } ) }}" class="btn btn-info" role="button">
+    <a href="{{ path('portal_account_members', { 'accountname': accountname } ) }}" class="btn btn-info" role="button">
     <i class="fa fa-users"></i>  Manage members
     </a>
       <a href="{{ path('portal_index') }}" class="btn btn-default" role="button">
@@ -63,7 +63,7 @@
                 <div id="msgAppId" style="display: none;"
                     class="alert alert-success" role="alert"></div>
                 <div>
-                    <form method="post" name="frmUser" id="frmUser" action="{{ path('protal_account_user_add', {'accountname' :accountname} ) }}" >
+                    <form method="post" name="frmUser" id="frmUser" action="{{ path('portal_account_user_add', {'accountname' :accountname} ) }}" >
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">Usersname</label>
                             <input type="text" autofocus class="form-control" id="userName" name="userName" required="required">
