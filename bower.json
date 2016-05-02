@@ -1,10 +1,11 @@
 {
-    "name": "UserBase Server",
-    "version": "1.0.0",
-    "dependencies": {
-        "bootstrap": "~3.3.0",
-        "font-awesome": "~4.3.0",
-        "jquery": ">= 2.1.3",
-        "html5tooltipsjs": "1.4.2"
-    }
+  "name": "UserBase Server",
+  "version": "1.0.0",
+  "dependencies": {
+    "bootstrap": "~3.3.0",
+    "font-awesome": "~4.3.0",
+    "jquery": ">= 2.1.3",
+    "html5tooltipsjs": "1.4.2",
+    "Croppie": "croppie#^2.1.0"
+  }
 }
