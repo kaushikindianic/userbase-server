@@ -4,11 +4,12 @@
 {% block content %}
 
 <h3>Upload picture</h3>
+
 <form action="#" method="post" id="frmPicture" name="frmPicture"  enctype="multipart/form-data" >
     <input type="file" accept="image/*" id="form_input_picture"/>
     {{ form_widget(form) }}
     <div class="row">
-        <div class="col-md-6 col-xs-12">
+        <div class="col-md-6 col-xs-12" style="text-align: center;">
             <ul class="list-inline rotate">
                 <li class="rleft"><i class="fa fa-undo" aria-hidden="true"></i></li>
                 <li class="rright"><i class="fa fa-repeat" aria-hidden="true"></i></li>
@@ -22,7 +23,7 @@
             <i class="fa fa-server"></i>
             Upload
         </button>
-        <a href="{{ path('portal_index') }}" class="btn btn-default" role="button">
+        <a href="{{ path('portal_view', {'accountname': account.getName() }) }}" class="btn btn-default" role="button">
             <i class="fa fa-arrow-left"></i>
             Back
         </a>
