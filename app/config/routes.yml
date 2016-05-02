@@ -98,10 +98,6 @@ portal_account_picture:
     path: /portal/accounts/{accountname}/picture
     defaults:  { _controller: UserBase\Server\Controller\PortalController::pictureAction }
 
-portal_view:
-    path: /portal/accounts/{accountname}
-    defaults:  { _controller: UserBase\Server\Controller\PortalController::viewAction }
-
 portal_cropimag:
     path: /portal/accounts/{accountname}/crop
     defaults:  { _controller: UserBase\Server\Controller\PortalController::cropImageAction }

@@ -5,18 +5,6 @@
 <h2>{{ oAccount.getDisplayName() }} </h2>
 
     <div class="col-md-8" ><h2>Users</h2></div>
-    <div class="col-md-2" >
-        <div class="buttonbox">
-            <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" data-backdrop="static">
-              <i class="fa fa-plus"></i>   Add User</button>
-         </div>
-    </div>
-    <div class="col-md-2" >
-        <a href="{{ path('portal_view', {'accountname' :accountname}) }}" class="btn btn-default" role="button">
-            <i class="fa fa-arrow-left"></i>
-            Back
-        </a>
-    </div>         
     <table class="table">
         <tr>
             <th>Member</th>
@@ -49,6 +37,11 @@
         {% endfor %}
     </table>
 
+    <div class="buttonbox">
+        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" data-backdrop="static">
+            <i class="fa fa-plus"></i> Add User
+        </button>
+    </div>
 
 <!-- Modal -->
 <div class="modal fade" id="popupAssignUsers" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
@@ -64,7 +57,7 @@
                 <div id="msgAppId" style="display: none;"
                     class="alert alert-success" role="alert"></div>
                 <div>
-                    <form method="post" name="frmUser" id="frmUser" action="{{ path('protal_account_user_add', {'accountname' :accountname} ) }}" >
+                    <form method="post" name="frmUser" id="frmUser" action="{{ path('portal_account_user_add', {'accountname' :accountname} ) }}" >
                         <div class="form-group">
                             <label for="recipient-name" class="control-label">Usersname</label>
                             <input type="text" class="form-control" id="userName" name="userName" required="required">

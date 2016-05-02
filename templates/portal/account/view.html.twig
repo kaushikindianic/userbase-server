@@ -3,23 +3,7 @@
 
 {% block content %}
 
-<a href="{{ path("portal_account_picture", { 'accountname': accountname } )}}">
-    <img src="{{ path('picture', { 'accountname': accountname } ) }}" width="100px" style="float: right;" />
-</a>
-
-<h2>{{ oAccount.getDisplayName() }}</h2>
 <p class="lead">{{ oAccount.getAbout()|raw|nl2br }}</p>
-
-
-<div class="buttonbox">
-    <a href="{{ path('portal_account_members', { 'accountname': accountname } ) }}" class="btn btn-info" role="button">
-    <i class="fa fa-users"></i>  Manage members
-    </a>
-      <a href="{{ path('portal_index') }}" class="btn btn-default" role="button">
-        <i class="fa fa-arrow-left"></i>
-        Back
-    </a>
-</div>
 
 {% if spacesEnabled is defined %}
 <h2>Spaces</h2>

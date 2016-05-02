@@ -63,12 +63,12 @@ $application->before(function (Request $request) use ($application) {
         }
     }
 
-    if (!strpos($request->getUri(), '/api/')) {
-        /*
-        if ($application['currentaccount']->getAccountType()!='apikey') {
-            return $application->redirect('/?errcode=apikey');
+    if (strpos($request->getUri(), '/portal/')) {
+        if ($request->attributes->has('accountname')) {
+            $accountRepo = $application->getAccountRepository();
+            $account = $accountRepo->getByName($request->attributes->get('accountname'));
+            $application['twig']->addGlobal('account', $account);
         }
-        */
     }
 
     if ($request->query->has('errorcode')) {

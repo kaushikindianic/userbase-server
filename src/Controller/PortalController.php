@@ -51,7 +51,7 @@ class PortalController
                 fwrite($file, $imgData);
                 fclose($file);
 
-                return $app->redirect($app['url_generator']->generate('portal_index', array()));
+                return $app->redirect($app['url_generator']->generate('portal_view', ['accountname' => $accountname]));
             }
         }
 
@@ -174,7 +174,7 @@ class PortalController
                 $oAccRepo->addAccUser($accountname, $userName, 'group');
             }
         }
-        return $app->redirect($app['url_generator']->generate('protal_account_members', array(
+        return $app->redirect($app['url_generator']->generate('portal_account_members', array(
             'accountname' => $accountname
         )));
     }
@@ -293,10 +293,10 @@ class PortalController
                 $repo->update($oAccModel);
             }
 
-            return $app->redirect($app['url_generator']->generate('portal_index'));
+            return $app->redirect($app['url_generator']->generate('portal_view', ['accountname' => $accountname]));
         }
 
-        return new Response($app['twig']->render('portal/account_edit.html.twig', array(
+        return new Response($app['twig']->render('portal/account/edit.html.twig', array(
             'form' => $form->createView(),
             'account' => $account,
             'error' => $error,
