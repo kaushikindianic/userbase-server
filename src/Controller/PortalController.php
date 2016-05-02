@@ -210,7 +210,7 @@ class PortalController
             $add = true;
             $defaults = array();
             $nameParam = array();
-            $account = array();
+            $account = null;
         }
 
         $form = $app['form.factory']->createBuilder('form', $defaults)
@@ -298,7 +298,6 @@ class PortalController
 
         return new Response($app['twig']->render('portal/account/edit.html.twig', array(
             'form' => $form->createView(),
-            'account' => $account,
             'error' => $error,
             'add' => $add
         )));
