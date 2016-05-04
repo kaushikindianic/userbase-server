@@ -6,7 +6,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Exception;
 
-
 class AdminController
 {
 
@@ -21,8 +20,9 @@ class AdminController
         $oEventRepo = $app->getEventRepository();
         $aEvents = $oEventRepo->getAll();
         
-        return new Response($app['twig']->render('admin/log_list.html.twig',
-                array( 'aEvents' => $aEvents )
-            ));
+        return new Response($app['twig']->render(
+            'admin/log_list.html.twig',
+            array( 'aEvents' => $aEvents )
+        ));
     }
 }

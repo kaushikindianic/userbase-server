@@ -22,7 +22,7 @@ class PdoApikeyRepository
         ));
         $row = $statement->fetch();
         return $row;
-    }    
+    }
     
     public function getByAccountName($accountName = '')
     {
@@ -37,7 +37,7 @@ class PdoApikeyRepository
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
         $rows = $statement->fetchAll();
-        return $rows;        
+        return $rows;
     }
     
     public function getAll()
@@ -52,7 +52,7 @@ class PdoApikeyRepository
         $statement->execute($aVal);
         $rows = $statement->fetchAll();
         return $rows;
-    }    
+    }
     
     public function add(Apikey $oApikey)
     {
@@ -61,7 +61,7 @@ class PdoApikeyRepository
         
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
-                'account_name' => $oApikey->getAccountName() ,
+                'account_name' => $oApikey->getAccountName(),
                 'name' => $oApikey->getName(),
                 'username' => $oApikey->getUserName(),
                 'password' => $oApikey->getPassword(),
@@ -80,10 +80,10 @@ class PdoApikeyRepository
                 ';
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
-            'id' => $oApikey->getId() ,
+            'id' => $oApikey->getId(),
             'name' => $oApikey->getName(),
             'username' => $oApikey->getUserName(),
-            'password' => $oApikey->getPassword()            
+            'password' => $oApikey->getPassword()
         ));
         return $row;
     }

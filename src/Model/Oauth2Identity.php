@@ -6,5 +6,4 @@ class Oauth2Identity
     private $id;
     private $userName;
     private $service;
-    
 }

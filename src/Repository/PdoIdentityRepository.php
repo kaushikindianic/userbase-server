@@ -22,5 +22,4 @@ class PdoIdentityRepository
         $rows = $statement->fetchAll();
         return $rows;
     }
-    
 }

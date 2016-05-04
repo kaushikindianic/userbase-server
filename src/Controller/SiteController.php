@@ -27,7 +27,7 @@ class SiteController
 
 
         if (is_file('account_picture'.'/'.$fileName)) {
-           //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
+            //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
             header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
             return $app->redirect('/account_picture/'.$fileName);
         } else {
