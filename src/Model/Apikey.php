@@ -42,7 +42,7 @@ class Apikey
     public function getName()
     {
         return $this->name;
-    }    
+    }
     
     public function setUserName($username)
     {
@@ -81,5 +81,5 @@ class Apikey
     public function getDeletedAt()
     {
         return $this->deletedAt;
-    }        
+    }
 }

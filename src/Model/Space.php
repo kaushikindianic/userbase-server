@@ -1,4 +1,4 @@
-<?php 
+<?php
 namespace UserBase\Server\Model;
 
 class Space
@@ -47,8 +47,8 @@ class Space
         return $this;
     }
     
-    public function  getDescription()
+    public function getDescription()
     {
         return $this->description;
-    }    
+    }
 }

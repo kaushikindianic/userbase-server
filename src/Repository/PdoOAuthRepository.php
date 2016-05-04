@@ -25,7 +25,7 @@ final class PdoOAuthRepository
         }
     }
 
-    protected function insert($table, Array $data)
+    protected function insert($table, array $data)
     {
         $columns = array_keys($data);
         $fields = implode(",", $columns);
@@ -71,7 +71,7 @@ final class PdoOAuthRepository
     /**
      *  Attempt to Login
      *
-     *  This method check is the 3rd-party account is not already associated with 
+     *  This method check is the 3rd-party account is not already associated with
      *  any account, if so, we log them in otherwise we show the sign-up form.
      *
      *

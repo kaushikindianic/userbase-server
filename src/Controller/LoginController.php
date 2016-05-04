@@ -15,7 +15,6 @@ class LoginController
 {
     public function indexAction(Application $app, Request $request)
     {
-
         if (isset($app['currentuser'])) {
             return $app->redirect($app['url_generator']->generate('portal_index'));
         }
@@ -84,5 +83,4 @@ class LoginController
             $data
         ));
     }
-
 }

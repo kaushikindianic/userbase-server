@@ -232,5 +232,4 @@ final class User implements AdvancedUserInterface
         $this->alias = $alias;
         return $this;
     }
-    
 }

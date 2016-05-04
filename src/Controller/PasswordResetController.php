@@ -36,11 +36,11 @@ class PasswordResetController
         if (!$account) {
             $account = $accountRepo->getByMobile($search);
         }
-        
+
         if (!$account) {
             return $app->redirect($app['url_generator']->generate('password_reset') . '?errorcode=account_not_found');
         }
-        
+
         if ($account->getAccountType()!='user') {
             return $app->redirect($app['url_generator']->generate('password_reset') . '?errorcode=account_not_user');
         }
@@ -48,17 +48,19 @@ class PasswordResetController
 
         $user = $userRepo->getByName($account->getName());
         $baseUrl = $app['userbase.baseurl'];
-        
+
         if ($app['userbase.enable_mobile']) {
             if (!$account->getMobile() || !$account->isMobileVerified()) {
-                return $app->redirect($app['url_generator']->generate('password_reset') . '?errorcode=mobile_not_verified');
+                return $app->redirect($app['url_generator']->
+                generate('password_reset') . '?errorcode=mobile_not_verified');
             }
 
             $code = $accountRepo->setMobileCode($account);
             $app->sendSms('verify', $account->getName(), ['code'=>$code]);
             $data['sent'] = true;
-            
-            return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName' => $account->getName()]));
+
+            return $app->redirect($app['url_generator']->
+                    generate('password_reset_mobile_check', ['accountName' => $account->getName()]));
         } else {
             $stamp = time();
             $token = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
@@ -111,12 +113,14 @@ class PasswordResetController
         $account = $accountRepo->getByName($username);
         if (!$user) {
             // user does not exist
-            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=account_not_found');
+            return $app->redirect($app['url_generator']->
+            generate('password_reset_update', $urldata) . '?errorcode=account_not_found');
         }
 
         if ($password != $password2) {
             // passwords not the same
-            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_not_matching');
+            return $app->redirect($app['url_generator']->
+            generate('password_reset_update', $urldata) . '?errorcode=password_not_matching');
         }
 
 
@@ -124,17 +128,20 @@ class PasswordResetController
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
+            return $app->redirect($app['url_generator']->
+                generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
+            return $app->redirect($app['url_generator']->
+            generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
         $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
-            return $app->redirect($app['url_generator']->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
+            return $app->redirect($app['url_generator']
+            ->generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
         $accountRepo->setEmailVerifiedStamp($account, $stamp);
@@ -152,7 +159,7 @@ class PasswordResetController
             $data
         ));
     }
-    
+
     public function passwordResetMobileCheckAction(Application $app, Request $request, $accountName)
     {
         $accountRepo = $app->getAccountRepository();
@@ -164,17 +171,24 @@ class PasswordResetController
         if (!$account->isMobileVerified()) {
             return $app->redirect($app['url_generator']->generate('password_reset') . '?errorcode=mobile_not_verified');
         }
-        
+
         if ($request->request->has('mobile_code')) {
             $code = $request->request->get('mobile_code');
             if ($code == '') {
-                return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
+                return $app->redirect($app['url_generator']->
+                generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
             }
             if ($account->getMobileCode() == '') {
-                return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
+                return $app->redirect($app['url_generator']->
+                generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
             }
             if ($code != $account->getMobileCode()) {
-                return $app->redirect($app['url_generator']->generate('password_reset_mobile_check', ['accountName'=>$accountName]) . '?errorcode=mobile_code_does_not_match');
+                return $app->redirect(
+                    $app['url_generator']->generate(
+                        'password_reset_mobile_check',
+                        ['accountName'=>$accountName]
+                    ) . '?errorcode=mobile_code_does_not_match'
+                );
             }
             $accountRepo->setMobileVerifiedStamp($account, time());
 

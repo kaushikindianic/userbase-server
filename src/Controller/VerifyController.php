@@ -46,17 +46,20 @@ class VerifyController
         if ($account->isMobileVerified()) {
             return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=>$accountName]));
         }
-        
+
         if ($request->request->has('mobile_code')) {
             $code = $request->request->get('mobile_code');
             if ($code == '') {
-                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
+                return $app->redirect($app['url_generator']->
+                generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
             }
             if ($account->getMobileCode() == '') {
-                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
+                return $app->redirect($app['url_generator']->
+                    generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_mobile_code');
             }
             if ($code != $account->getMobileCode()) {
-                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=mobile_code_does_not_match');
+                return $app->redirect($app['url_generator']->
+                    generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=mobile_code_does_not_match');
             }
             $accountRepo->setMobileVerifiedStamp($account, time());
             return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=>$accountName]));
@@ -64,7 +67,8 @@ class VerifyController
         $data = array();
         if ($request->query->has('send')) {
             if (!$account->hasValidMobile()) {
-                return $app->redirect($app['url_generator']->generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_valid_mobile');
+                return $app->redirect($app['url_generator']->
+                    generate('verify_mobile', ['accountName'=>$accountName]) . '?errorcode=no_valid_mobile');
             }
             $code = $accountRepo->setMobileCode($account);
             $app->sendSms('verify', $accountName, ['code'=>$code]);
@@ -83,26 +87,30 @@ class VerifyController
         $accountRepo = $app->getAccountRepository();
 
         $account = $accountRepo->getByName($accountName);
-        
+
         if (!$account) {
             // no such user
-            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E03&detail=noaccount');
+            return $app->redirect($app['url_generator']->
+                generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E03&detail=noaccount');
         }
         $leeway = 60 * 60 * 24; // +/- 60 minutes * 24
 
         if ($stamp > time() + $leeway) {
             // expired - too early
-            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E05&detail=expired');
+            return $app->redirect($app['url_generator']->
+                generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E05&detail=expired');
         }
         if ($stamp < time() - $leeway) {
             // expired - too late
-            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E05&detail=early');
+            return $app->redirect($app['url_generator']->
+                generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E05&detail=early');
         }
 
         $test = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
-            return $app->redirect($app['url_generator']->generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E04');
+            return $app->redirect($app['url_generator']->
+                generate('verify_email', ['accountName' => $accountName]) . '?errorcode=E04');
         }
 
         $accountRepo->setEmailVerifiedStamp($account, $stamp);
