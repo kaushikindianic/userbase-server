@@ -143,6 +143,11 @@ final class User implements AdvancedUserInterface
     {
         return $this->accountNonExpired;
     }
+    
+    public function setAccountExpired()
+    {
+        $this->accountNonExpired = false;
+    }
 
     /**
      * {@inheritdoc}

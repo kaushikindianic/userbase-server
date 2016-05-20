@@ -40,7 +40,8 @@
         "symfony/validator": "2.7.*",
         "runmybusiness/initialcon": "~0.0",
         "xi/sms": "~0.3",
-        "datatable/core" : "dev-master"
+        "datatable/core" : "dev-master",
+        "linkorb/xuid": "~1.0"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",

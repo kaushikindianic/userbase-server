@@ -48,7 +48,20 @@
                 </div>
                 <a href="{{ path("admin_account_view", {"accountname": account.getName() })}}">
                     {{ account.getName() }}: {{ account.getDisplayName() }}
-                </a><br /><span class="badge badge-default">{{ account.getAccountType() }}</span>
+                </a><br />
+                <span class="label label-default">{{ account.getAccountType() }}</span>
+                
+                {% if account.getStatus()=='ACTIVE' %}
+                    <span class="label label-success">
+                {% endif %}
+                {% if account.getStatus()=='INACTIVE' %}
+                    <span class="label label-warning">
+                {% endif %}
+                {% if account.getStatus()=='EXPIRED' %}
+                    <span class="label label-danger">
+                {% endif %}
+                
+                {{account.getStatus()}}</span>
             </td>
             <td>
                 {{ account.getCreatedAt()|mydate }}
@@ -59,6 +72,13 @@
                     <i class="fa fa-envelope-o"></i></span>
                 <span class="label label-{% if account.isMobileVerified() %}success{% else %}default{% endif %}">
                     <i class="fa fa-phone"></i></span>
+                {% if account.getExpireAt() %}
+                <span class="label label-danger">
+                    <i class="fa fa-thumbs-down"></i></span>
+                {% else %}
+                <span class="label label-{% if account.isApproved() %}success{% else %}default{% endif %}">
+                    <i class="fa fa-thumbs-up"></i></span>
+                {% endif %}
             </td>
             <td>
                 <a href="{{ path("admin_account_edit", {"accountname": account.getName() })}}">

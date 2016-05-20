@@ -12,8 +12,15 @@
         <column name="url" type="string" length="250" notnull="false" />
         <column name="about" type="text" notnull="false" />
         <column name="account_type" type="string" length="50" />
+        
         <column name="created_at" type="integer" notnull="false" />
         <column name="deleted_at" type="integer" notnull="false" />
+        
+        <column name="approved_at" type="integer" notnull="false" />
+                
+        <column name="expire_at" type="integer" notnull="false" />
+        <column name="message" type="text" notnull="false" />
+        
         <column name="status" type="string" length="16"  notnull="false" doc=" NEW, ACTIVE, INACTIVE" comment="NEW, ACTIVE, INACTIVE status" />
 
         <index name="primary" primary="true" columns="name" />

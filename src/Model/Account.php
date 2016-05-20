@@ -10,6 +10,11 @@ class Account
     private $pictureUrl;
     private $createdAt;
     private $deletedAt;
+    
+    private $approvedAt;
+    private $expireAt;
+    private $message;
+    
     private $accountType;
     private $email;
     private $emailVerifiedAt;
@@ -219,7 +224,16 @@ class Account
 
     public function getStatus()
     {
-        return $this->status;
+        if ($this->status=='') {
+            $this->status = 'ACTIVE';
+        }
+        
+        if (($this->status == 'ACTIVE') && ($this->getExpireAt())) {
+            if ($this->getExpireAt()<time()) {
+                $this->status = 'EXPIRED';
+            }
+        }
+        return strtoupper($this->status);
     }
 
     public function setStatus($status)
@@ -227,4 +241,46 @@ class Account
         $this->status = $status;
         return $this;
     }
+    
+    public function getExpireAt()
+    {
+        return $this->expireAt;
+    }
+    
+    public function setExpireAt($expireAt)
+    {
+        $this->expireAt = $expireAt;
+        return $this;
+    }
+    
+    public function getMessage()
+    {
+        return $this->message;
+    }
+    
+    public function setMessage($message)
+    {
+        $this->message = $message;
+        return $this;
+    }
+    
+    public function getApprovedAt()
+    {
+        return $this->approvedAt;
+    }
+    
+    public function setApprovedAt($approvedAt)
+    {
+        $this->approvedAt = $approvedAt;
+        return $this;
+    }
+    
+    public function isApproved()
+    {
+        if ($this->getApprovedAt()) {
+            return true;
+        }
+        return false;
+    }
+    
 }

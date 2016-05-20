@@ -22,7 +22,7 @@ class PdoAccountRepository
         );
         $statement->execute(array('name' => $name));
         $row = $statement->fetch();
-
+        
         return $row ? $this->rowToAccount($row) : null;
     }
 
@@ -129,7 +129,7 @@ class PdoAccountRepository
     private function rowToAccount($row)
     {
         $account = new Account($row['name']);
-
+    
         return $account->setCreatedAt($row['created_at'])
             ->setDeletedAt($row['deleted_at'])
             ->setAbout($row['about'])
@@ -143,6 +143,9 @@ class PdoAccountRepository
             ->setMobileVerifiedAt($row['mobile_verified_at'])
             ->setUrl($row['url'])
             ->setStatus($row['status'])
+            ->setMessage($row['message'])
+            ->setExpireAt($row['expire_at'])
+            ->setApprovedAt($row['approved_at'])
         ;
     }
 
@@ -181,9 +184,11 @@ class PdoAccountRepository
             'UPDATE account
              SET display_name=:display_name, about=:about,
               account_type=:account_type,
-              email=:email, mobile=:mobile, url=:url, status=:status
+              email=:email, mobile=:mobile, url=:url, status=:status,
+              message=:message, approved_at=:approved_at, expire_at=:expire_at
              WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0)'
         );
+        //exit(date('Y-m-d H:i:s', $account->getApprovedAt()));
         return $statement->execute(
             array(
                 ':name' => $account->getName(),
@@ -193,7 +198,10 @@ class PdoAccountRepository
                 ':email' => $account->getEmail(),
                 ':mobile' => $account->getMobile(),
                 ':url' => $account->getUrl(),
-                ':status' => $account->getStatus()
+                ':status' => $account->getStatus(),
+                ':message' => $account->getMessage(),
+                ':approved_at' => $account->getApprovedAt(),
+                ':expire_at' => $account->getExpireAt()
             )
         );
     }

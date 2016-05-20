@@ -11,6 +11,7 @@ use Silex\Application;
 use UserBase\Server\Model\User;
 use RuntimeException;
 use PDO;
+use DateTime;
 
 final class PdoUserRepository implements UserProviderInterface
 {
@@ -32,7 +33,7 @@ final class PdoUserRepository implements UserProviderInterface
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
-            "SELECT u.*
+            "SELECT u.*, a.expire_at
             FROM user AS u
             JOIN account AS a ON a.name=u.name
             WHERE (u.name=:name OR a.email=:email)
@@ -41,12 +42,18 @@ final class PdoUserRepository implements UserProviderInterface
 
         $statement->execute(array('name' => $name, 'email' => $name));
         $row = $statement->fetch();
-
+        
+        
         if (!$row) {
             return null;
         }
 
-        return $this->row2user($row);
+        $user = $this->row2user($row);
+        if ($row['expire_at'] && ($row['expire_at']<time())) {
+            return null;
+            $user->setAccountExpired();
+        }
+        return $user;
     }
 
     public function getAll($limit = 10, $search = '')

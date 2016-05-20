@@ -4,7 +4,19 @@
 <img class="profile" style="float: right; margin-left: 10px;"
     src="{{ path('picture', { 'accountname': account.getName() } ) }}" />
 <h2>@{{account.getName}} <small>{{ account.getDisplayName() }}</small></h2>
-<span class="badge badge-default">{{ account.getAccountType()}}</span>
+<span class="label label-default">{{ account.getAccountType()}}</span>
+{% if account.getStatus()=='ACTIVE' %}
+    <span class="label label-success">
+{% endif %}
+{% if account.getStatus()=='INACTIVE' %}
+    <span class="label label-warning">
+{% endif %}
+{% if account.getStatus()=='EXPIRED' %}
+    <span class="label label-danger">
+{% endif %}
+
+{{account.getStatus()}}</span>
+
 <p class="lead">{{ account.getAbout()|raw|nl2br }}</p>
 <ul>
     <li>Email: {{ account.getEmail() }}
@@ -14,6 +26,15 @@
     <li>Mobile: {{ account.getMobile() }}
         <span class="label label-{% if account.isMobileVerified() %}success{% else %}default{% endif %}">
             <i class="fa fa-phone"></i></span>
+    </li>
+    <li>Approved: 
+        {% if account.getExpireAt() %}
+        <span class="label label-danger">
+            <i class="fa fa-thumbs-down"></i></span>
+        {% else %}
+        <span class="label label-{% if account.isApproved() %}success{% else %}default{% endif %}">
+            <i class="fa fa-thumbs-up"></i></span>
+        {% endif %}
     </li>
 </ul>
 <div style="clear: both;"></div>

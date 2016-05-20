@@ -187,11 +187,14 @@ class AccountAdminController
                 'mobile' => $account->getMobile(),
                 'accountType' => $account->getAccountType(),
                 'url' => $account->getUrl(),
+                'expire_at' => $account->getExpireAt(),
+                'approved_at' => $account->getApprovedAt(),
+                'message' => $account->getMessage(),
                 'status' => $account->getStatus(),
             );
         }
         //-- GENERATE FORM --//
-        $aStatus = [ 'new' => 'NEW', 'active' => 'ACTIVE', 'inactive' => 'INACTIVE'];
+        $aStatus = [ 'NEW' => 'NEW', 'ACTIVE' => 'ACTIVE', 'INACTIVE' => 'INACTIVE', 'EXPIRED' => 'EXPIRED'];
 
 
         $form = $app['form.factory']->createBuilder('form', $defaults);
@@ -284,6 +287,30 @@ class AccountAdminController
                 'placeholder' => 'About',
             )
         ))
+        ->add('expire_at', 'date', array(
+            'required' => false,
+            'input'  => 'timestamp',
+            'widget' => 'single_text',
+            'attr' => array(
+                'placeholder' => 'Expire date',
+            )
+        ))
+        ->add('message', 'textarea', array(
+            'required' => false,
+            'attr' => array(
+                'placeholder' => 'Message to user',
+            )
+        ))
+
+        ->add('approved_at', 'date', array(
+            'required' => false,
+            'input'  => 'timestamp',
+            'widget' => 'single_text',
+            'attr' => array(
+                'placeholder' => 'Review date',
+            )
+        ))
+
         ->add('status', 'choice', array(
             'required' => true,
             'label' => 'Status',
@@ -331,6 +358,9 @@ class AccountAdminController
                     ->setMobile($data['mobile'])
                     ->setEmail($data['email'])
                     ->setUrl($data['url'])
+                    ->setApprovedAt($data['approved_at'])
+                    ->setMessage($data['message'])
+                    ->setExpireAt($data['expire_at'])
                     ->setStatus($data['status'])
                 ;
 
