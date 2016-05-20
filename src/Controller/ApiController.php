@@ -23,7 +23,7 @@ class ApiController
             'version' => '0.1',
         );
 
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     private function user2array(Application $app, $user, $details = false)
@@ -31,6 +31,8 @@ class ApiController
         if (!isset($app['userbase.partition'])) {
             throw new RuntimeException("userbase.partition undefined");
         }
+        $notificationRepo = $app->getAccountNotificationRepository();
+
         $partition = strtolower($app['userbase.partition']);
         $data = array();
         $rolesData = array();
@@ -38,47 +40,35 @@ class ApiController
         $data['username'] = $user->getUsername();
         if ($details) {
             $data['display_name'] = $user->getDisplayName();
-            $data['alias'] = $user->getAlias();
-            $data['picture_url'] = $user->getPictureUrl();
-            $data['email'] = $user->getEmail();
+            //$data['alias'] = $user->getAlias();
+            //$data['picture_url'] = $user->getPictureUrl();
+            //$data['email'] = $user->getEmail();
             $data['password'] = $user->getPassword();
             $data['created_at'] = $user->getCreatedAt();
             $data['lastseen_at'] = $user->getLastSeenAt();
             $data['deleted_at'] = $user->getDeletedAt();
-            $data['passwordupdated_at'] = $user->getPasswordUpdatedAt();
+            $data['password_updated_at'] = $user->getPasswordUpdatedAt();
 
             // GET USER ACCOUNTS //
             $oAccRepo = $app->getAccountRepository();
             $aAccounts = $oAccRepo->getByUserName($user->getUsername());
 
+            $account = $oAccRepo->getByName($user->getName());
+            
             $data['accounts'] = array();
-            foreach ($aAccounts as $oAccount) {
-                $accountData = array();
-                $accountData['name'] = $oAccount->getName();
-                $accountData['display_name'] = $oAccount->getDisplayName();
-                $accountData['about'] = $oAccount->getAbout();
-                $accountData['picture_url'] = $oAccount->getPictureUrl();
-                $accountData['email'] = $oAccount->getEmail();
-                $accountData['created_at'] = $oAccount->getCreatedAt();
-                $accountData['deleted_at'] = $oAccount->getDeletedAt();
-                $accountData['account_type'] = $oAccount->getAccountType();
+            foreach ($aAccounts as $account) {
+                $accountData = $this->account2array($app, $account, true);
 
                 $statement = array(
                     'effect' => 'allow',
                     'action' => ['userbase:manage_account', 'userbase:use_account'],
-                    'resource' => 'xrn:' . $partition . ':userbase:::account/' . strtolower($oAccount->getName()) . '',
+                    'resource' => 'xrn:' . $partition . ':userbase:::account/' . strtolower($account->getName()) . '',
                 );
                 $rolesData[] = $statement;
-
-
-                /*
-                $accountData['roles'][] = 'ROLE_ADMIN';
-                $accountData['roles'][] = 'ROLE_USER';
-                */
-
-
                 $data['accounts'][] = $accountData;
             }
+            
+            
             $data['policies'] = $rolesData;
 
             // GET USER SPACES //
@@ -99,6 +89,7 @@ class ApiController
         }
         $accountRepo = $app->getAccountRepository();
         $userRepo = $app->getUserRepository();
+        $notificationRepo = $app->getAccountNotificationRepository();
 
         $partition = strtolower($app['userbase.partition']);
         $data = array();
@@ -110,6 +101,7 @@ class ApiController
         if ($details) {
             $data['display_name'] = $account->getDisplayName();
             $data['about'] = $account->getAbout();
+            $data['url'] = $account->getUrl();
             $data['picture_url'] = $account->getPictureUrl();
             $data['mobile'] = $account->getMobile();
             $data['mobile_verified'] = $account->isMobileVerified();
@@ -118,6 +110,9 @@ class ApiController
             $data['created_at'] = $account->getCreatedAt();
             $data['deleted_at'] = $account->getDeletedAt();
             $data['status'] = $account->getStatus();
+            $data['message'] = $account->getMessage();
+            $data['expire_at'] = $account->getExpireAt();
+            $data['approved_at'] = $account->getExpireAt();
 
             // GET USER ACCOUNTS //
             $members = $accountRepo->getAccountMembers($account->getName());
@@ -139,8 +134,29 @@ class ApiController
                 $propertyData['value'] = $accountProperty->getValue();
                 $data['properties'][] = $propertyData;
             }
+            
+            // NOTIFICATIONS //
+            $notifications = $notificationRepo->findByAccountName($account->getName());
+            $data['notifications'] = $this->notificationsToArray($notifications);
         }
 
+        return $data;
+    }
+    
+    public function notificationsToArray($notifications)
+    {
+        $data = array();
+        foreach ($notifications as $notification) {
+            $notificationData = array();
+            $notificationData['key'] = $notification['xuid'];
+            $notificationData['source_account_name'] = $notification['source_account_name'];
+            $notificationData['type'] = $notification['notification_type'];
+            $notificationData['subject'] = $notification['subject'];
+            $notificationData['link'] = $notification['link'];
+            $notificationData['body'] = $notification['body'];
+
+            $data[] = $notificationData;
+        }
         return $data;
     }
 
@@ -161,7 +177,8 @@ class ApiController
             $items[] = $a;
         }
         $data['items'] = $items;
-        return new JsonResponse($data);
+        
+        return $this->getJsonResponse($data);
     }
 
     public function userViewAction(Application $app, $userName)
@@ -174,7 +191,7 @@ class ApiController
         }
         $data = $this->user2array($app, $user, true);
 
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     public function accountIndexAction(Application $app, Request $request)
@@ -194,7 +211,7 @@ class ApiController
             $items[] = $a;
         }
         $data['items'] = $items;
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     public function accountViewAction(Application $app, $accountName)
@@ -207,7 +224,14 @@ class ApiController
         }
         $data = $this->account2array($app, $account, true);
 
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
+    }
+    
+    public function getJsonResponse($data)
+    {
+        $response = new JsonResponse($data);
+        $response->setEncodingOptions(JSON_UNESCAPED_SLASHES | JSON_PRETTY_PRINT);
+        return $response;
     }
 
     private function getErrorResponse($code, $message)
@@ -216,7 +240,7 @@ class ApiController
         $data['error'] = array();
         $data['error']['code'] = $code;
         $data['error']['message'] = $message;
-        return new JsonResponse($data, $code);
+        return $this->getJsonResponse($data);
     }
 
     public function propertyAction(Application $app, $accountName, $propertyName, $propertyValue)
@@ -230,7 +254,7 @@ class ApiController
         $oPropertyRepo->insertOrUpdate($property);
 
         $data = ['status' => 'ok'];
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     /**
@@ -247,7 +271,7 @@ class ApiController
             $isOwner =  (strtolower($isAdmin) == 'true')? 1 : 0;
             $oAccRepo->addAccUser($accountName, $userName, $isOwner);
             $data = ['status' => 'ok'];
-            return new JsonResponse($data);
+            return $this->getJsonResponse($data);
         }
         return $this->getErrorResponse(500, "Account is not organization OR group");
     }
@@ -265,7 +289,7 @@ class ApiController
         if (in_array($oAccount->getAccountType(), ['organization', 'group'])) {
             $oAccRepo->delAccUsers($accountName, $userName);
             $data = ['status' => 'ok'];
-            return new JsonResponse($data);
+            return $this->getJsonResponse($data);
         }
         return $this->getErrorResponse(500, "Account is not organization OR group");
     }
@@ -285,7 +309,7 @@ class ApiController
         $oEventRepo->add($oEvent);
 
         $data = ['status' => 'ok'];
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     public function accountAddAction(Application $app, Request $request)
@@ -307,7 +331,7 @@ class ApiController
             return $this->getErrorResponse(500, 'Account name already exist');
         }
         $data = ['status' => 'ok'];
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     public function accountEditAction(Application $app, Request $request)
@@ -336,7 +360,7 @@ class ApiController
         $oAccountRepo->update($oAccountModel);
 
         $data = ['status' => 'ok'];
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     public function addNotificationAction(Application $app, Request $request)
@@ -362,7 +386,7 @@ class ApiController
         $oAccountNotificationRepo->add($oAccountnotificationModel);
 
         $data = ['status' => 'ok'];
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 
     public function notificationAction(Application $app, Request $request)
@@ -393,6 +417,6 @@ class ApiController
                 ];
             }
         }
-        return new JsonResponse($data);
+        return $this->getJsonResponse($data);
     }
 }
