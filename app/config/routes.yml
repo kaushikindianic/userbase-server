@@ -388,12 +388,20 @@ admin_account_notification_index:
     defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::indexAction }
 
 admin_account_notification_add:
-    path: /admin/acounts/{accountName}/notifications/add
+    path: /admin/accounts/{accountName}/notifications/add
     defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::addAction }
 
 admin_account_notification_view:
-    path: /admin/acounts/{accountName}/notifications/{id}/view
+    path: /admin/accounts/{accountName}/notifications/{notificationXuid}/view
     defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::viewAction }
+
+admin_account_notification_seen:
+    path: /admin/accounts/{accountName}/notifications/{notificationXuid}/seen
+    defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::seenAction }
+    
+admin_account_notification_unseen:
+    path: /admin/accounts/{accountName}/notifications/{notificationXuid}/unseen
+    defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::unseenAction }
 
 # MOBILE ALIASES #
 mobile_alias_index:

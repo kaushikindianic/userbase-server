@@ -4,6 +4,7 @@ namespace UserBase\Server\Model;
 class AccountNotification
 {
     private $id;
+    private $xuid;
     private $account_name;
     private $created_at;
     private $seen_at;
@@ -23,6 +24,18 @@ class AccountNotification
     {
         return $this->id;
     }
+    
+    public function getXuid()
+    {
+        return $this->xuid;
+    }
+    
+    public function setXuid($xuid)
+    {
+        $this->xuid = $xuid;
+        return $this;
+    }
+    
 
     public function setAccountName($account_name)
     {

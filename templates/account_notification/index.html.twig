@@ -19,21 +19,33 @@
 
     <table class="table">
         <tr>
-            <th style=" text-align: center">#id</th>
-            <th style=" text-align: center">Source Accout Name</th>
-            <th style=" text-align: center">Type</th>
-            <th style=" text-align: center">Subject</th>
-            <th style=" text-align: center">Created At</th>
+            <th>id</th>
+            <th>Source</th>
+            <th>Type</th>
+            <th>Subject</th>
+            <th>Created</th>
+            <th>Seen</th>
+            <th>Action</th>
         </tr>
         {% for entity in entities %}
         <tr>
-            <td style="text-align: center" >
-                <a href="{{ path('admin_account_notification_view', {'accountName': accountName, 'id': entity.id }) }}" title="View" >{{ entity.id }}</a>
+            <td>
+                <a href="{{ path('admin_account_notification_view', {'accountName': accountName, 'notificationXuid': entity.xuid }) }}" title="View" >{{ entity.xuid }}</a>
             </td>
-            <td style="text-align: center" >{{ entity.source_account_name }}</td>
-            <td style="text-align: center" >{{ entity.notification_type }}</td>
-            <td style="text-align: center" >{{ entity.subject }}</td>
-            <td style="text-align: center" >{{ entity.created_at }}</td>
+            <td>{{ entity.source_account_name }}</td>
+            <td>{{ entity.notification_type }}</td>
+            <td>{{ entity.subject }}</td>
+            <td>{{ entity.created_at }}</td>
+            <td>
+                {{ entity.seen_at }}
+            </td>
+            <td>
+                {% if entity.seen_at %}
+                    <a href="{{path('admin_account_notification_unseen', {'accountName': accountName, 'notificationXuid': entity.xuid })}}">Unseen</a>
+                {% else %}
+                    <a href="{{path('admin_account_notification_seen', {'accountName': accountName, 'notificationXuid': entity.xuid })}}">Seen</a>
+                {% endif %}
+            </td>
         </tr>
         {% endfor %}
     </table>

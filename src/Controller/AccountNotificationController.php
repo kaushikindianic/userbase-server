@@ -38,6 +38,29 @@ class AccountNotificationController
         )));
     }
 
+
+    public function seenAction(Application $app, Request $request, $accountName)
+    {
+        $oAccountNotificationRepo = $app->getAccountNotificationRepository();
+        $notificationXuid = $request->attributes->get('notificationXuid');
+        $entity = $oAccountNotificationRepo->setSeenByXuid($notificationXuid);
+
+        return $app->redirect($app['url_generator']->generate('admin_account_notification_index', array(
+            'accountName' => $accountName
+        )));
+    }
+    
+    public function unseenAction(Application $app, Request $request, $accountName)
+    {
+        $oAccountNotificationRepo = $app->getAccountNotificationRepository();
+        $notificationXuid = $request->attributes->get('notificationXuid');
+        $entity = $oAccountNotificationRepo->setUnseenByXuid($notificationXuid);
+
+        return $app->redirect($app['url_generator']->generate('admin_account_notification_index', array(
+            'accountName' => $accountName
+        )));
+    }
+
     public function addAction(Application $app, Request $request)
     {
         return $this->getEditForm($app, $request, null);
@@ -65,11 +88,8 @@ class AccountNotificationController
                 )
             ))
             ->add('source_account_name', 'text', array(
-                'required' => true,
-                'trim' => true,
-                'constraints' => new Assert\NotBlank(
-                    array('message' => 'Source account name value should not be blank.')
-                ),
+                'required' => false,
+                'trim' => true
             ))
             ->add('subject', 'text', array(
                 'required' => true,
@@ -91,6 +111,15 @@ class AccountNotificationController
             ->add('body', 'textarea', array(
                 'required' => false,
             ))
+            ->add('seen_at', 'datetime', array(
+                'required' => false,
+                'input'  => 'timestamp',
+                'widget' => 'single_text',
+                'attr' => array(
+                    'placeholder' => 'Seen date',
+                )
+            ))
+
             ->getForm();
 
         if ($request->isMethod('POST')) {

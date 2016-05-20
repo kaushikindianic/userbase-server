@@ -3,6 +3,7 @@ namespace UserBase\Server\Repository;
 
 use UserBase\Server\Model\AccountNotification;
 use RuntimeException;
+use Xuid\Xuid;
 use PDO;
 
 class PdoAccountNotificationRepository
@@ -25,11 +26,14 @@ class PdoAccountNotificationRepository
     public function add(AccountNotification $oAccountnotificationModel)
     {
         $sql = 'INSERT INTO account_notification
-                (account_name, created_at, source_account_name, notification_type, subject, link, body)
-                VALUES (:account_name, :created_at, :source_account_name, :notification_type, :subject, :link, :body)';
+                (xuid, account_name, created_at, source_account_name, notification_type, subject, link, body)
+                VALUES (:xuid, :account_name, :created_at, :source_account_name, :notification_type, :subject, :link, :body)';
 
+        $xuid = Xuid::getXuid();
+        
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
+            ':xuid' => $xuid,
             ':account_name' => $oAccountnotificationModel->getAccountName(),
             ':created_at' => $oAccountnotificationModel->getCreatedAt(),
             ':source_account_name' => $oAccountnotificationModel->getSourceAccountName(),
@@ -46,6 +50,25 @@ class PdoAccountNotificationRepository
         $statement = $this->pdo->prepare('SELECT * FROM account_notification WHERE id =:id');
         $statement->execute(array('id' => (int) $id));
         return $statement->fetch();
+    }
+    
+    public function setSeenByXuid($notificationXuid)
+    {
+        $statement = $this->pdo->prepare('UPDATE account_notification set seen_at=NOW() WHERE xuid = :xuid');
+        $statement->execute(
+            array(
+                'xuid' => $notificationXuid
+            )
+        );
+    }
+    public function setUnseenByXuid($notificationXuid)
+    {
+        $statement = $this->pdo->prepare('UPDATE account_notification set seen_at=null WHERE xuid = :xuid');
+        $statement->execute(
+            array(
+                'xuid' => $notificationXuid
+            )
+        );
     }
 
     public function searchData($accountName, $notificationType = '', $status = '')
