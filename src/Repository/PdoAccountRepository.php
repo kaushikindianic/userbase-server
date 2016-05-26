@@ -237,8 +237,8 @@ class PdoAccountRepository
 
     public function getAccountMembers($accountName)
     {
-        $statement = $this->pdo->prepare("SELECT au.*, u.email FROM account_user AS au
-                JOIN  user AS u ON  au.user_name = u.name
+        $statement = $this->pdo->prepare("SELECT au.*, a.email FROM account_user AS au
+                JOIN account AS a ON au.user_name = a.name
                 WHERE  au.account_name = :account_name
             ORDER BY au.user_name ASC");
         $statement->execute(array(':account_name' => $accountName));
