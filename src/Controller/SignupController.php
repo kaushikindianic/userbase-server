@@ -69,11 +69,11 @@ class SignupController
             }
         }
 
-        if (!ctype_alpha($username)) {
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
+        if (!ctype_alnum($username)) {
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username&detail=ctype');
         }
         if ((strlen($username)>15) || (strlen($username)<3)) {
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username');
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=invalid_username&detail=length');
         }
 
         if ($password != $password2) {
