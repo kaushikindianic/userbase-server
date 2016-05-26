@@ -28,7 +28,7 @@
         <tr>
             <td style="text-align: center" >{{ entity.id }}</td>
             <td style="text-align: center" >
-                <a href="{{ path('admin_account_view', { 'accountname' : accountName }) }}" >    {{ entity.connection_name }} </a>
+                <a href="{{ path('admin_account_view', { 'accountname' : entity.connection_name }) }}">{{ entity.connection_name }}</a>
             </td>
             <td style="text-align: center" >{{ entity.connection_type }}</td>
             <td>
