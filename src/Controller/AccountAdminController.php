@@ -329,13 +329,6 @@ class AccountAdminController
             $form->handleRequest($request);
             $data = $form->getData();
 
-            //-- CHECK ACCOUNTNAME BLCKLIST--//
-            $oBlacklistRepo = $app->getBlacklistRepository();
-
-            if ($oBlacklistRepo->checkNameExist($data['name'])) {
-                $form->get('name')->addError(new FormError('error.invalid_accountname_word'));
-            }
-
             if ($form->isValid()) {
                 if ($add) {
                     $account = new Account($data['name']);
