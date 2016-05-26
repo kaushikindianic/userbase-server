@@ -63,8 +63,8 @@ class PasswordResetController
                     generate('password_reset_mobile_check', ['accountName' => $account->getName()]));
         } else {
             $stamp = time();
-            $token = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
-            $link = $baseUrl . '/password-reset/' . $user->getUsername() . '/' . $stamp . '/' . $token;
+            $token = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
+            $link = $baseUrl . '/password-reset/' . $account->getName() . '/' . $stamp . '/' . $token;
 
             $data = array();
             $data['link'] = $link;
@@ -137,7 +137,7 @@ class PasswordResetController
             generate('password_reset_update', $urldata) . '?errorcode=password_reset_link_invalid');
         }
 
-        $test = sha1($stamp . ':' . $user->getEmail() . ':' . $app['userbase.salt']);
+        $test = sha1($stamp . ':' . $account->getEmail() . ':' . $app['userbase.salt']);
         if ($test != $token) {
             // invalid token
             return $app->redirect($app['url_generator']
