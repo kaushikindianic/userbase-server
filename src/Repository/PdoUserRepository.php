@@ -33,10 +33,10 @@ final class PdoUserRepository implements UserProviderInterface
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
-            "SELECT u.*, a.expire_at
+            "SELECT u.password, u.password_updated_at, u.last_seen_at, u.is_admin, a.*
             FROM user AS u
             JOIN account AS a ON a.name=u.name
-            WHERE (u.name=:name OR a.email=:email)
+            WHERE (a.name=:name OR a.email=:email)
             LIMIT 1"
         );
 
@@ -59,13 +59,15 @@ final class PdoUserRepository implements UserProviderInterface
     public function getAll($limit = 10, $search = '')
     {
         $aVal = array();
-        $sql = 'SELECT * FROM user WHERE 1 ';
+        $sql = 'SELECT u.password, u.password_updated_at, u.is_admin, u.last_seen_at, a.* FROM user AS u
+            JOIN account AS a ON a.name=u.name
+            WHERE 1 ';
 
         if ($search) {
-            $sql .= ' AND name LIKE  :search  OR  email LIKE :search ';
+            $sql .= ' AND u.name LIKE :search OR a.email LIKE :search ';
             $aVal[':search'] = "%".$search."%";
         }
-        $sql .= ' ORDER BY name DESC';
+        $sql .= ' ORDER BY u.name DESC';
 
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
@@ -91,7 +93,6 @@ final class PdoUserRepository implements UserProviderInterface
         $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
-        $user->setAlias($row['alias']);
         $enabled = true;
         if (!$account->isEmailVerified()) {
             $enabled = false;
@@ -121,13 +122,11 @@ final class PdoUserRepository implements UserProviderInterface
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
         $statement = $this->pdo->prepare(
-            "INSERT INTO user(name, email, created_at) VALUES (:name, :email, :stamp)"
+            "INSERT INTO user(name) VALUES (:name)"
         );
         $statement->execute(
             array(
-                ':name' => $name,
-                ':email' => $email,
-                ':stamp' => time()
+                ':name' => $name
             )
         );
 
@@ -163,48 +162,6 @@ final class PdoUserRepository implements UserProviderInterface
         );
     }
 
-    public function setEmail(User $user, $email)
-    {
-        if (!$user) {
-            throw new RuntimeException("User not specified");
-        }
-
-
-        $statement = $this->pdo->prepare(
-            "UPDATE user SET
-            email = :email
-            WHERE name=:name"
-        );
-
-        $statement->execute(
-            array(
-                ':email' => $email,
-                ':name' => $user->getUsername()
-            )
-        );
-    }
-
-    public function setDisplayName(User $user, $displayname)
-    {
-        if (!$user) {
-            throw new RuntimeException("User not specified");
-        }
-
-
-        $statement = $this->pdo->prepare(
-            "UPDATE user SET
-            display_name = :displayname
-            WHERE name=:name"
-        );
-
-        $statement->execute(
-            array(
-                ':displayname' => $displayname,
-                ':name' => $user->getUsername()
-            )
-        );
-    }
-
     // Needed for symfony user provider interface
     public function loadUserByUsername($username)
     {
@@ -233,52 +190,18 @@ final class PdoUserRepository implements UserProviderInterface
         return $class === 'Symfony\Component\Security\Core\User\User';
     }
 
+    /*
     public function update($username, $data)
     {
-        if (isset($data['displayname'])) {
-            $statement = $this->pdo->prepare(
-                "UPDATE user SET displayname = :displayname WHERE name=:name"
-            );
-
-            $statement->execute(
-                array(
-                    ':displayname' => $data['displayname'],
-                    ':name' => $username
-                )
-            );
-        }
-
-        if (isset($data['bio'])) {
-            $statement = $this->pdo->prepare(
-                "UPDATE user SET bio = :bio WHERE name=:name"
-            );
-
-            $statement->execute(
-                array(
-                    ':bio' => $data['bio'],
-                    ':name' => $username
-                )
-            );
-        }
-
-        if (isset($data['pictureurl'])) {
-            $statement = $this->pdo->prepare(
-                "UPDATE user SET picture_url = :pictureurl WHERE name=:name"
-            );
-
-            $statement->execute(
-                array(
-                    ':pictureurl' => $data['pictureurl'],
-                    ':name' => $username
-                )
-            );
-        }
+        
     }
+    */
 
     public function getSearchUsers($search = null)
     {
-        $statement = $this->pdo->prepare("SELECT u.* FROM user AS u
-                ".(($search)? ' WHERE name LIKE "%'.$search.'%"'  : '')." ORDER BY name DESC");
+        $statement = $this->pdo->prepare("SELECT a.* FROM user AS u
+            JOIN account AS a ON a.name = u.name
+                ".(($search)? ' WHERE u.name LIKE "%'.$search.'%"'  : '')." ORDER BY u.name DESC");
 
         $statement->execute();
         $users = array();

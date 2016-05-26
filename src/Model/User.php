@@ -7,20 +7,19 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 final class User implements AdvancedUserInterface
 {
     private $password;
-    private $email;
     private $enabled;
     private $accountNonExpired;
     private $credentialsNonExpired;
     private $accountNonLocked;
     private $roles;
-    private $displayName;
+    //private $displayName;
     
-    private $createdAt;
+    //private $createdAt;
     private $passwordUpdatedAt;
     private $lastSeenAt;
-    private $deletedAt;
+    //private $deletedAt;
     private $isAdmin = false;
-    private $alias;
+    //private $alias;
 
     public function __construct($name)
     {
@@ -227,6 +226,8 @@ final class User implements AdvancedUserInterface
         return false;
     }
     
+    /*
+    
     public function getAlias()
     {
         return $this->alias;
@@ -237,4 +238,5 @@ final class User implements AdvancedUserInterface
         $this->alias = $alias;
         return $this;
     }
+    */
 }
