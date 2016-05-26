@@ -5,9 +5,9 @@
         <column name="name" type="string" length="128" />
         <column name="display_name" type="string" length="128" notnull="false" />
         <column name="email" type="string" length="250" notnull="false" />
-        <column name="email_verified_at" type="integer" />
+        <column name="email_verified_at" type="integer" notnull="false" />
         <column name="mobile" type="string" length="250" notnull="false" />
-        <column name="mobile_verified_at" type="integer" />
+        <column name="mobile_verified_at" type="integer" notnull="false" />
         <column name="mobile_code" type="string" length="32" notnull="false" />
         <column name="url" type="string" length="250" notnull="false" />
         <column name="about" type="text" notnull="false" />
