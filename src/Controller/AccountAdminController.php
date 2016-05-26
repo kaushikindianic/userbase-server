@@ -13,6 +13,7 @@ use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Apikey;
 use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Export\Accounts;
+use RuntimeException;
 
 class AccountAdminController
 {
@@ -469,9 +470,26 @@ class AccountAdminController
     public function addApikeyAction(Application $app, Request $request, $accountname)
     {
         $repo = $app->getUserRepository();
+        $accountRepo = $app->getAccountRepository();
         $username = 'apikey-' . $accountname . '-' . $this->generateRandomString(16);
         $email = '';
         $password = $this->generateRandomString(32);
+        
+
+        //--CREATE PERSONAL ACCOUNT--//
+        $keyAccount = new Account($username);
+        $keyAccount
+            ->setDisplayName('')
+            ->setAbout('')
+            ->setPictureUrl('')
+            ->setAccountType('apikey')
+            ->setEmail('x@example.web')
+            ->setMobile('01234')
+            ->setStatus('ACTIVE')
+        ;
+
+        $accountRepo->add($keyAccount);
+
         try {
             $user = $repo->register($app, $username, $email);
         } catch (Exception $e) {
@@ -486,20 +504,9 @@ class AccountAdminController
 
         $repo->setPassword($user, $password);
 
-        //--CREATE APIKEY ACCOUNT--//
-        $account = new Account($user->getUsername());
-        $account->setDisplayName('API Key ' . $user->getUsername())
-                ->setAccountType('apikey')
-                ;
-
-        $accountRepo = $app->getAccountRepository();
-        if ($accountRepo->add($account)) {
-            $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'apikey');
-            $accountRepo->addAccUser($accountname, $user->getUsername(), 'apikey');
-        } else {
-            throw new RuntimeException("Failed to add account: " . $account->getName());
-        }
-
+        
+        $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'apikey');
+        $accountRepo->addAccUser($accountname, $user->getUsername(), 'apikey');
 
         //--EVENT LOG --//
         $time = time();
