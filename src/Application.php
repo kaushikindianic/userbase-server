@@ -405,6 +405,7 @@ class Application extends SilexApplication
         $accountRepo = $this->getAccountRepository();
         $user = $userRepo->getByName($username);
         $account = $accountRepo->getByName($username);
+        $mobileAliasRepo = $this->getMobileAliasRepository();
 
         $stamp = time();
 
@@ -415,11 +416,12 @@ class Application extends SilexApplication
         $service = new SmsService($gw);
 
         $sender = $this['sms.sender'];
-        $to = $account->getMobile();
+        $mobile = $account->getMobile();
+        $mobile = $mobileAliasRepo->resolveAlias($mobile);
 
         $message='code: ' . $data['code'];
 
-        $msg = new SmsMessage($message, $sender, $to);
+        $msg = new SmsMessage($message, $sender, $mobile);
         $service->send($msg);
     }
 }

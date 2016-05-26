@@ -47,6 +47,17 @@ class PdoMobileAliasRepository
         $statement->execute(array('id' => (int) $id));
         return $statement->fetch();
     }
+    
+    public function resolveAlias($mobile)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM mobile_alias WHERE mobile=:mobile');
+        $statement->execute(array('mobile' => $mobile));
+        $rows = $statement->fetch();
+        if (!$rows) {
+            return $mobile;
+        }
+        return trim($rows['mobile_alias']);
+    }
 
     public function findAll()
     {
