@@ -62,17 +62,18 @@ class MobileAliasController
         $form = $app['form.factory']->createBuilder('form', $defaults)
             ->add('mobile', 'text', array(
                 'required' => true,
-                'label' => 'Mobile',
+                'label' => 'Virtual mobile',
                 'trim' => true,
-                'constraints' =>  new Assert\NotBlank(array('message' => 'Mobile value should not be blank.')),
+                'constraints' =>  new Assert\NotBlank(array('message' => 'Virtual mobile should not be blank.')),
                 'attr' => array(
                     'autofocus' => '',
                 )
             ))
             ->add('mobile_alias', 'text', array(
                 'required' => true,
+                'label' => 'Target mobile',
                 'trim' => true,
-                'constraints' =>  new Assert\NotBlank(array('message' => 'Mobile Alias value should not be blank.')),
+                'constraints' =>  new Assert\NotBlank(array('message' => 'Target mobile should not be blank.')),
             ))
             ->add('description', 'textarea', array('required' => false, 'label' => 'Description'))
             ->getForm();

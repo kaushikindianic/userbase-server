@@ -1,7 +1,7 @@
 {% extends "admin/layout.html.twig" %}
 
 {% block content %}
-<h2>Mobile Alias: {{ entities|length }}</h2>
+<h2>Virtual mobiles: {{ entities|length }}</h2>
 
 {% if error != null %}
     <div class="alert alert-danger" role="alert">
@@ -10,18 +10,18 @@
     </div>
 {% endif %}
 
-<div class="buttonbox">
+<div class="buttonbox" style="margin-bottom: 10px;">
     <a href="{{ path('mobile_alias_add') }}" class="btn btn-primary" role="button">
         <i class="fa fa-plus"></i>
-        Create Mobile Alias
+        Create Virtual Mobile
     </a>
 </div>
 
     <table class="table">
         <tr>
             <th style=" text-align: center">#id</th>
-            <th style=" text-align: center">Mobile</th>
-            <th style=" text-align: center">Mobile Alias</th>
+            <th style=" text-align: center">Virtual mobile</th>
+            <th style=" text-align: center">Target mobile</th>
             <th style=" text-align: center">Description</th>
             <th style=" text-align: center">Action</th>
         </tr>
