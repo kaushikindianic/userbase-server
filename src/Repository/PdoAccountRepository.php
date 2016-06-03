@@ -280,7 +280,7 @@ class PdoAccountRepository
             'SELECT  AU.account_name FROM account_user As AU
             JOIN  account as A ON AU.account_name = A.name
             WHERE AU.user_name = :user_name
-            AND  A.deleted_at = 0
+            AND (deleted_at IS NULL OR deleted_at=0) 
             ORDER BY AU.account_name ASC'
         );
         $statement->execute(array( ':user_name' => $userName));
