@@ -58,6 +58,13 @@ class PdoTagRepository
         $statement->execute(array('id' => (int) $id));
         return $statement->fetch();
     }
+    
+    public function getByName($name)
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM tag WHERE name =:name');
+        $statement->execute(array('name' => $name));
+        return $statement->fetch();
+    }
 
     public function findAll()
     {

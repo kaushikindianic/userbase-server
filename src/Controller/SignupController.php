@@ -9,6 +9,7 @@ use Service;
 use Exception;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
+use UserBase\Server\Model\AccountTag;
 
 class SignupController
 {
@@ -96,7 +97,6 @@ class SignupController
             }
         }
 
-
         //--CREATE PERSONAL ACCOUNT--//
         $account = new Account($username);
         $account
@@ -128,6 +128,26 @@ class SignupController
         $session->set('_signup.last_displayname', null);
 
         $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
+        
+        // TAGS //
+        if ($app['userbase.signup_tag']) {
+            $tagRepo = $app->getTagRepository();
+            $accountTagRepo = $app->getAccountTagRepository();
+
+            $tagNames = explode(",", $app['userbase.signup_tag']);
+            foreach ($tagNames as $tagName) {
+                $tagData = $tagRepo->getByName($tagName);
+                if (!$tagData) {
+                    throw new RuntimeException("No such tag! " . $tagName);
+                }
+                $tagId = $tagData['id'];
+                $accountTag = new AccountTag();
+                $accountTag->setTagId($tagId);
+                $accountTag->setAccountName($user->getUsername());
+                $accountTagRepo->add($accountTag);
+            }
+        }
+
         //--EVENT LOG --//
         $time = time();
         $sEventData = json_encode(

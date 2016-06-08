@@ -90,6 +90,7 @@ class ApiController
         $accountRepo = $app->getAccountRepository();
         $userRepo = $app->getUserRepository();
         $notificationRepo = $app->getAccountNotificationRepository();
+        $accountTagRepo = $app->getAccountTagRepository();
 
         $partition = strtolower($app['userbase.partition']);
         $data = array();
@@ -113,6 +114,13 @@ class ApiController
             $data['message'] = $account->getMessage();
             $data['expire_at'] = $account->getExpireAt();
             $data['approved_at'] = $account->getExpireAt();
+
+            // TAGS
+            $data['tags'] = [];
+            $tags = $accountTagRepo->findByAccountName($account->getName());
+            foreach ($tags as $tag) {
+                $data['tags'][] = $tag['name'];
+            }
 
             // GET USER ACCOUNTS //
             $members = $accountRepo->getAccountMembers($account->getName());

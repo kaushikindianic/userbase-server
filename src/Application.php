@@ -86,6 +86,7 @@ class Application extends SilexApplication
         if (isset($this->config['userbase']['template_override'])) {
             $this['userbase.template_override'] = $this->config['userbase']['template_override'];
         }
+        $this['userbase.signup_tag'] = $this->config['userbase']['signup_tag'];
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.enable_mobile'] = isset($this->config['userbase']['enable_mobile']) ?
