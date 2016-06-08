@@ -199,7 +199,9 @@ final class PdoUserRepository implements UserProviderInterface
 
     public function getSearchUsers($search = null)
     {
-        $statement = $this->pdo->prepare("SELECT a.* FROM user AS u
+        $statement = $this->pdo->prepare("SELECT u.password, u.password_updated_at, u.last_seen_at, u.is_admin,
+            a.*
+            FROM user AS u
             JOIN account AS a ON a.name = u.name
                 ".(($search)? ' WHERE u.name LIKE "%'.$search.'%"'  : '')." ORDER BY u.name DESC");
 
