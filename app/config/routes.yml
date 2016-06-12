@@ -158,11 +158,11 @@ api_v1_account_view:
 
 api_v1_account_add:
     path: /api/v1/accounts/create/{accountName}/{accountType}
-    defaults: { _controller: UserBase\Server\Controller\ApiController::accountAddAction }
+    defaults: { _controller: UserBase\Server\Controller\ApiController::accountCreateAction }
 
 api_v1_account_edit:
-    path: /api/v1/accounts/{accountName}/update/{displayName}/{email}/{mobile}/{about}
-    defaults: { _controller: UserBase\Server\Controller\ApiController::accountEditAction }
+    path: /api/v1/accounts/{accountName}/update
+    defaults: { _controller: UserBase\Server\Controller\ApiController::accountUpdateAction }
 
 api_v1_account_property:
     path: /api/v1/accounts/{accountName}/setProperty/{propertyName}/{propertyValue}

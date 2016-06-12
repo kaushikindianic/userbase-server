@@ -120,7 +120,7 @@ class ApiController
             $data['tags'] = [];
             $tags = $accountTagRepo->findByAccountName($account->getName());
             foreach ($tags as $tag) {
-                $data['tags'][] = $tag['name'];
+                $data['tags'][] = $tag['tag_name'];
             }
 
             // GET USER ACCOUNTS //
@@ -276,13 +276,17 @@ class ApiController
         if (!$oAccount = $oAccRepo->getByName($accountName)) {
             return $this->getErrorResponse(404, "Account not found");
         }
-        if (in_array($oAccount->getAccountType(), ['organization', 'group'])) {
-            $isOwner =  (strtolower($isAdmin) == 'true')? 1 : 0;
-            $oAccRepo->addAccUser($accountName, $userName, $isOwner);
-            $data = ['status' => 'ok'];
-            return $this->getJsonResponse($data);
+        if (!$oUser = $oAccRepo->getByName($userName)) {
+            return $this->getErrorResponse(404, "User not found");
         }
-        return $this->getErrorResponse(500, "Account is not organization OR group");
+        
+        if (!in_array($oAccount->getAccountType(), ['organization', 'group'])) {
+            return $this->getErrorResponse(500, "Account is not organization OR group");
+        }
+        $isOwner =  (strtolower($isAdmin) == 'true')? 1 : 0;
+        $oAccRepo->addAccUser($accountName, $userName, $isOwner);
+        $data = ['status' => 'ok'];
+        return $this->getJsonResponse($data);
     }
 
     /**
@@ -368,7 +372,7 @@ class ApiController
         return $this->getJsonResponse($data);
     }
 
-    public function accountAddAction(Application $app, Request $request)
+    public function accountCreateAction(Application $app, Request $request)
     {
         $accountName = urldecode($request->get('accountName'));
         $accountType =  urldecode($request->get('accountType'));
@@ -376,9 +380,13 @@ class ApiController
 
         //-- CHECK ACCOUNTNAME BLCKLIST--//
         $oBlacklistRepo = $app->getBlacklistRepository();
-        if ($status = $oBlacklistRepo->checkNameExist($accountName)) {
-            return $this->getErrorResponse(500, 'error.invalid_accountname_word');
+        foreach ($oBlacklistRepo->findAll() as $row) {
+            $pattern = $row['account_name']; // this db field should probably be renamed
+            if (fnmatch($pattern, $accountName)) {
+                return $this->getErrorResponse(500, 'error.invalid_accountname_word');
+            }
         }
+
         $oAccountModel = new Account($accountName);
         $oAccountModel->setAccountType($accountType)
                     ->setStatus('new');
@@ -390,30 +398,30 @@ class ApiController
         return $this->getJsonResponse($data);
     }
 
-    public function accountEditAction(Application $app, Request $request)
+    public function accountUpdateAction(Application $app, Request $request)
     {
-        $accountName =  urldecode($request->get('accountName'));
-        $displayName =  urldecode($request->get('displayName'));
-        $email =  urldecode($request->get('email'));
-        $mobile =  urldecode($request->get('mobile'));
-        $about =  urldecode($request->get('about'));
-        $oAccountRepo = $app->getAccountRepository();
+        $accountName =  $request->get('accountName');
 
-        if (!$email || !$mobile || !$about) {
-            return $this->getErrorResponse(500, 'email, mobile and about value required.');
-        }
-        if (!$oAccountRepo->getByName($accountName)) {
+        $accountRepo = $app->getAccountRepository();
+        $account = $accountRepo->getByName($accountName);
+        if (!$account) {
             return $this->getErrorResponse(500, 'Account name does not exist.');
         }
-        $oAccountModel = new Account($accountName);
-        $oAccountModel->setEmail($email)
-            ->setMobile($mobile)
-            ->setAbout($about);
 
-        if ($displayName) {
-            $oAccountModel->setDisplayName($displayName);
+        if ($request->query->has('displayName')) {
+            $account->setDisplayName(urldecode($request->get('displayName')));
         }
-        $oAccountRepo->update($oAccountModel);
+        if ($request->query->has('about')) {
+            $account->setAbout(urldecode($request->get('about')));
+        }
+        if ($request->query->has('email')) {
+            $account->setEmail(urldecode($request->get('email')));
+        }
+        if ($request->query->has('mobile')) {
+            $account->setMobile(urldecode($request->get('mobile')));
+        }
+    
+        $accountRepo->update($account);
 
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
