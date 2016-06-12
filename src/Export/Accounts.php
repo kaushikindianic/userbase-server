@@ -20,6 +20,7 @@ class Accounts
     {
         $oAccounts = $this->app->getAccountRepository()->getAll();
 
+        $tags = $this->app->getTagRepository()->findAll();
         $table = new Table();
         $table->setName(basename('accounts.csv'));
         $nameColumn = $table->getColumnByName("name");
@@ -34,46 +35,69 @@ class Accounts
         $mobileColumn = $table->getColumnByName('mobile');
         $emailVerifiedAt = $table->getColumnByName('email_verified_at');
         $mobileVerfiedAt = $table->getColumnByName('mobile_verfied_at');
+        
+        foreach ($tags as $tag) {
+            $tagColumn = $table->getColumnByName('tag.' . $tag['name']);
+        }
+        
+        $accountTags = $this->app->getAccountTagRepository()->findAll();
+        foreach ($accountTags as $accountTag) {
+            if (isset($oAccounts[$accountTag['account_name']])) {
+                $oAccounts[$accountTag['account_name']]->addTagName($accountTag['tag_name']);
+            }
+        }
 
 
-        for ($i = 0; $i < count($oAccounts); $i++) {
+        $i = 0;
+        foreach ($oAccounts as $oAccount) {
             $row = $table->getRowByIndex($i);
 
             $nameColumn = $row->getCellByColumnName("name");
-            $nameColumn->setValue($oAccounts[$i]->getName());
+            $nameColumn->setValue($oAccount->getName());
 
             $displayNameColumn = $row->getCellByColumnName('display_name');
-            $displayNameColumn->setValue($oAccounts[$i]->getDisplayName());
+            $displayNameColumn->setValue($oAccount->getDisplayName());
 
             $aboutColumn = $row->getCellByColumnName('about');
-            $aboutColumn->setValue($oAccounts[$i]->getAbout());
+            $aboutColumn->setValue($oAccount->getAbout());
 
             $createdAtColumn = $row->getCellByColumnName('created_at');
-            $createdAtColumn->setValue((($oAccounts[$i]->getCreatedAt())?
-                date('Y-m-d H:i:s', $oAccounts[$i]->getCreatedAt()):0));
+            $createdAtColumn->setValue((($oAccount->getCreatedAt())?
+                date('Y-m-d H:i:s', $oAccount->getCreatedAt()):0));
 
             $accountTypeColumn = $row->getCellByColumnName('account_type');
-            $accountTypeColumn->setValue($oAccounts[$i]->getAccountType());
+            $accountTypeColumn->setValue($oAccount->getAccountType());
 
             $statusColumn = $row->getCellByColumnName('status');
-            $statusColumn->setValue($oAccounts[$i]->getStatus());
+            $statusColumn->setValue($oAccount->getStatus());
 
             $urlColumn = $row->getCellByColumnName('url');
-            $urlColumn->setValue($oAccounts[$i]->getUrl());
+            $urlColumn->setValue($oAccount->getUrl());
 
             $emailColumn = $row->getCellByColumnName('email');
-            $emailColumn->setValue($oAccounts[$i]->getEmail());
+            $emailColumn->setValue($oAccount->getEmail());
 
             $mobileColumn = $row->getCellByColumnName('mobile');
-            $mobileColumn->setValue($oAccounts[$i]->getMobile());
+            $mobileColumn->setValue($oAccount->getMobile());
 
             $emailVerifiedAt = $row->getCellByColumnName('email_verified_at');
-            $emailVerifiedAt->setValue(($oAccounts[$i]->getEmailVerifiedAt())?
-                date('Y-m-d H:i:s', $oAccounts[$i]->getEmailVerifiedAt()) : 0);
+            $emailVerifiedAt->setValue(($oAccount->getEmailVerifiedAt())?
+                date('Y-m-d H:i:s', $oAccount->getEmailVerifiedAt()) : 0);
 
             $mobileVerfiedAt = $row->getCellByColumnName('mobile_verfied_at');
-            $mobileVerfiedAt->setValue(($oAccounts[$i]->getMobileVerifiedAt())?
-            date('Y-m-d H:i:s', $oAccounts[$i]->getMobileVerifiedAt()) : 0);
+            $mobileVerfiedAt->setValue(($oAccount->getMobileVerifiedAt())?
+            date('Y-m-d H:i:s', $oAccount->getMobileVerifiedAt()) : 0);
+            
+            
+            foreach ($tags as $tag) {
+                $tagColumn = $row->getCellByColumnName('tag.' . $tag['name']);
+                if ($oAccount->hasTagName($tag['name'])) {
+                    $tagColumn->setValue('Y');
+                } else {
+                    $tagColumn->setValue('N');
+                }
+            }
+            $i++;
         }
         // use a writer to export the datatable to a .csv file
         $writer = new CsvWriter();

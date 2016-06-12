@@ -23,6 +23,7 @@ class Account
     private $mobileCode;
     private $url;
     private $status;
+    private $tagNames = [];
 
     public function __construct($name)
     {
@@ -281,6 +282,20 @@ class Account
             return true;
         }
         return false;
+    }
+    
+    public function addTagName($name)
+    {
+        $this->tagNames[$name] = $name;
+    }
+    
+    public function getTagNames()
+    {
+        return $this->tagNames;
+    }
+    
+    public function hasTagName($name) {
+        return isset($this->tagNames[$name]);
     }
     
 }

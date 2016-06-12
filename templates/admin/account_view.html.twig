@@ -11,11 +11,21 @@
 {% if account.getStatus()=='INACTIVE' %}
     <span class="label label-warning">
 {% endif %}
+{% if account.getStatus()=='NEW' %}
+    <span class="label label-warning">
+{% endif %}
 {% if account.getStatus()=='EXPIRED' %}
     <span class="label label-danger">
 {% endif %}
 
 {{account.getStatus()}}</span>
+
+
+    {% for aTag in aAssignTags %}
+     <span class="label label-primary">#{{ aTag.tag_name }}</span>
+    {% endfor %}
+    <a href="{{ path('admin_account_tags', {'accountName': account.getName()})}}">edit tags</a>
+
 
 <p class="lead">{{ account.getAbout()|raw|nl2br }}</p>
 <ul>
@@ -45,17 +55,6 @@
     {% endif %}
     <a class="btn btn-primary" href="{{ path('admin_account_notification_index', {'accountName': account.getName()})}}"><i class="fa fa-bell-o"></i> Notification</a>
     <a class="btn btn-primary" href="{{ path('account_address_index', {'accountName': account.getName()})}}"><i class="fa fa-building-o"></i> Addresses</a>
-</div>
-
-{#  ACCOUNT ASSIGN TAGS #}
-<h3>Account Tags ({{ aAssignTags|length }})</h3>
-<ul>
-    {% for aTag in aAssignTags %}
-     <li><b>{{ aTag.name }}</b></li>
-    {% endfor %}
-</ul>
-<div class="buttonbox">
-    <a class="btn btn-primary" href="{{ path('admin_account_tags', {'accountName': account.getName()})}}">Assign Tags</a>
 </div>
 
 <h3>Account Properties ({{ accountProperties|length }})</h3>

@@ -9,6 +9,7 @@ use RuntimeException;
 use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
+use UserBase\Server\Model\AccountTag;
 use UserBase\Server\Model\AccountNotification;
 
 class ApiController
@@ -300,6 +301,53 @@ class ApiController
             return $this->getJsonResponse($data);
         }
         return $this->getErrorResponse(500, "Account is not organization OR group");
+    }
+    
+    public function tagRemoveAction(Application $app, $accountName, $tagName)
+    {
+        $accountRepo = $app->getAccountRepository();
+        $accountTagRepo = $app->getAccountTagRepository();
+        
+        $accountTags = $accountTagRepo->findByAccountName($accountName);
+        //print_r($accountTags);
+        //print_r($accountTags);
+        foreach ($accountTags as $accountTag) {
+            if ($accountTag['tag_name']==$tagName) {
+                $accountTagRepo->deleteById($accountTag['id']);
+                $data = ['status' => 'ok'];
+                return $this->getJsonResponse($data);
+            }
+        }
+        return $this->getErrorResponse(404, "No such tag for this account");
+    }
+
+
+    public function tagAddAction(Application $app, $accountName, $tagName)
+    {
+        $accountRepo = $app->getAccountRepository();
+        $accountTagRepo = $app->getAccountTagRepository();
+        $tagRepo = $app->getTagRepository();
+        
+        $accountTags = $accountTagRepo->findByAccountName($accountName);
+        //print_r($accountTags);
+        foreach ($accountTags as $accountTag) {
+            if ($accountTag['tag_name']==$tagName) {
+                return $this->getErrorResponse(500, "This account already has this tag");
+            }
+        }
+        
+        $tag = $tagRepo->getByName($tagName);
+        if (!$tag) {
+            return $this->getErrorResponse(500, "No such tagname exists");
+        }
+        
+        $accountTag = new AccountTag();
+        $accountTag->setTagId($tag['id']);
+        $accountTag->setAccountName($accountName);
+        $accountTagRepo->add($accountTag);
+        
+        $data = ['status' => 'ok'];
+        return $this->getJsonResponse($data);
     }
 
     public function addEventAction(Application $app, Request $request, $accountName, $eventName)

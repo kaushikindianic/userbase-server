@@ -24,6 +24,14 @@ class AccountAdminController
         $accountType = $request->get('accountType');
 
         $accounts = $app->getAccountRepository()->getAll(10, $search, $accountType);
+        
+        // Enrich accounts with tagNames
+        $accountTags = $app->getAccountTagRepository()->findAll();
+        foreach ($accountTags as $accountTag) {
+            if (isset($accounts[$accountTag['account_name']])) {
+                $accounts[$accountTag['account_name']]->addTagName($accountTag['tag_name']);
+            }
+        }
 
         $totalUsers = $app->getAccountRepository()->countBy('user');
         $totalOrganizations = $app->getAccountRepository()->countBy('organization');

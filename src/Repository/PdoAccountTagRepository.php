@@ -16,7 +16,11 @@ class PdoAccountTagRepository
 
     public function findAll()
     {
-        $statement = $this->pdo->prepare('SELECT * FROM account_tag ORDER BY name ASC');
+        $statement = $this->pdo->prepare('SELECT
+            at.*, t.name AS tag_name
+            FROM account_tag AS at
+            LEFT JOIN tag AS t ON t.id = at.tag_id
+            ORDER BY at.account_name ASC');
         $statement->execute(array());
         return $statement->fetchAll();
     }
@@ -37,12 +41,19 @@ class PdoAccountTagRepository
         ));
         return $row;
     }
+    
+    public function deleteById($accountTagId)
+    {
+        $statement = $this->pdo->prepare('DELETE FROM account_tag WHERE id = :account_tag_id');
+        return $statement->execute(array(':account_tag_id' => $accountTagId));
+    }
 
     public function findByAccountName($accountName)
     {
-        $sql = 'SELECT T.* FROM  account_tag  AS AT
-                JOIN tag AS T ON  AT.tag_id = T.id
-                WHERE AT.account_name = :account_name';
+        $sql = 'SELECT at.*, t.name as tag_name, t.description as tag_description
+                FROM account_tag AS at
+                JOIN tag AS t ON at.tag_id = t.id
+                WHERE at.account_name = :account_name';
 
         $statement = $this->pdo->prepare($sql);
         $statement->execute(array(':account_name' => $accountName));

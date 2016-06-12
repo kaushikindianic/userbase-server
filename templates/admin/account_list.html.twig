@@ -61,7 +61,10 @@
                     <span class="label label-danger">
                 {% endif %}
                 
-                {{account.getStatus()}}</span>
+                {{account.getStatus()}}</span> 
+                {% for tagName in account.getTagNames() %}
+                <span class="label label-primary">#{{ tagName }}</span>
+                {% endfor %}
             </td>
             <td>
                 {{ account.getCreatedAt()|mydate }}

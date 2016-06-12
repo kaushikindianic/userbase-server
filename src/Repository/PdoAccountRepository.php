@@ -103,7 +103,9 @@ class PdoAccountRepository
     public function getAll($limit = 10, $search = '', $accountType = '')
     {
         $aVal = array();
-        $sql = 'SELECT * FROM account WHERE (deleted_at IS NULL OR deleted_at=0) ';
+        $sql = 'SELECT a.*
+            FROM account AS a
+            WHERE (a.deleted_at IS NULL OR a.deleted_at = 0)';
 
         if ($search) {
             $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
@@ -121,7 +123,7 @@ class PdoAccountRepository
         $accounts = array();
 
         foreach ($rows as $row) {
-            $accounts []= $this->rowToAccount($row);
+            $accounts [$row['name']]= $this->rowToAccount($row);
         }
         return $accounts;
     }
