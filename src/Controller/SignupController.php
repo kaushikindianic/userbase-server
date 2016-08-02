@@ -195,6 +195,8 @@ class SignupController
             }
         }
 
+        $app->sendMail('verified', $account->getName());
+
         $data = array();
         return new Response($app['twig']->render(
             '@PreAuth/signup/thankyou.html.twig',

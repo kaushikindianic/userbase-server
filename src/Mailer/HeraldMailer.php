@@ -16,6 +16,10 @@ class HeraldMailer implements MailerInterface
     
     public function sendTemplate($templateName, Account $account, array $data)
     {
+        if (!$this->client->templateExists($templateName)) {
+            return;
+        }
+
         $message = new HeraldMessage();
         $message->setTemplate($templateName);
         foreach ($data as $key => $value) {

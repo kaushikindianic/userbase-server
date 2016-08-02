@@ -396,6 +396,7 @@ class Application extends SilexApplication
         $data = array();
         $data['link'] = $link;
         $data['username'] = $username;
+        $data['display_name'] = $account->getDisplayName();
         $this['mailer']->sendTemplate($templateName, $account, $data);
     }
 
