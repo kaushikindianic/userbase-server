@@ -3,6 +3,6 @@
 {% block content %}
     <h1>{{ "signup.thankyou"|trans }}</h1>
     <p>{{ "signup.thankyou_details"|trans }}</p>
-    <a href="{{ path('login') }}" class="btn btn-success">{{"common.action_login"|trans}}</a>
+    <a href="{{ login_url }}" class="btn btn-success">{{"common.action_login"|trans}}</a>
 </form>
 {% endblock %}

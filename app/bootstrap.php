@@ -37,6 +37,18 @@ $application->before(function (Request $request) use ($application) {
     }
     $application['twig']->addGlobal('logourl', $application['userbase.logourl']);
     $application['twig']->addGlobal('enable_mobile', $application['userbase.enable_mobile']);
+    
+    $loginUrl = null;
+    if (isset($application['userbase.login_url'])) {
+        $loginUrl = $application['userbase.login_url'];
+    }
+    if (!$loginUrl) {
+        $urlGenerator = $application['url_generator'];
+        $loginUrl = $urlGenerator->generate('login');
+    }
+    $application['twig']->addGlobal('login_url', $loginUrl);
+
+    
 
     $filter = new Twig_SimpleFilter('mydate', function ($value) {
         if ($value>0) {

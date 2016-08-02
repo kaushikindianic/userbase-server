@@ -82,7 +82,11 @@ class Application extends SilexApplication
 
         $this['userbase.baseurl'] = $this->config['userbase']['baseurl'];
         $this['userbase.help_url'] = isset($this->config['userbase']['help_url']) ?
-         $this->config['userbase']['help_url'] : null;
+            $this->config['userbase']['help_url'] : null;
+            
+        $this['userbase.login_url'] = isset($this->config['userbase']['login_url']) ?
+            $this->config['userbase']['login_url'] : null;
+
         if (isset($this->config['userbase']['template_override'])) {
             $this['userbase.template_override'] = $this->config['userbase']['template_override'];
         }
