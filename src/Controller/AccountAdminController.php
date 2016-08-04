@@ -451,6 +451,9 @@ class AccountAdminController
         $oPropertyRepo = $app->getPropertyRepository();
         $properties = $oPropertyRepo->findAll();
         
+        $oEventRepo = $app->getEventRepository();
+        $events = $oEventRepo->findByAccountName($accountname);
+        
         
 
         return new Response(
@@ -464,6 +467,7 @@ class AccountAdminController
                     'accountProperties' => $accountProperties,
                     'aAssignTags' => $aAssignTags,
                     'properties' => $properties,
+                    'events' => $events,
                     'totalAccountConnect' => $totalAccountConnect
                 )
             )

@@ -43,17 +43,16 @@ class PdoEventRepository
         return $rows;
     }
 
-    public function getUserEvents($username)
+    public function findByAccountName($accountName)
     {
-        if (!trim($username)) {
+        if (!trim($accountName)) {
             return false;
         }
         $aVal = array();
         $sql = 'SELECT * FROM event  WHERE 1 ';
-        $sql .= ' AND user_name = :user_name AND event_name LIKE :event_name ';
+        $sql .= ' AND account_name = :account_name ';
 
-        $aVal[':user_name'] = $username;
-        $aVal['event_name'] = "user.%";
+        $aVal[':account_name'] = $accountName;
         $sql .= ' ORDER BY id DESC';
 
         $statement = $this->pdo->prepare($sql);
