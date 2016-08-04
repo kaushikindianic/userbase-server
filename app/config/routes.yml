@@ -200,9 +200,9 @@ admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
 
-admin_log_list:
-    path: /admin/logs
-    defaults:  { _controller: UserBase\Server\Controller\AdminController::logListAction }
+admin_event_index:
+    path: /admin/events
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::eventIndexAction }
 
 # USER MODULE
 admin_user_list:
