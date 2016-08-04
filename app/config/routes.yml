@@ -377,6 +377,20 @@ admin_account_tags:
     path: /admin/accounts/{accountName}/tags
     defaults: { _controller: UserBase\Server\Controller\AccountTagController::tagAction }
 
+
+# ACCOUNT PROPERTIES  #
+admin_property_index:
+    path: /admin/properties
+    defaults: { _controller: UserBase\Server\Controller\PropertyController::indexAction }
+
+admin_property_add:
+        path: /admin/properties/add
+        defaults: { _controller: UserBase\Server\Controller\PropertyController::addAction }
+
+admin_property_edit:
+    path: /admin/properties/edit/{id}
+    defaults: { _controller: UserBase\Server\Controller\PropertyController::editAction }
+
 # ACCOUNT CONNECTION #
 admin_account_connection_add:
     path: /admin/accounts/{accountName}/connections/add

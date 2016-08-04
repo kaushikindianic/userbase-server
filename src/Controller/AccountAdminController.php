@@ -447,6 +447,11 @@ class AccountAdminController
 
         $oAccountConnectionRepo = $app->getAccountConnectionRepository();
         $totalAccountConnect = $oAccountConnectionRepo->totConnection($accountname);
+        
+        $oPropertyRepo = $app->getPropertyRepository();
+        $properties = $oPropertyRepo->findAll();
+        
+        
 
         return new Response(
             $app['twig']->render(
@@ -458,6 +463,7 @@ class AccountAdminController
                     'organizations' => $organizations,
                     'accountProperties' => $accountProperties,
                     'aAssignTags' => $aAssignTags,
+                    'properties' => $properties,
                     'totalAccountConnect' => $totalAccountConnect
                 )
             )

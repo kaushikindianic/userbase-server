@@ -35,6 +35,7 @@ use Xi\Sms\SmsMessage;
 use Xi\Sms\Gateway\MessageBirdGateway;
 use UserBase\Server\Repository\PdoBlacklistRepository;
 use UserBase\Server\Repository\PdoTagRepository;
+use UserBase\Server\Repository\PdoPropertyRepository;
 use UserBase\Server\Repository\PdoAccountTagRepository;
 use UserBase\Server\Repository\PdoAccountConnectionRepository;
 use UserBase\Server\Repository\PdoAccountNotificationRepository;
@@ -54,6 +55,7 @@ class Application extends SilexApplication
     private $spaceRepository;
     private $blacklistRepository;
     private $tagRepository;
+    private $propertyRepository;
     private $accountTagRepository;
     private $accountConnectionRepository;
     private $accountNotificationRepository;
@@ -149,6 +151,7 @@ class Application extends SilexApplication
         $this->spaceRepository = new  PdoSpaceRepository($pdo);
         $this->blacklistRepository = new PdoBlacklistRepository($pdo);
         $this->tagRepository = new PdoTagRepository($pdo);
+        $this->propertyRepository = new PdoPropertyRepository($pdo);
         $this->accountTagRepository  = new PdoAccountTagRepository($pdo);
         $this->accountConnectionRepository = new PdoAccountConnectionRepository($pdo);
         $this->accountNotificationRepository = new  PdoAccountNotificationRepository($pdo);
@@ -353,6 +356,11 @@ class Application extends SilexApplication
     public function getTagRepository()
     {
         return $this->tagRepository;
+    }
+
+    public function getPropertyRepository()
+    {
+        return $this->propertyRepository;
     }
 
     public function getAccountTagRepository()

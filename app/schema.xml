@@ -25,6 +25,17 @@
 
         <index name="primary" primary="true" columns="name" />
     </table>
+    
+
+    <table name="property">
+        <column name="id" type="integer" autoincrement="true" />
+        <column name="name" type="string" length="128" />
+        <column name="description" type="text" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+        <index name="unique_name" unique="true" columns="name" />
+    </table>
+
 
     <table name="account_property">
         <column name="id" type="integer" autoincrement="true" />
@@ -278,6 +289,19 @@
         <!-- allow multiple addresses per account -->
         <column name="id" type="integer" unsigned="true" autoincrement="true"/>
         <column name="account_name" type="string" length="128" />
+        <column name="addressline1" type="string" length="128" />
+        <column name="addressline2" type="string" length="128" notnull="false" />
+        <column name="postalcode" type="string" length="32" />
+        <column name="city" type="string" length="32" />
+        <column name="country" type="string" length="32" />
+
+        <index name="primary" primary="true" columns="id" />
+    </table>
+    
+    <table name="invite">
+        <!-- allow multiple addresses per account -->
+        <column name="id" type="integer" unsigned="true" autoincrement="true"/>
+        <column name="user_name" type="string" length="128" />
         <column name="addressline1" type="string" length="128" />
         <column name="addressline2" type="string" length="128" notnull="false" />
         <column name="postalcode" type="string" length="32" />

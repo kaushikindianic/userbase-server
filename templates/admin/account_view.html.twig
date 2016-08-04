@@ -64,7 +64,14 @@
     {% endfor %}
 </ul>
 <form action="{{ path('admin_account_add_property', {'accountname': account.getName()})}}" method="post">
+    <select name="property_name" class="form-control" required style="width: 150px; display: inline;">
+        {% for property in properties %}
+        <option value="{{ property.name }}">{{ property.name }}</option>
+        {% endfor %}
+    </select>
+    {#
     <input type="text" required name="property_name" class="form-control" style="width: 150px; display: inline;" placeholder="Name" />
+    #}
     <input type="text" required name="property_value" class="form-control" style="width: 150px; display: inline;" placeholder="Value" />
 
     <button class="btn btn-primary">Add property</button>
