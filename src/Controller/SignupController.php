@@ -10,6 +10,7 @@ use Exception;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
 use UserBase\Server\Model\AccountTag;
+use RuntimeException;
 
 class SignupController
 {

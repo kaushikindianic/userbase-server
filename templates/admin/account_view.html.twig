@@ -55,6 +55,19 @@
     {% endif %}
     <a class="btn btn-primary" href="{{ path('admin_account_notification_index', {'accountName': account.getName()})}}"><i class="fa fa-bell-o"></i> Notification</a>
     <a class="btn btn-primary" href="{{ path('account_address_index', {'accountName': account.getName()})}}"><i class="fa fa-building-o"></i> Addresses</a>
+
+
+    <div class="dropdown" style="display: inline;">
+      <button class="btn btn-primary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+        <i class="fa fa-cog"></i> Tools
+        <span class="caret"></span>
+      </button>
+      <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+        <li><a href="{{ path('admin_account_view', {'accountname': account.getName()})}}?email=welcome">E-mail: welcome (with verification link)</a></li>
+        <li><a href="{{ path('admin_account_view', {'accountname': account.getName()})}}?email=verified">E-mail: verified (account ready)</a></li>
+      </ul>
+    </div>
+
 </div>
 
 {% if account.getAccountType() == 'organization' %}

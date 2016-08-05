@@ -454,7 +454,10 @@ class AccountAdminController
         $oEventRepo = $app->getEventRepository();
         $events = $oEventRepo->findByAccountName($accountname);
         
-        
+        if ($request->query->has('email')) {
+            $email = $request->query->get('email');
+            $app->sendMail($email, $accountname);
+        }
 
         return new Response(
             $app['twig']->render(
