@@ -25,10 +25,24 @@ class SiteController
         $account = $repo->getByName($accountname);
         $fileName = $accountname . '.png';
 
+        $size = 128;
+        if ($request->query->has('s')) {
+            $size = (int)$request->query->get('s');
+            if ($size>512) {
+                $size = 512;
+            }
+        }
 
         if (is_file('account_picture'.'/'.$fileName)) {
             //echo '/'.$app['picturePath'].'/'.$account->getPictureUrl();exit;
             header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");
+            header('Content-Type: image/png');
+            $data = file_get_contents('account_picture'.'/'.$fileName);
+            $im = imagecreatefromstring($data);
+            $im = imagescale($im, $size, $size, IMG_BILINEAR_FIXED);
+            imagepng($im);
+            exit();
+            
             return $app->redirect('/account_picture/'.$fileName);
         } else {
             if ($account) {
@@ -46,13 +60,6 @@ class SiteController
             */
             //$url = $account->getPictureUrl();
 
-            $size = 128;
-            if ($request->query->has('s')) {
-                $size = (int)$request->query->get('s');
-                if ($size>512) {
-                    $size = 512;
-                }
-            }
             $initialcon = new Initialcon();
             $img = $initialcon->getImageObject($initials, $accountname, $size);
             header("Expires: Sat, 26 Jul 2020 05:00:00 GMT");

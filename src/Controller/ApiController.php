@@ -265,6 +265,46 @@ class ApiController
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
+    
+    
+    public function setPictureAction(Application $app, Request $req, $accountName)
+    {
+        global $_FILES;
+        
+        $targetFilename = __DIR__ . '/../../web/account_picture/' . $accountName . '.png';
+        if (!isset($_FILES['file'])) {
+            $data = [
+                'status' => 'error',
+                'message' => 'no form element with name `file` uploaded'
+            ];
+            return $this->getJsonResponse($data);
+        }
+        
+        $data = file_get_contents($_FILES["file"]["tmp_name"]);
+        $im = imagecreatefromstring($data);
+        if (!$im) {
+            $data = [
+                'status' => 'error',
+                'message' => 'failed to interpret data as image'
+            ];
+            return $this->getJsonResponse($data);
+        }
+        if ((imagesx($im)!=512) || (imagesx($im)!=512)) {
+            $data = [
+                'status' => 'error',
+                'message' => 'uploaded image needs to be 512x512 pixels'
+            ];
+            return $this->getJsonResponse($data);
+        }
+        
+        imagepng($im, $targetFilename);
+        
+        
+        $data = [
+            'status' => 'ok',
+        ];
+        return $this->getJsonResponse($data);
+    }
 
     /**
     * user assing to account

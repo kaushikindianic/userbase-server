@@ -168,6 +168,10 @@ api_v1_account_property:
     path: /api/v1/accounts/{accountName}/setProperty/{propertyName}/{propertyValue}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::propertyAction }
 
+api_v1_account_picture:
+    path: /api/v1/accounts/{accountName}/setPicture
+    defaults:  { _controller: UserBase\Server\Controller\ApiController::setPictureAction }
+
 api_v1_account_add_tag:
     path: /api/v1/accounts/{accountName}/addTag/{tagName}
     defaults:  { _controller: UserBase\Server\Controller\ApiController::tagAddAction }
