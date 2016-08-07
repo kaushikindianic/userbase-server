@@ -41,6 +41,7 @@ use UserBase\Server\Repository\PdoAccountConnectionRepository;
 use UserBase\Server\Repository\PdoAccountNotificationRepository;
 use UserBase\Server\Repository\PdoMobileAliasRepository;
 use UserBase\Server\Repository\PdoAccountAddressRepository;
+use Ramsey\Uuid\Uuid;
 
 class Application extends SilexApplication
 {
@@ -92,7 +93,11 @@ class Application extends SilexApplication
         if (isset($this->config['userbase']['template_override'])) {
             $this['userbase.template_override'] = $this->config['userbase']['template_override'];
         }
-        $this['userbase.signup_tag'] = $this->config['userbase']['signup_tag'];
+        $this['userbase.signup_tag'] = isset($this->config['userbase']['signup_tag']) ? $this->config['userbase']['signup_tag'] : null;
+        $this['userbase.signup_properties'] = isset($this->config['userbase']['signup_properties']) ? $this->config['userbase']['signup_properties'] : null;
+        $this['userbase.signup_webhook'] = isset($this->config['userbase']['signup_webhook']) ? $this->config['userbase']['signup_webhook'] : null;
+        $this['userbase.verified_webhook'] = isset($this->config['userbase']['verified_webhook']) ? $this->config['userbase']['verified_webhook'] : null;
+        
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
         $this['userbase.enable_mobile'] = isset($this->config['userbase']['enable_mobile']) ?
@@ -387,6 +392,43 @@ class Application extends SilexApplication
     {
         return $this->accountAddressRepository;
     }
+    public function sendWebhook($url, $eventName, $username)
+    {
+        $userRepo = $this->getUserRepository();
+        $accountRepo = $this->getAccountRepository();
+        $user = $userRepo->getByName($username);
+        $account = $accountRepo->getByName($username);
+        $data = [];
+        $data['event'] = $eventName;
+        $data['event-id'] = Uuid::uuid4();
+        $data['datetime'] = date('Y-m-d H:i:s');
+
+        $data['account'] = [
+            'name' => $account->getName(),
+            'display_name' => $account->getDisplayName(),
+            'email' => $account->getEmail(),
+            'mobile' => $account->getMobile()
+        ];
+        
+        $verify = __DIR__ . '/../app/config/cacert.pem';
+        if (!file_exists($verify)) {
+            throw new RuntimeException('cacert.pem not found');
+        }
+        
+        $headers = [
+            'Content-Type' => 'application/json'
+        ];
+
+        $guzzle = new \GuzzleHttp\Client(
+            [
+                'headers' => $headers,
+                'verify' => $verify
+            ]
+        );
+        $response = $guzzle->request('POST', $url, ['json' => $data]);
+        
+    }
+
     public function sendMail($templateName, $username)
     {
         $userRepo = $this->getUserRepository();

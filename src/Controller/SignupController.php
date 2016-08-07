@@ -10,7 +10,9 @@ use Exception;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
 use UserBase\Server\Model\AccountTag;
+use UserBase\Server\Model\AccountProperty;
 use RuntimeException;
+use Ramsey\Uuid\Uuid;
 
 class SignupController
 {
@@ -148,6 +150,23 @@ class SignupController
                 $accountTagRepo->add($accountTag);
             }
         }
+        if ($app['userbase.signup_properties']) {
+            foreach ($app['userbase.signup_properties'] as $name => $value) {
+                if ($value=='{uuid}') {
+                    $value = $uuid4 = Uuid::uuid4();
+                }
+                $accountPropertyRepo = $app->getAccountPropertyRepository();
+                $accountProperty = new AccountProperty();
+                $accountProperty->setAccountName($user->getUsername());
+                $accountProperty->setName($name);
+                $accountProperty->setValue($value);
+                $accountPropertyRepo->add($accountProperty);
+            }
+        }
+        
+        if ($app['userbase.signup_webhook']) {
+            $app->sendWebhook($app['userbase.signup_webhook'], 'user.create', $user->getUsername());
+        }
 
         //--EVENT LOG --//
         $time = time();
@@ -197,6 +216,11 @@ class SignupController
         }
 
         $app->sendMail('verified', $account->getName());
+        if ($app['userbase.verified_webhook']) {
+            $app->sendWebhook($app['userbase.verified_webhook'], 'user.verified', $account->getName());
+        }
+
+        
 
         $data = array();
         return new Response($app['twig']->render(

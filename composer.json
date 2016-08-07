@@ -27,7 +27,7 @@
         "crodas/service-provider": "~0.1",
         "twig/twig": ">=1.8,<2.0-dev",
         "symfony/twig-bridge": "2.7.*",
-        "guzzlehttp/guzzle": "~4.2",
+        "guzzlehttp/guzzle": "~6.2",
         "monolog/monolog": "~1.6",
         "swiftmailer/swiftmailer": "~5.3",
         "html2text/html2text": "~2.0",
@@ -41,6 +41,7 @@
         "runmybusiness/initialcon": "~0.0",
         "xi/sms": "~0.3",
         "datatable/core" : "dev-master",
+        "ramsey/uuid": "~3.0",
         "linkorb/xuid": "~1.0"
     },
     "require-dev": {
