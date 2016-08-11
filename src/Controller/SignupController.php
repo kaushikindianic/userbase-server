@@ -25,6 +25,7 @@ class SignupController
         $data['last_mobile'] = $session->get('_signup.last_mobile');
         $data['last_username'] = $session->get('_signup.last_username');
         $data['last_displayname'] = $session->get('_signup.last_displayname');
+        $data['agree_text'] = $app['userbase.agree_text'];
         return new Response($app['twig']->render(
             '@PreAuth/signup/start.html.twig',
             $data
@@ -33,6 +34,12 @@ class SignupController
 
     public function signupSubmitAction(Application $app, Request $request)
     {
+        if ($app['userbase.agree_text']) {
+            $agreeCheckbox = $request->request->get('agree_checkbox');
+            if ($agreeCheckbox != 'Y') {
+                throw new RuntimeException("Missing agreement checkbox");
+            }
+        }
         $username = trim(strtolower($request->request->get('_username')));
         $email = $request->request->get('_email');
         $displayname = $request->request->get('_displayname');

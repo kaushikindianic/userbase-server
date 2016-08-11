@@ -89,6 +89,8 @@ class Application extends SilexApplication
             
         $this['userbase.login_url'] = isset($this->config['userbase']['login_url']) ?
             $this->config['userbase']['login_url'] : null;
+        $this['userbase.agree_text'] = isset($this->config['userbase']['agree_text']) ?
+            $this->config['userbase']['agree_text'] : null;
 
         if (isset($this->config['userbase']['template_override'])) {
             $this['userbase.template_override'] = $this->config['userbase']['template_override'];
