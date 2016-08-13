@@ -32,11 +32,19 @@ final class PdoUserRepository implements UserProviderInterface
 
     public function getByName($name)
     {
+        if (!$name) {
+            throw new RuntimeException('Missing argument: name');
+        }
         $statement = $this->pdo->prepare(
             "SELECT u.password, u.password_updated_at, u.last_seen_at, u.is_admin, a.*
             FROM user AS u
             JOIN account AS a ON a.name=u.name
-            WHERE (a.name=:name OR a.email=:email)
+            LEFT JOIN account_email AS ae ON ae.account_name = u.name
+            WHERE (
+                (a.name=:name) OR
+                (a.email=:email) OR
+                (ae.email=:email AND !isnull(ae.verified_at))
+            )
             LIMIT 1"
         );
 

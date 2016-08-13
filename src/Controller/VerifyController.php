@@ -85,6 +85,7 @@ class VerifyController
     public function verifyEmailLinkAction(Application $app, Request $request, $accountName, $stamp, $token)
     {
         $accountRepo = $app->getAccountRepository();
+        $accountEmailRepo = $app->getAccountEmailRepository();
 
         $account = $accountRepo->getByName($accountName);
 
@@ -114,6 +115,7 @@ class VerifyController
         }
 
         $accountRepo->setEmailVerifiedStamp($account, $stamp);
+        $accountEmailRepo->setVerifiedAt($accountName, $account->getEmail());
         return $app->redirect($app['url_generator']->generate('signup_thankyou', ['accountName'=> $accountName]));
     }
 }

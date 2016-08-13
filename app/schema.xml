@@ -25,7 +25,6 @@
 
         <index name="primary" primary="true" columns="name" />
     </table>
-    
 
     <table name="property">
         <column name="id" type="integer" autoincrement="true" />
@@ -296,6 +295,20 @@
         <column name="country" type="string" length="32" />
 
         <index name="primary" primary="true" columns="id" />
+    </table>
+    
+    
+    <table name="account_email">
+        <column name="id" type="integer" autoincrement="true" />
+        
+        <column name="account_name" type="string" length="128" />
+        <column name="email" type="string" length="128" />
+
+        <column name="created_at" type="integer" />
+        <column name="verified_at" type="integer" notnull="false" />
+
+        <index name="primary" primary="true" columns="id" />
+        <index name="unique_email" unique="true" columns="email" />
     </table>
     
     <table name="invite">

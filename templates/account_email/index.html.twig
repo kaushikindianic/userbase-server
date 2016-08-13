@@ -1,0 +1,58 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>@{{ accountName }}: Email addresses ({{ entities|length }})</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        {{ error }}
+    </div>
+{% endif %}
+
+    <div class="buttonbox">
+        <a href="{{ path('admin_account_view', { 'accountname' : accountName }) }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+
+        <a href="{{ path('account_email_add', { 'accountName' : accountName }) }}" class="btn btn-primary" role="button">
+            <i class="fa fa-plus"></i>
+            Email
+        </a>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Email</th>
+            <th>Action</th>
+        </tr>
+        {% for entity in entities %}
+        <tr>
+            <td>
+                <a href="{{ path('account_email_view', {'accountName': accountName, 'id': entity.id }) }}">
+                    {{ entity.email }}
+                </a>
+                {% if entity.verified_at > 0 %}
+                (verified)
+                {% else %}
+                (unverified)
+                {% endif %}
+            </td>
+                
+            <td>
+                {% if entity.verified_at > 0 %}
+                    <a href="{{path('account_email_unverify', { 'accountName' : accountName, 'id':  entity.id })}}"><i class="fa fa-thumbs-down"></i></a>
+                {% else %}
+                    <a href="{{path('account_email_verify', { 'accountName' : accountName, 'id':  entity.id })}}"><i class="fa fa-thumbs-up"></i></a>
+                {% endif %}
+                <a href="{{path('account_email_default', { 'accountName' : accountName, 'id':  entity.id })}}"><i class="fa fa-star"></i></a>
+                {#
+                <a href="{{path('account_email_edit', { 'accountName' : accountName, 'id':  entity.id })}}"><i class="glyphicon glyphicon-edit"></i></a>
+                #}
+                <a href="{{ path('account_email_delete', { 'accountName' : accountName, 'id':  entity.id }) }}" onclick="return confirm('Are you sure?');"><i class="fa fa-remove"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

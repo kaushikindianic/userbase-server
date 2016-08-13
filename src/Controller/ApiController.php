@@ -10,6 +10,7 @@ use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
 use UserBase\Server\Model\AccountTag;
+use UserBase\Server\Model\AccountEmail;
 use UserBase\Server\Model\AccountNotification;
 
 class ApiController
@@ -92,6 +93,7 @@ class ApiController
         $userRepo = $app->getUserRepository();
         $notificationRepo = $app->getAccountNotificationRepository();
         $accountTagRepo = $app->getAccountTagRepository();
+        $accountEmailRepo = $app->getAccountEmailRepository();
 
         $partition = strtolower($app['userbase.partition']);
         $data = array();
@@ -115,6 +117,16 @@ class ApiController
             $data['message'] = $account->getMessage();
             $data['expire_at'] = $account->getExpireAt();
             $data['approved_at'] = $account->getExpireAt();
+
+            // EMAILS
+            $data['emails'] = [];
+            $emails = $accountEmailRepo->findByAccountName($account->getName());
+            foreach ($emails as $email) {
+                $data['emails'][] = [
+                    'email' => $email['email'],
+                    'verified_at' => $email['verified_at'],
+                ];
+            }
 
             // TAGS
             $data['tags'] = [];
@@ -521,6 +533,68 @@ class ApiController
                 ];
             }
         }
+        return $this->getJsonResponse($data);
+    }
+    
+    
+    public function addEmailAction(Application $app, Request $request, $accountName, $email)
+    {
+        $accountEmailRepo = $app->getAccountEmailRepository();
+        $e = $accountEmailRepo->findByEmail($email);
+        if ($e) {
+            return $this->getErrorResponse(500, "Email address already registered");
+        }
+        $e = new AccountEmail();
+        $e->setAccountName($accountName);
+        $e->setEmail($email);
+        $accountEmailRepo->add($e);
+
+        $data = ['status' => 'ok'];
+        return $this->getJsonResponse($data);
+    }
+    
+    public function verifyEmailAction(Application $app, Request $request, $accountName, $email)
+    {
+        $accountEmailRepo = $app->getAccountEmailRepository();
+        $e = $accountEmailRepo->findByEmail($email);
+        if (!$e) {
+            return $this->getErrorResponse(404, "Unknown email address");
+        }
+        $ea = $e[0];
+        if ($ea['account_name']!=$accountName) {
+            return $this->getErrorResponse(403, "Email does not belong to this account");
+        }
+        
+        $e = new AccountEmail();
+        $e->setId($ea['id']);
+        $e->setAccountName($accountName);
+        $e->setEmail($email);
+        $e->setVerifiedAt(time());
+        $accountEmailRepo->update($e);
+
+        $data = ['status' => 'ok'];
+        return $this->getJsonResponse($data);
+    }
+    
+    public function defaultEmailAction(Application $app, Request $request, $accountName, $email)
+    {
+        $accountEmailRepo = $app->getAccountEmailRepository();
+        $accountRepo = $app->getAccountRepository();
+        $e = $accountEmailRepo->findByEmail($email);
+        if (!$e) {
+            return $this->getErrorResponse(404, "Unknown email address");
+        }
+        $ea = $e[0];
+        if ($ea['account_name']!=$accountName) {
+            return $this->getErrorResponse(403, "Email does not belong to this account");
+        }
+        
+        $account=$accountRepo->getByName($accountName);
+        $account->setEmail($ea['email']);
+        $account->setEmailVerifiedAt($ea['verified_at']);
+        $accountRepo->update($account);
+
+        $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
 }

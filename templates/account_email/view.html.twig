@@ -1,0 +1,16 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+    <h2>@{{ accountName }}: Address #{{ entity.id }}</h2>
+
+    <ul>
+        <li>Email: {{ entity.email }}</li>
+        <li>Verified at: {{ entity.verified_at }}</li>
+    </ul>
+
+    <a href="{{ path('account_email_index', { 'accountName': accountName }) }}" class="btn btn-default" role="button">
+        <i class="fa fa-arrow-left"></i>
+        Back
+    </a>
+
+{% endblock %}

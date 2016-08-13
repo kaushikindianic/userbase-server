@@ -10,6 +10,7 @@ use Exception;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
 use UserBase\Server\Model\AccountTag;
+use UserBase\Server\Model\AccountEmail;
 use UserBase\Server\Model\AccountProperty;
 use RuntimeException;
 use Ramsey\Uuid\Uuid;
@@ -93,11 +94,15 @@ class SignupController
 
         $userRepo = $app->getUserRepository();
         $accountRepo = $app->getAccountRepository();
+        $accountEmailRepo = $app->getAccountEmailRepository();
 
         if ($accountRepo->getByName($username)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=account_exists');
         }
         if ($accountRepo->getByEmail($email)) {
+            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=email_exists');
+        }
+        if ($accountEmailRepo->findByEmail($email)) {
             return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=email_exists');
         }
 
@@ -107,6 +112,12 @@ class SignupController
             }
         }
 
+        //--REGISTER THE EMAIL--//
+        $accountEmail = new AccountEmail();
+        $accountEmail->setAccountName($username);
+        $accountEmail->setEmail($email);
+        $accountEmailRepo->add($accountEmail);
+        
         //--CREATE PERSONAL ACCOUNT--//
         $account = new Account($username);
         $account

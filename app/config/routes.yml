@@ -200,6 +200,18 @@ api_v1_notification:
     path: /api/v1/accounts/{accountName}/notifications
     defaults: { _controller: UserBase\Server\Controller\ApiController::notificationAction }
 
+api_v1_account_add_email:
+    path: /api/v1/accounts/{accountName}/addEmail/{email}
+    defaults: { _controller: UserBase\Server\Controller\ApiController::addEmailAction }
+    
+api_v1_account_verify_email:
+    path: /api/v1/accounts/{accountName}/verifyEmail/{email}
+    defaults: { _controller: UserBase\Server\Controller\ApiController::verifyEmailAction }
+    
+api_v1_account_default_email:
+    path: /api/v1/accounts/{accountName}/defaultEmail/{email}
+    defaults: { _controller: UserBase\Server\Controller\ApiController::defaultEmailAction }
+
 admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
@@ -447,7 +459,7 @@ mobile_alias_delete:
     defaults: { _controller: UserBase\Server\Controller\MobileAliasController::deleteAction }
 
 
-# ACCOUNT CONTACT #
+# ACCOUNT ADDRESS #
 account_address_index:
     path: /admin/accounts/{accountName}/address
     defaults: { _controller: UserBase\Server\Controller\AccountAddressController::indexAction }
@@ -467,3 +479,43 @@ account_address_view:
 account_address_delete:
     path: /admin/accounts/{accountName}/address/{id}/delete
     defaults: { _controller: UserBase\Server\Controller\AccountAddressController::deleteAction }
+
+
+# ACCOUNT EMAIL #
+account_email_index:
+    path: /admin/accounts/{accountName}/email
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::indexAction }
+
+account_email_add:
+    path: /admin/accounts/{accountName}/email/add
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::addAction }
+
+account_email_edit:
+    path: /admin/accounts/{accountName}/email/{id}/edit
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::editAction }
+
+account_email_view:
+    path: /admin/accounts/{accountName}/email/{id}/view
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::viewAction }
+
+account_email_delete:
+    path: /admin/accounts/{accountName}/email/{id}/delete
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::deleteAction }
+
+account_email_default:
+    path: /admin/accounts/{accountName}/email/{id}/default
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::defaultAction }
+
+account_email_verify:
+    path: /admin/accounts/{accountName}/email/{id}/verify
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::verifyAction }
+    
+account_email_unverify:
+    path: /admin/accounts/{accountName}/email/{id}/unverify
+    defaults: { _controller: UserBase\Server\Controller\AccountEmailController::unverifyAction }
+
+# Fixes
+
+fix_emails:
+    path: /admin/fix/emails
+    defaults: { _controller: UserBase\Server\Controller\FixerController::emailsAction }

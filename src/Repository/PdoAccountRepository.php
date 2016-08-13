@@ -33,6 +33,15 @@ class PdoAccountRepository
         );
         $statement->execute(array('email' => $email));
         $row = $statement->fetch();
+        if (!$row) {
+            $statement = $this->pdo->prepare(
+                "SELECT a.* FROM account AS a
+                JOIN account_email AS ae ON ae.account_name = a.name
+                WHERE ae.email=:email AND (a.deleted_at IS NULL OR a.deleted_at=0) LIMIT 1"
+            );
+            $statement->execute(array('email' => $email));
+            $row = $statement->fetch();
+        }
 
         return $row ? $this->rowToAccount($row) : null;
     }
