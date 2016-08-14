@@ -14,8 +14,18 @@ class HeraldMailer implements MailerInterface
         $this->client = $client;
     }
     
-    public function sendTemplate($templateName, Account $account, array $data)
+    public function sendTemplate($templateName, $recipient, array $data)
     {
+        if (is_a($recipient, 'UserBase\Server\Model\Account')) {
+            $email = $account->getEmail();
+            $displayName = $account->getDisplayName();
+        }
+        
+        if (is_array($recipient)) {
+            $email = $recipient['email'];
+            $displayName = $recipient['display_name'];
+        }
+        
         if (!$this->client->templateExists($templateName)) {
             return;
         }
@@ -25,7 +35,7 @@ class HeraldMailer implements MailerInterface
         foreach ($data as $key => $value) {
             $message->setData($key, $value);
         }
-        $message->setToAddress($account->getEmail(), $account->getDisplayName());
+        $message->setToAddress($email, $displayName);
         $this->client->send($message);
     }
 }

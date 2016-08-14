@@ -6,5 +6,5 @@ use UserBase\Server\Model\Account;
 
 interface MailerInterface
 {
-    public function sendTemplate($templateName, Account $account, array $data);
+    public function sendTemplate($templateName, $recipient, array $data);
 }
