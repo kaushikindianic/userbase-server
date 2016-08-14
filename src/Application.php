@@ -42,6 +42,7 @@ use UserBase\Server\Repository\PdoAccountNotificationRepository;
 use UserBase\Server\Repository\PdoMobileAliasRepository;
 use UserBase\Server\Repository\PdoAccountAddressRepository;
 use UserBase\Server\Repository\PdoAccountEmailRepository;
+use UserBase\Server\Repository\PdoInviteRepository;
 use Ramsey\Uuid\Uuid;
 
 class Application extends SilexApplication
@@ -167,6 +168,7 @@ class Application extends SilexApplication
         $this->mobileAliasRepository = new PdoMobileAliasRepository($pdo);
         $this->accountAddressRepository = new PdoAccountAddressRepository($pdo);
         $this->accountEmailRepository = new PdoAccountEmailRepository($pdo);
+        $this->inviteRepository = new PdoInviteRepository($pdo);
 
         $mailer = Service::mailer();
 
@@ -403,6 +405,10 @@ class Application extends SilexApplication
         return $this->accountEmailRepository;
     }
 
+    public function getInviteRepository()
+    {
+        return $this->inviteRepository;
+    }
 
     public function sendWebhook($url, $eventName, $username)
     {

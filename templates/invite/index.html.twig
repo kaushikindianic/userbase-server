@@ -1,0 +1,43 @@
+{% extends "admin/layout.html.twig" %}
+
+{% block content %}
+<h2>Invites: {{ entities|length }}</h2>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        {{ error }}
+    </div>
+{% endif %}
+
+<div class="buttonbox">
+    <a href="{{ path('admin_invite_add') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-plus"></i>
+        Create invite
+    </a>
+</div>
+
+    <table class="table">
+        <tr>
+            <th>#id</th>
+            <th>Inviter</th>
+            <th>Display Name</th>
+            <th>Email</th>
+            <th>Account</th>
+            <th>Action</th>
+        </tr>
+        {% for entity in entities %}
+        <tr>
+            <td>{{ entity.id }}</td>
+            <td>{{ entity.inviter }}</td>
+            <td>{{ entity.display_name }}</td>
+            <td>{{ entity.email }}</td>
+            <td>{{ entity.account_name }}</td>
+            <td>
+                <a href="{{path('admin_invite_edit', { 'id': entity.id })}}"  title="Edit" ><i class="glyphicon glyphicon-edit"></i></a>
+                <a href="{{path('admin_invite_delete', { 'id': entity.id })}}" onclick="return confirm('Are you sure?');" title="Delete" ><i class="fa fa-remove"></i></a>
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+{% endblock %}

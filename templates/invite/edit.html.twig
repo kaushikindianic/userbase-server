@@ -1,0 +1,29 @@
+{% extends "admin/layout.html.twig" %}
+
+{% form_theme form 'bootstrap_3_layout.html.twig' %}
+{% block content %}
+<h1>{% if add %} Add {% else %} Edit {% endif %} invite</h1>
+
+{% if error != null %}
+    <div class="alert alert-danger" role="alert">
+        <i class="fa fa-exclamation-circle"></i>
+        error
+    </div>
+{% endif %}
+
+<form action="#" method="post" >
+    {{ form_widget(form) }}
+
+    <div class="buttonbox">
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-server"></i>
+            Save
+        </button>
+        <a href="{{ path('admin_invite_index') }}" class="btn btn-default" role="button">
+            <i class="fa fa-arrow-left"></i>
+            Back
+        </a>
+
+    </div>
+</form>
+{% endblock %}

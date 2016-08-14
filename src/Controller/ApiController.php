@@ -12,6 +12,7 @@ use UserBase\Server\Model\Account;
 use UserBase\Server\Model\AccountTag;
 use UserBase\Server\Model\AccountEmail;
 use UserBase\Server\Model\AccountNotification;
+use UserBase\Server\Model\Invite;
 
 class ApiController
 {
@@ -594,6 +595,34 @@ class ApiController
         $account->setEmailVerifiedAt($ea['verified_at']);
         $accountRepo->update($account);
 
+        $data = ['status' => 'ok'];
+        return $this->getJsonResponse($data);
+    }
+    
+    public function createInviteAction(Application $app, Request $request, $inviter, $displayName, $email)
+    {
+        $inviteRepo = $app->getInviteRepository();
+
+        $payload = null;
+        if ($request->query->has('payload')) {
+            $payload = base64_decode($request->query->get('payload'));
+        }
+        
+        $invite = new Invite();
+        $invite
+            ->setInviter($inviter)
+            ->setDisplayName($displayName)
+            ->setEmail($email)
+            ->setPayload($payload)
+        ;
+        $inviteRepo->add($invite);
+        
+        $data = array();
+        $data['displayName'] = $displayName;
+        $data['inviter'] = $inviter;
+
+        $app['mailer']->sendTemplate('invite', ['email'=>$email, 'display_name'=>$displayName], $data);
+        
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }

@@ -212,6 +212,13 @@ api_v1_account_default_email:
     path: /api/v1/accounts/{accountName}/defaultEmail/{email}
     defaults: { _controller: UserBase\Server\Controller\ApiController::defaultEmailAction }
 
+api_v1_invite:
+    path: /api/v1/invites/create/{inviter}/{displayName}/{email}
+    defaults: { _controller: UserBase\Server\Controller\ApiController::createInviteAction }
+
+
+# ADMIN MODULE
+
 admin_index:
     path: /admin
     defaults:  { _controller: UserBase\Server\Controller\AdminController::indexAction }
@@ -375,6 +382,25 @@ admin_blacklist_edit:
 admin_blacklist_delete:
     path: /admin/blacklist/delete/{id}
     defaults: { _controller: UserBase\Server\Controller\BlacklistController::deleteAction }
+
+# INVITES 
+
+admin_invite_index:
+    path: /admin/invites
+    defaults:  { _controller: UserBase\Server\Controller\InviteController::indexAction }
+
+admin_invite_add:
+    path: /admin/invites/add
+    defaults:  { _controller: UserBase\Server\Controller\InviteController::addAction }
+
+admin_invite_edit:
+    path: /admin/invites/{id}/edit
+    defaults:  { _controller: UserBase\Server\Controller\InviteController::editAction }
+    
+admin_invite_delete:
+    path: /admin/invites/{id}/delete
+    defaults:  { _controller: UserBase\Server\Controller\InviteController::deleteAction }
+    
 
 # ACCOUNT TAGS  #
 admin_tag_index:
