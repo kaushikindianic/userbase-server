@@ -17,8 +17,8 @@ class HeraldMailer implements MailerInterface
     public function sendTemplate($templateName, $recipient, array $data)
     {
         if (is_a($recipient, 'UserBase\Server\Model\Account')) {
-            $email = $account->getEmail();
-            $displayName = $account->getDisplayName();
+            $email = $recipient->getEmail();
+            $displayName = $recipient->getDisplayName();
         }
         
         if (is_array($recipient)) {
