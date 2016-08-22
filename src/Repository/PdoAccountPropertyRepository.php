@@ -14,6 +14,13 @@ class PdoAccountPropertyRepository
         $this->pdo = $pdo;
     }
 
+    public function findAll()
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM account_property ORDER BY account_name ASC');
+        $statement->execute();
+        return $statement->fetchAll();
+    }
+
     public function find($id)
     {
         $statement = $this->pdo->prepare("SELECT * FROM account_property WHERE id=:id");
@@ -91,5 +98,13 @@ class PdoAccountPropertyRepository
                 'value' => $property->getValue()
         ));
         return $row;
+    }
+
+    public function deleteByAccountNameAndName($accountName, $name)
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM account_property WHERE account_name = :account_name AND name = :name'
+        );
+        return $statement->execute(array(':account_name' => $accountName, ':name' => $name));
     }
 }
