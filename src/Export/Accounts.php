@@ -53,7 +53,7 @@ class Accounts
         $accountProperties = $this->app->getAccountPropertyRepository()->findAll();
         foreach ($accountProperties as $accountProperty) {
             if (isset($oAccounts[$accountProperty['account_name']])) {
-                $oAccounts[$accountProperty['account_name']]->addProperyName($accountProperty['name'], $accountProperty['value']);
+                $oAccounts[$accountProperty['account_name']]->setPropertyName($accountProperty['name'], $accountProperty['value']);
             }
         }
 
@@ -109,8 +109,8 @@ class Accounts
 
             foreach ($properties as $property) {
                 $propertyColumn = $row->getCellByColumnName('property.' . $property['name']);
-                if ($oAccount->hasProperyName($property['name'])) {
-                    $propertyColumn->setValue($oAccount->getProperyNameValue($property['name']));
+                if ($oAccount->hasPropertyName($property['name'])) {
+                    $propertyColumn->setValue($oAccount->getPropertyNameValue($property['name']));
                 } else {
                     $propertyColumn->setValue('');
                 }

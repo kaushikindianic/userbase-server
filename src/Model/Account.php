@@ -288,6 +288,7 @@ class Account
     public function addTagName($name)
     {
         $this->tagNames[$name] = $name;
+        return $this;
     }
 
     public function getTagNames()
@@ -300,22 +301,24 @@ class Account
         return isset($this->tagNames[$name]);
     }
 
-    public function addProperyName($name, $val)
+    public function setPropertyName($name, $val)
     {
         $this->propertyNames[$name] = $val;
+        
+        return $this;
     }
 
-    public function getProperyName()
+    public function getPropertyName()
     {
         return $this->propertyNames;
     }
 
-    public function hasProperyName($name)
+    public function hasPropertyName($name)
     {
         return isset($this->propertyNames[$name]);
     }
 
-    public function getProperyNameValue($name)
+    public function getPropertyNameValue($name)
     {
         return $this->propertyNames[$name];
     }

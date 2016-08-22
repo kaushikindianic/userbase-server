@@ -17,7 +17,7 @@ class PdoAccountPropertyRepository
     public function findAll()
     {
         $statement = $this->pdo->prepare('SELECT * FROM account_property ORDER BY account_name ASC');
-        $statement->execute(array());
+        $statement->execute();
         return $statement->fetchAll();
     }
 
