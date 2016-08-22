@@ -10,11 +10,11 @@ class Account
     private $pictureUrl;
     private $createdAt;
     private $deletedAt;
-    
+
     private $approvedAt;
     private $expireAt;
     private $message;
-    
+
     private $accountType;
     private $email;
     private $emailVerifiedAt;
@@ -24,6 +24,7 @@ class Account
     private $url;
     private $status;
     private $tagNames = [];
+    private $propertyNames = [];
 
     public function __construct($name)
     {
@@ -228,7 +229,7 @@ class Account
         if ($this->status=='') {
             $this->status = 'ACTIVE';
         }
-        
+
         if (($this->status == 'ACTIVE') && ($this->getExpireAt())) {
             if ($this->getExpireAt()<time()) {
                 $this->status = 'EXPIRED';
@@ -242,40 +243,40 @@ class Account
         $this->status = $status;
         return $this;
     }
-    
+
     public function getExpireAt()
     {
         return $this->expireAt;
     }
-    
+
     public function setExpireAt($expireAt)
     {
         $this->expireAt = $expireAt;
         return $this;
     }
-    
+
     public function getMessage()
     {
         return $this->message;
     }
-    
+
     public function setMessage($message)
     {
         $this->message = $message;
         return $this;
     }
-    
+
     public function getApprovedAt()
     {
         return $this->approvedAt;
     }
-    
+
     public function setApprovedAt($approvedAt)
     {
         $this->approvedAt = $approvedAt;
         return $this;
     }
-    
+
     public function isApproved()
     {
         if ($this->getApprovedAt()) {
@@ -283,19 +284,39 @@ class Account
         }
         return false;
     }
-    
+
     public function addTagName($name)
     {
         $this->tagNames[$name] = $name;
     }
-    
+
     public function getTagNames()
     {
         return $this->tagNames;
     }
-    
-    public function hasTagName($name) {
+
+    public function hasTagName($name)
+    {
         return isset($this->tagNames[$name]);
     }
-    
+
+    public function addProperyName($name, $val)
+    {
+        $this->propertyNames[$name] = $val;
+    }
+
+    public function getProperyName()
+    {
+        return $this->propertyNames;
+    }
+
+    public function hasProperyName($name)
+    {
+        return isset($this->propertyNames[$name]);
+    }
+
+    public function getProperyNameValue($name)
+    {
+        return $this->propertyNames[$name];
+    }
 }

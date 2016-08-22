@@ -19,8 +19,9 @@ class Accounts
     public function csvExport()
     {
         $oAccounts = $this->app->getAccountRepository()->getAll();
-
         $tags = $this->app->getTagRepository()->findAll();
+        $properties = $this->app->getPropertyRepository()->findAll();
+
         $table = new Table();
         $table->setName(basename('accounts.csv'));
         $nameColumn = $table->getColumnByName("name");
@@ -35,18 +36,26 @@ class Accounts
         $mobileColumn = $table->getColumnByName('mobile');
         $emailVerifiedAt = $table->getColumnByName('email_verified_at');
         $mobileVerfiedAt = $table->getColumnByName('mobile_verfied_at');
-        
+
         foreach ($tags as $tag) {
             $tagColumn = $table->getColumnByName('tag.' . $tag['name']);
         }
-        
         $accountTags = $this->app->getAccountTagRepository()->findAll();
         foreach ($accountTags as $accountTag) {
             if (isset($oAccounts[$accountTag['account_name']])) {
                 $oAccounts[$accountTag['account_name']]->addTagName($accountTag['tag_name']);
             }
         }
-
+        //-- Add properities --//
+        foreach ($properties as $property) {
+            $propertyColumn = $table->getColumnByName('property.' . $property['name']);
+        }
+        $accountProperties = $this->app->getAccountPropertyRepository()->findAll();
+        foreach ($accountProperties as $accountProperty) {
+            if (isset($oAccounts[$accountProperty['account_name']])) {
+                $oAccounts[$accountProperty['account_name']]->addProperyName($accountProperty['name'], $accountProperty['value']);
+            }
+        }
 
         $i = 0;
         foreach ($oAccounts as $oAccount) {
@@ -87,14 +96,23 @@ class Accounts
             $mobileVerfiedAt = $row->getCellByColumnName('mobile_verfied_at');
             $mobileVerfiedAt->setValue(($oAccount->getMobileVerifiedAt())?
             date('Y-m-d H:i:s', $oAccount->getMobileVerifiedAt()) : 0);
-            
-            
+
+
             foreach ($tags as $tag) {
                 $tagColumn = $row->getCellByColumnName('tag.' . $tag['name']);
                 if ($oAccount->hasTagName($tag['name'])) {
                     $tagColumn->setValue('Y');
                 } else {
                     $tagColumn->setValue('N');
+                }
+            }
+
+            foreach ($properties as $property) {
+                $propertyColumn = $row->getCellByColumnName('property.' . $property['name']);
+                if ($oAccount->hasProperyName($property['name'])) {
+                    $propertyColumn->setValue($oAccount->getProperyNameValue($property['name']));
+                } else {
+                    $propertyColumn->setValue('');
                 }
             }
             $i++;

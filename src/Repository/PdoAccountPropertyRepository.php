@@ -14,6 +14,13 @@ class PdoAccountPropertyRepository
         $this->pdo = $pdo;
     }
 
+    public function findAll()
+    {
+        $statement = $this->pdo->prepare('SELECT * FROM account_property ORDER BY account_name ASC');
+        $statement->execute(array());
+        return $statement->fetchAll();
+    }
+
     public function find($id)
     {
         $statement = $this->pdo->prepare("SELECT * FROM account_property WHERE id=:id");
