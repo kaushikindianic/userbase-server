@@ -41,11 +41,19 @@ class PdoAccountTagRepository
         ));
         return $row;
     }
-    
+
     public function deleteById($accountTagId)
     {
         $statement = $this->pdo->prepare('DELETE FROM account_tag WHERE id = :account_tag_id');
         return $statement->execute(array(':account_tag_id' => $accountTagId));
+    }
+
+    public function deleteByAccountNameAndTagId($accountName, $tagId)
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM account_tag  WHERE account_name = :account_name AND tag_id = :tag_id '
+        );
+        return $statement->execute(array(':account_name' => $accountName, ':tag_id' => $tagId));
     }
 
     public function findByAccountName($accountName)

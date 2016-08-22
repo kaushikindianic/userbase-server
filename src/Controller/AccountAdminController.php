@@ -14,6 +14,10 @@ use UserBase\Server\Model\Apikey;
 use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Export\Accounts;
 use RuntimeException;
+use DataTable\Core\Table;
+use DataTable\Core\Writer\Csv as CsvWriter;
+use DataTable\Core\Reader\Csv as CsvReader;
+use UserBase\Server\Model\AccountTag;
 
 class AccountAdminController
 {
@@ -24,7 +28,7 @@ class AccountAdminController
         $accountType = $request->get('accountType');
 
         $accounts = $app->getAccountRepository()->getAll(10, $search, $accountType);
-        
+
         // Enrich accounts with tagNames
         $accountTags = $app->getAccountTagRepository()->findAll();
         foreach ($accountTags as $accountTag) {
@@ -447,13 +451,13 @@ class AccountAdminController
 
         $oAccountConnectionRepo = $app->getAccountConnectionRepository();
         $totalAccountConnect = $oAccountConnectionRepo->totConnection($accountname);
-        
+
         $oPropertyRepo = $app->getPropertyRepository();
         $properties = $oPropertyRepo->findAll();
-        
+
         $oEventRepo = $app->getEventRepository();
         $events = $oEventRepo->findByAccountName($accountname);
-        
+
         if ($request->query->has('email')) {
             $email = $request->query->get('email');
             $app->sendMail($email, $accountname);
@@ -495,7 +499,7 @@ class AccountAdminController
         $username = 'apikey-' . $accountname . '-' . $this->generateRandomString(16);
         $email = '';
         $password = $this->generateRandomString(32);
-        
+
 
         //--CREATE PERSONAL ACCOUNT--//
         $keyAccount = new Account($username);
@@ -525,7 +529,7 @@ class AccountAdminController
 
         $repo->setPassword($user, $password);
 
-        
+
         $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'apikey');
         $accountRepo->addAccUser($accountname, $user->getUsername(), 'apikey');
 
@@ -676,5 +680,91 @@ class AccountAdminController
     {
         $export = new Accounts($app);
         return $export->csvExport();
+    }
+
+    public function accountImportAction(Application $app, Request $request)
+    {
+        $error = $request->get('error');
+        $accountPropertyRepository = $app->getAccountPropertyRepository();
+
+        // -- GENERATE FORM --//
+        $form = $app['form.factory']->createBuilder('form')
+            ->add('attachment', 'file', array(
+                'required' => true,
+                'read_only' => false,
+                'label' => false,
+                'trim' => true,
+                'error_bubbling' => true,
+                'multiple' => false,
+                'constraints' => array(
+                    new Assert\NotBlank(array('message' => 'upload csv file.'))
+                ),
+                'attr' => array(
+                    'id' => 'attachment',
+                    'placeholder' => 'upload csv file',
+                    //'class' => 'form-control',
+                    'autofocus' => '',
+                )
+            ))
+            ->getForm();
+
+        // -- HANDAL FORM SUBMIT --//
+        if ($request->isMethod('POST')) {
+            $form->handleRequest($request);
+            $formData = $form->getData();
+
+            if ($form->isValid()) {
+                $file = $form['attachment']->getData();
+                $table = new Table();
+                $table->setName($file->getPathname());
+
+                // Instantiate a Reader, in this case a .csv file reader
+                $reader = new CsvReader();
+                $reader->setSeperator(';');
+                $reader->loadFile($table, $file->getPathname());
+
+                $accountRepo = $app->getAccountRepository();
+                $oAccountTagRepo = $app->getAccountTagRepository();
+                $accountPropertyRep = $app->getAccountPropertyRepository();
+
+                $tags = $app->getTagRepository()->findAll();
+                $properties = $app->getPropertyRepository()->findAll();
+
+                foreach ($table->getRows() as $row) {
+                    $accountname = $row->getValueByColumnName('name');
+                    if ($oAccount = $accountRepo->getByName($accountname)) {
+                        //-- add/update/remove account tags --//
+                        foreach ($tags as $tag) {
+                            if (0 == strcasecmp('Y', trim($row->getValueByColumnName('tag.' . $tag['name'])))) {
+                                $oAccountTagModel = new AccountTag();
+                                $oAccountTagModel->setAccountName($accountname)->setTagId($tag['id']);
+                                $oAccountTagRepo->add($oAccountTagModel);
+                            } else {
+                                $oAccountTagRepo->deleteByAccountNameAndTagId($accountname, $tag['id']);
+                            }
+                        }
+                        //-- add/update/remove account property --//
+                        foreach ($properties as $property) {
+                            $value = trim($row->getValueByColumnName('property.' . $property['name']));
+                            if ($value) {
+                                $entity = new AccountProperty();
+                                $entity->setAccountName($accountname)
+                                        ->setName($property['name'])
+                                        ->setValue($value);
+                                $accountPropertyRep->insertOrUpdate($entity);
+                            } else {
+                                $accountPropertyRep->deleteByAccountNameAndName($accountname, $property['name']);
+                            }
+                        }
+                    }
+                }
+                return $app->redirect($app['url_generator']->generate('admin_account_list'));
+            }
+        }
+        return new response($app['twig']->render('admin/account_import.html.twig', array(
+            'form' => $form->createView(),
+            'form_url' => '#',
+            'error' => $error,
+        )));
     }
 }

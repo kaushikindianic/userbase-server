@@ -10,7 +10,11 @@
     </a>
     <a href="{{ path('admin_account_export') }}" class="btn btn-primary" role="button">
         <i class="fa fa-paper-plane-o"></i>
-        export account
+        Export account
+    </a>
+    <a href="{{ path('admin_account_import') }}" class="btn btn-primary" role="button">
+        <i class="fa fa-paper-plane-o fa-rotate-180"></i>
+        Import account
     </a>
 </div>
 
@@ -50,7 +54,7 @@
                     {{ account.getName() }}: {{ account.getDisplayName() }}
                 </a><br />
                 <span class="label label-default">{{ account.getAccountType() }}</span>
-                
+
                 {% if account.getStatus()=='ACTIVE' %}
                     <span class="label label-success">
                 {% endif %}
@@ -60,8 +64,8 @@
                 {% if account.getStatus()=='EXPIRED' %}
                     <span class="label label-danger">
                 {% endif %}
-                
-                {{account.getStatus()}}</span> 
+
+                {{account.getStatus()}}</span>
                 {% for tagName in account.getTagNames() %}
                 <span class="label label-primary">#{{ tagName }}</span>
                 {% endfor %}

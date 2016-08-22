@@ -203,11 +203,11 @@ api_v1_notification:
 api_v1_account_add_email:
     path: /api/v1/accounts/{accountName}/addEmail/{email}
     defaults: { _controller: UserBase\Server\Controller\ApiController::addEmailAction }
-    
+
 api_v1_account_verify_email:
     path: /api/v1/accounts/{accountName}/verifyEmail/{email}
     defaults: { _controller: UserBase\Server\Controller\ApiController::verifyEmailAction }
-    
+
 api_v1_account_default_email:
     path: /api/v1/accounts/{accountName}/defaultEmail/{email}
     defaults: { _controller: UserBase\Server\Controller\ApiController::defaultEmailAction }
@@ -273,6 +273,10 @@ admin_account_add:
 admin_account_export:
     path: /admin/accounts/export
     defaults: { _controller: UserBase\Server\Controller\AccountAdminController::accountExportAction }
+
+admin_account_import:
+    path: /admin/accounts/import
+    defaults: { _controller: UserBase\Server\Controller\AccountAdminController::accountImportAction }
 
 admin_account_list:
     path: /admin/accounts/{accountType}
@@ -383,7 +387,7 @@ admin_blacklist_delete:
     path: /admin/blacklist/delete/{id}
     defaults: { _controller: UserBase\Server\Controller\BlacklistController::deleteAction }
 
-# INVITES 
+# INVITES
 
 admin_invite_index:
     path: /admin/invites
@@ -396,11 +400,11 @@ admin_invite_add:
 admin_invite_edit:
     path: /admin/invites/{id}/edit
     defaults:  { _controller: UserBase\Server\Controller\InviteController::editAction }
-    
+
 admin_invite_delete:
     path: /admin/invites/{id}/delete
     defaults:  { _controller: UserBase\Server\Controller\InviteController::deleteAction }
-    
+
 
 # ACCOUNT TAGS  #
 admin_tag_index:
@@ -462,7 +466,7 @@ admin_account_notification_view:
 admin_account_notification_seen:
     path: /admin/accounts/{accountName}/notifications/{notificationXuid}/seen
     defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::seenAction }
-    
+
 admin_account_notification_unseen:
     path: /admin/accounts/{accountName}/notifications/{notificationXuid}/unseen
     defaults: { _controller: UserBase\Server\Controller\AccountNotificationController::unseenAction }
@@ -535,7 +539,7 @@ account_email_default:
 account_email_verify:
     path: /admin/accounts/{accountName}/email/{id}/verify
     defaults: { _controller: UserBase\Server\Controller\AccountEmailController::verifyAction }
-    
+
 account_email_unverify:
     path: /admin/accounts/{accountName}/email/{id}/unverify
     defaults: { _controller: UserBase\Server\Controller\AccountEmailController::unverifyAction }

@@ -99,4 +99,12 @@ class PdoAccountPropertyRepository
         ));
         return $row;
     }
+
+    public function deleteByAccountNameAndName($accountName, $name)
+    {
+        $statement = $this->pdo->prepare(
+            'DELETE FROM account_property WHERE account_name = :account_name AND name = :name'
+        );
+        return $statement->execute(array(':account_name' => $accountName, ':name' => $name));
+    }
 }
