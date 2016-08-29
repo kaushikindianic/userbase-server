@@ -21,7 +21,7 @@ class PdoAccountEmailRepository
         $statement->execute(array(':account_name' => $accountName));
         return $statement->fetchAll();
     }
-    
+
     public function findByEmail($email)
     {
         $sql = 'SELECT * FROM account_email WHERE email = :email ';
@@ -52,7 +52,7 @@ class PdoAccountEmailRepository
         ));
         return $row;
     }
-    
+
     public function update(AccountEmail $oModel)
     {
         $statement = $this->pdo->prepare('UPDATE account_email SET
@@ -66,8 +66,8 @@ class PdoAccountEmailRepository
             ':id' => $oModel->getId()
         ));
     }
-    
-    
+
+
     public function setVerifiedAt($accountName, $email)
     {
         $statement = $this->pdo->prepare(

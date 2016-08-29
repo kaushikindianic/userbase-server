@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "60d9ac4426f874b2312392b638b76c19",
+    "hash": "b9fe9a834b5f5a2f9a8933b488f82a08",
     "content-hash": "41c7eec0432e729d5e8b3c8478e76b63",
     "packages": [
         {
@@ -1028,16 +1028,16 @@
         },
         {
             "name": "messagebird/php-rest-api",
-            "version": "v1.5.0",
+            "version": "v1.5.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/messagebird/php-rest-api.git",
-                "reference": "5e2ec147b1ab2045577c0b7f95d07cd2ec75cecd"
+                "reference": "ae7d54faa7411f59a2826be502531524396d47d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/messagebird/php-rest-api/zipball/5e2ec147b1ab2045577c0b7f95d07cd2ec75cecd",
-                "reference": "5e2ec147b1ab2045577c0b7f95d07cd2ec75cecd",
+                "url": "https://api.github.com/repos/messagebird/php-rest-api/zipball/ae7d54faa7411f59a2826be502531524396d47d2",
+                "reference": "ae7d54faa7411f59a2826be502531524396d47d2",
                 "shasum": ""
             },
             "require": {
@@ -1065,7 +1065,7 @@
             ],
             "description": "MessageBird REST API client for PHP",
             "homepage": "https://github.com/messagebird/php-rest-api",
-            "time": "2016-08-19 10:45:11"
+            "time": "2016-08-24 15:10:42"
         },
         {
             "name": "monolog/monolog",
