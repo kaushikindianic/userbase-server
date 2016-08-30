@@ -60,7 +60,7 @@ final class PdoAppRepository
             $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
             $aVal[':search'] = "%".$search."%";
         }
-        $sql .= '  ORDER BY id DESC';
+        $sql .= '  ORDER BY name ASC';
 
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
@@ -70,6 +70,7 @@ final class PdoAppRepository
             $app = $this->rowToApp($row);
             $apps[] = $app;
         }
+
         return $apps;
     }
 

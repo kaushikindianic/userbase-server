@@ -14,7 +14,7 @@
 
 <form action="{{ path("signup_submit") }}" method="post">
     <div class="form-group form-group form-group">
-        
+
         <input name="_username"
             data-tooltip="{{ "signup.tooltip.username"|trans }}"
             data-tooltip-stickto="{{ stickTo }}"
@@ -23,7 +23,7 @@
             class="form-control"
             placeholder="{{ "common.label_username"|trans }}"
             required="required" />
-        <div id="chkUserExist" style="display: none;"></div> 
+        <div id="chkUserExist" style="display: none;"></div>
     </div>
 
     <div class="form-group form-group">
@@ -36,7 +36,7 @@
             type="text"
             required="required" />
     </div>
-    
+
     <div class="form-group form-group">
          <input name="_email"
             data-tooltip="{{ "signup.tooltip.email"|trans }}"
@@ -47,7 +47,7 @@
             type="email"
             required="required" />
     </div>
-    
+
     {% if enable_mobile %}
     <div class="form-group form-group">
          <input name="_mobile"
@@ -70,7 +70,7 @@
             type="password"
             required="required" />
     </div>
-    
+
     <div class="form-group form-group">
          <input name="_password2"
             data-tooltip="{{ "signup.tooltip.password2"|trans }}"
@@ -80,7 +80,7 @@
             type="password"
             required="required" />
     </div>
-    
+
     {% if agree_text %}
     <div class="form-group form-group checkbox">
         <label><input type="checkbox" name="agree_checkbox" value="Y" required /> {{ agree_text|raw }}</label>
@@ -99,8 +99,8 @@
 </form>
 
 <script type="text/javascript">
-    window.checkUser = {url: "{{ path('admin_user_check') }}" };
-    
-    
+    window.checkUser = {url: "{{ path('check_username') }}" };   //admin_user_check
+
+
 </script>
 {% endblock %}
