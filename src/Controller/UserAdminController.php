@@ -219,7 +219,7 @@ class UserAdminController
         ));
     }
 
-    public function chkUserNameAction(Application $app, Request $request)
+    public function checkUsernameAction(Application $app, Request $request)
     {
         if ($request->isXmlHttpRequest()) {
             $username =  $request->request->get('username');
