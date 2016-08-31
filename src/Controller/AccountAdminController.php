@@ -18,6 +18,7 @@ use DataTable\Core\Table;
 use DataTable\Core\Writer\Csv as CsvWriter;
 use DataTable\Core\Reader\Csv as CsvReader;
 use UserBase\Server\Model\AccountTag;
+use UserBase\Server\Model\AccountEmail;
 
 class AccountAdminController
 {
@@ -726,6 +727,8 @@ class AccountAdminController
                 $accountRepo = $app->getAccountRepository();
                 $oAccountTagRepo = $app->getAccountTagRepository();
                 $accountPropertyRep = $app->getAccountPropertyRepository();
+                $oEventRepo = $app->getEventRepository();
+                $oAccountEmailRepo = $app->getAccountEmailRepository();
 
                 $tags = $app->getTagRepository()->findAll();
                 $properties = $app->getPropertyRepository()->findAll();
@@ -733,6 +736,60 @@ class AccountAdminController
                 foreach ($table->getRows() as $row) {
                     $accountname = $row->getValueByColumnName('name');
                     if ($oAccount = $accountRepo->getByName($accountname)) {
+                        //-- update account details --//
+                        $oAccount->setDisplayName($row->getValueByColumnName('display_name'))
+                            ->setAbout($row->getValueByColumnName('about'))
+                    //      ->setCreatedAt(strtotime($row->getValueByColumnName('created_at')))
+                            ->setStatus($row->getValueByColumnName('status'))
+                            ->setUrl($row->getValueByColumnName('url'))
+                            ->setMobile($row->getValueByColumnName('mobile'))
+                            ;
+                        $accountRepo->update($oAccount);
+
+                        $accountRepo->setMobileVerifiedStamp(
+                            $oAccount,
+                            (($row->getValueByColumnName('mobile_verfied_at'))? strtotime($row->getValueByColumnName('mobile_verfied_at')) : 0)
+                        );
+
+                        //-- add email --//
+                        $oAccountEmailModel = new AccountEmail();
+
+                        if ($oAccountEmail = $oAccountEmailRepo->findByEmail($row->getValueByColumnName('email'))) {
+                            if ($oAccountEmail[0]['account_name'] == $accountname) {
+                                $oAccountEmailModel->setId($oAccountEmail[0]['id'])
+                                    ->setEmail($oAccountEmail[0]['email'])
+                                    ->setVerifiedAt((($row->getValueByColumnName('email_verified_at'))? strtotime($row->getValueByColumnName('email_verified_at')) : 0));
+                                $oAccountEmailRepo->update($oAccountEmailModel);
+                            }
+                            if ($oAccount->getEmail() == $row->getValueByColumnName('email')) {
+                                $accountRepo->setEmailVerifiedStamp(
+                                    $oAccount,
+                                    (($row->getValueByColumnName('email_verified_at'))? strtotime($row->getValueByColumnName('email_verified_at')) : 0)
+                                );
+                            }
+                        } else {
+                            $oAccountEmailModel
+                                ->setAccountName($accountname)
+                                ->setEmail($row->getValueByColumnName('email'))
+                                ->setVerifiedAt((($row->getValueByColumnName('email_verified_at'))? strtotime($row->getValueByColumnName('email_verified_at')) : 0));
+                            $oAccountEmailRepo->add($oAccountEmailModel);
+                        }
+
+                        //--EVENT LOG --//
+                        $time = time();
+                        $sEventData = json_encode(
+                            array('accountname' => $accountname, 'displayName' => $row->getValueByColumnName('display_name'), 'time' => $time)
+                        );
+                        $oEvent = new Event();
+                        $oEvent->setName($accountname);
+                        $oEvent->setEventName('account.update');
+                        $oEvent->setOccuredAt($time);
+                        $oEvent->setData($sEventData);
+                        $oEvent->setAdminName($request->getUser());
+
+                        $oEventRepo = $app->getEventRepository();
+                        $oEventRepo->add($oEvent);
+
                         //-- add/update/remove account tags --//
                         foreach ($tags as $tag) {
                             if (0 == strcasecmp('Y', trim($row->getValueByColumnName('tag.' . $tag['name'])))) {
@@ -743,6 +800,7 @@ class AccountAdminController
                                 $oAccountTagRepo->deleteByAccountNameAndTagId($accountname, $tag['id']);
                             }
                         }
+                        //-- add account email --//
                         //-- add/update/remove account property --//
                         foreach ($properties as $property) {
                             $value = trim($row->getValueByColumnName('property.' . $property['name']));

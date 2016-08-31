@@ -5,6 +5,7 @@ namespace UserBase\Server\Controller;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Service;
 use Exception;
 use UserBase\Server\Model\Event;
@@ -117,7 +118,7 @@ class SignupController
         $accountEmail->setAccountName($username);
         $accountEmail->setEmail($email);
         $accountEmailRepo->add($accountEmail);
-        
+
         //--CREATE PERSONAL ACCOUNT--//
         $account = new Account($username);
         $account
@@ -149,7 +150,7 @@ class SignupController
         $session->set('_signup.last_displayname', null);
 
         $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
-        
+
         // TAGS //
         if ($app['userbase.signup_tag']) {
             $tagRepo = $app->getTagRepository();
@@ -181,7 +182,7 @@ class SignupController
                 $accountPropertyRepo->add($accountProperty);
             }
         }
-        
+
         if ($app['userbase.signup_webhook']) {
             $app->sendWebhook($app['userbase.signup_webhook'], 'user.create', $user->getUsername());
         }
@@ -238,12 +239,35 @@ class SignupController
             $app->sendWebhook($app['userbase.verified_webhook'], 'user.verified', $account->getName());
         }
 
-        
+
 
         $data = array();
         return new Response($app['twig']->render(
             '@PreAuth/signup/thankyou.html.twig',
             $data
         ));
+    }
+
+
+    public function checkUsernameAction(Application $app, Request $request)
+    {
+        if ($request->isXmlHttpRequest()) {
+            $username =  $request->request->get('username');
+            $oUserRepo = $app->getUserRepository();
+
+            if ($oUserRepo->getByName($username)) {
+                return new JsonResponse(array(
+                        'success' => false,
+                        'html' => 'username already exist'
+                    ));
+            } else {
+                return new JsonResponse(array(
+                        'success' => true,
+                        'html' => null
+                    ));
+            }
+        } else {
+            return $app->redirect($app['url_generator']->generate('signup'));
+        }
     }
 }

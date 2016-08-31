@@ -21,6 +21,7 @@ class AppAdminController
         $data['usercount'] = count($apps);
         $data['apps'] = $apps;
         $data['searchText'] = $search;
+
         return new Response($app['twig']->render('admin/app_list.html.twig', $data));
     }
 

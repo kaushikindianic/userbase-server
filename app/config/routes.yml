@@ -40,6 +40,10 @@ signup_thankyou:
     path: /signup/thankyou/{accountName}
     defaults:  { _controller: UserBase\Server\Controller\SignupController::signupThankYouAction }
 
+check_username:
+    path: /check/username
+    defaults: { _controller: UserBase\Server\Controller\SignupController::checkUsernameAction }
+
 # ==== email validation ====
 verify_email:
     path: /verify/email/{accountName}
@@ -238,7 +242,7 @@ admin_user_add:
 
 admin_user_check:
     path: /admin/users/check
-    defaults: { _controller: UserBase\Server\Controller\UserAdminController::chkUserNameAction }
+    defaults: { _controller: UserBase\Server\Controller\UserAdminController::checkUsernameAction }
 
 admin_user_view:
     path: /admin/users/{username}
