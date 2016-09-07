@@ -128,6 +128,7 @@ class SignupController
             ->setAccountType('user')
             ->setEmail($email)
             ->setMobile($mobile)
+            ->setStatus('NEW')
         ;
 
         if (!$accountRepo->add($account)) {
@@ -234,9 +235,13 @@ class SignupController
             }
         }
 
-        $app->sendMail('verified', $account->getName());
-        if ($app['userbase.verified_webhook']) {
-            $app->sendWebhook($app['userbase.verified_webhook'], 'user.verified', $account->getName());
+        if ($account->getStatus()=='NEW') {
+            $app->sendMail('verified', $account->getName());
+            if ($app['userbase.verified_webhook']) {
+                $app->sendWebhook($app['userbase.verified_webhook'], 'user.verified', $account->getName());
+            }
+            $account->setStatus('ACTIVE');
+            $repo->update($account);
         }
 
 
