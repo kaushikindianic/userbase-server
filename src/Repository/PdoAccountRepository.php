@@ -25,6 +25,25 @@ class PdoAccountRepository
         
         return $row ? $this->rowToAccount($row) : null;
     }
+    
+    public function getByEmailAndMobile($email, $mobile)
+    {
+        $statement = $this->pdo->prepare(
+            "SELECT * FROM account
+            WHERE email=:email AND mobile=:mobile
+            AND (deleted_at IS NULL OR deleted_at=0)
+            LIMIT 1"
+        );
+        $statement->execute(
+            [
+                'email' => $email,
+                'mobile' => $mobile
+            ]
+        );
+        $row = $statement->fetch();
+        
+        return $row ? $this->rowToAccount($row) : null;
+    }
 
     public function getByEmail($email)
     {

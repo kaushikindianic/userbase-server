@@ -240,7 +240,12 @@ class ApiController
     {
         $this->baseUrl = $app['userbase.baseurl'];
         $accountRepo = $app->getAccountRepository();
-        $account = $accountRepo->getByName($accountName);
+        $part = explode(':', $accountName);
+        if (count($part)==2) {
+            $account = $accountRepo->getByEmailAndMobile($part[0], $part[1]);
+        } else {
+            $account = $accountRepo->getByName($accountName);
+        }
         if (!$account) {
             return $this->getErrorResponse(404, "Account not found");
         }
