@@ -630,7 +630,7 @@ class ApiController
 
         $payloadData = json_decode($payload, true);
         if ($payloadData && is_array($payloadData)) {
-            if (isset($payload['properties'])) {
+            if (isset($payloadData['properties'])) {
                 $data = array_merge($data, $payloadData['properties']);
             }
         }
