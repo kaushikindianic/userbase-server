@@ -630,7 +630,9 @@ class ApiController
 
         $payloadData = json_decode($payload, true);
         if ($payloadData && is_array($payloadData)) {
-            $data = array_merge($data, $payloadData);
+            if (isset($payload['properties']) {
+                $data = array_merge($data, $payloadData['properties']);
+            }
         }
 
         $app['mailer']->sendTemplate('invite', ['email' => $email, 'display_name' => $displayName], $data);
