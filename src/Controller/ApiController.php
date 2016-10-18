@@ -607,6 +607,8 @@ class ApiController
     public function createInviteAction(Application $app, Request $request, $inviter, $displayName, $email)
     {
         $inviteRepo = $app->getInviteRepository();
+        $email = strtolower($email);
+        $email = str_replace(':', '.', $email);
 
         $payload = null;
         if ($request->query->has('payload')) {
@@ -626,7 +628,12 @@ class ApiController
         $data['displayName'] = $displayName;
         $data['inviter'] = $inviter;
 
-        $app['mailer']->sendTemplate('invite', ['email'=>$email, 'display_name'=>$displayName], $data);
+        $payloadData = json_decode($payload, true);
+        if ($payloadData && is_array($payloadData)) {
+            $data = array_merge($data, $payloadData);
+        }
+
+        $app['mailer']->sendTemplate('invite', ['email' => $email, 'display_name' => $displayName], $data);
         
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
