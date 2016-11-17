@@ -144,7 +144,7 @@ class Account
 
     public function getInitials()
     {
-        $parts = explode(' ', $this->getDisplayName());
+        $parts = explode(' ', trim($this->getDisplayName()));
         if (count($parts)>1) {
             $initials = $parts[0][0];
             $initials .= $parts[count($parts)-1][0];
