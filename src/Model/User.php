@@ -41,22 +41,22 @@ final class User implements AdvancedUserInterface
     
     public function getCreatedAt()
     {
-        return $this->createdAt;
+        return $this->created_at;
     }
     
-    public function setCreatedAt($createdAt)
+    public function setCreatedAt($created_at)
     {
-        $this->createdAt = $createdAt;
+        $this->created_at = $created_at;
     }
     
     public function getDeletedAt()
     {
-        return $this->deletedAt;
+        return $this->deleted_at;
     }
     
-    public function setDeletedAt($deletedAt)
+    public function setDeletedAt($deleted_at)
     {
-        $this->deletedAt = $deletedAt;
+        $this->deleted_at = $deleted_at;
     }
     
     public function getPasswordUpdatedAt()
@@ -126,8 +126,8 @@ final class User implements AdvancedUserInterface
     
     public function getDisplayName()
     {
-        if ($this->displayName) {
-            return $this->displayName;
+        if ($this->display_name) {
+            return $this->display_name;
         }
         return $this->name;
     }
