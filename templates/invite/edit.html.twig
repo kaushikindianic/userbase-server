@@ -15,15 +15,22 @@
     {{ form_widget(form) }}
 
     <div class="buttonbox">
-        <button type="submit" class="btn btn-success">
-            <i class="fa fa-server"></i>
-            Save
-        </button>
         <a href="{{ path('admin_invite_index') }}" class="btn btn-default" role="button">
             <i class="fa fa-arrow-left"></i>
             Back
         </a>
-
+        {% if inviteId %}
+        <a href="{{path('admin_invite_delete', { 'id': inviteId })}}" 
+            class="btn btn-danger"
+            onclick="return confirm('Are you sure?');">
+            <i class="fa fa-remove"></i>
+            Delete
+        </a>
+        {% endif %}
+        <button type="submit" class="btn btn-success">
+            <i class="fa fa-server"></i>
+            Save
+        </button>
     </div>
 </form>
 {% endblock %}

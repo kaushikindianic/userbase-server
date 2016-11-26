@@ -8,11 +8,11 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Service;
 use Exception;
-use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Account;
 use UserBase\Server\Model\AccountTag;
 use UserBase\Server\Model\AccountEmail;
 use UserBase\Server\Model\AccountProperty;
+use UserBase\Server\Domain;
 use RuntimeException;
 use Ramsey\Uuid\Uuid;
 
@@ -48,8 +48,9 @@ class SignupController
                 throw new RuntimeException("Missing agreement checkbox");
             }
         }
+        
         $username = trim(strtolower($request->request->get('_username')));
-        $email = $request->request->get('_email');
+        $email = trim(strtolower($request->request->get('_email')));
         $displayname = $request->request->get('_displayname');
         $password = $request->request->get('_password');
         $password2 = $request->request->get('_password2');
@@ -59,7 +60,7 @@ class SignupController
         $session->set('_signup.last_displayname', $displayname);
         $session->set('_signup.last_email', $email);
 
-        //-- CHECK ACCOUNTNAME BLCKLIST--//
+        //-- CHECK ACCOUNTNAME AGAINST BLACKLIST--//
         $oBlacklistRepo = $app->getBlacklistRepository();
         foreach ($oBlacklistRepo->findAll() as $row) {
             $pattern = $row['account_name']; // this db field should probably be renamed
@@ -119,36 +120,39 @@ class SignupController
             }
         }
 
-        //--REGISTER THE EMAIL--//
-        $accountEmail = new AccountEmail();
-        $accountEmail->setAccountName($username);
-        $accountEmail->setEmail($email);
-        $accountEmailRepo->add($accountEmail);
+        $commandBus = $app['commandbus'];
 
-        //--CREATE PERSONAL ACCOUNT--//
-        $account = new Account($username);
-        $account
-            ->setDisplayName($displayname)
-            ->setAbout('')
-            ->setPictureUrl('')
-            ->setAccountType('user')
-            ->setEmail($email)
-            ->setMobile($mobile)
-            ->setStatus('NEW')
-        ;
-
-        if (!$accountRepo->add($account)) {
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=register_failed');
-        }
-
+        //--SIGNUP COMMAND--//
+        $command = new Domain\Account\SignupCommand(
+            $username,
+            $password,
+            $displayname,
+            $email,
+            $mobile
+        );
+        
         try {
-            $user = $userRepo->register($app, $username, $email);
-        } catch (Exception $e) {
-            return $app->redirect($app['url_generator']->generate('signup') . '?errorcode=register_failed');
+            $commandBus->handle($command);
+        } catch (Domain\Account\Exception\CreateException $e) {
+            return $app->redirect(
+                $app['url_generator']->generate('signup') . '?errorcode=signup_failed&detail=too_course_error'
+            );
         }
-        $user = $userRepo->getByName($username);
-
-        $userRepo->setPassword($user, $password);
+        
+        
+        $command = new Domain\Account\ChangeEmailCommand(
+            $username,
+            $email
+        );
+        try {
+            $commandBus->handle($command);
+        } catch (Exception $e) {
+            return $app->redirect(
+                $app['url_generator']->generate('signup') . '?errorcode=change_email_failed'
+            );
+        }
+        
+        // signup happened
 
         //--CLEAR SIGNUP SESSION DATA
         $session->set('_signup.last_username', null);
@@ -156,71 +160,10 @@ class SignupController
         $session->set('_signup.last_mobile', null);
         $session->set('_signup.last_displayname', null);
 
-        $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'user');
-
-        // TAGS //
-        if ($app['userbase.signup_tag']) {
-            $tagRepo = $app->getTagRepository();
-            $accountTagRepo = $app->getAccountTagRepository();
-
-            $tagNames = explode(",", $app['userbase.signup_tag']);
-            foreach ($tagNames as $tagName) {
-                $tagData = $tagRepo->getByName($tagName);
-                if (!$tagData) {
-                    throw new RuntimeException("No such tag! " . $tagName);
-                }
-                $tagId = $tagData['id'];
-                $accountTag = new AccountTag();
-                $accountTag->setTagId($tagId);
-                $accountTag->setAccountName($user->getUsername());
-                $accountTagRepo->add($accountTag);
-            }
-        }
-        if ($app['userbase.signup_properties']) {
-            foreach ($app['userbase.signup_properties'] as $name => $value) {
-                if ($value=='{uuid}') {
-                    $value = $uuid4 = Uuid::uuid4();
-                }
-                $accountPropertyRepo = $app->getAccountPropertyRepository();
-                $accountProperty = new AccountProperty();
-                $accountProperty->setAccountName($user->getUsername());
-                $accountProperty->setName($name);
-                $accountProperty->setValue($value);
-                $accountPropertyRepo->add($accountProperty);
-            }
-        }
-
-        if ($app['userbase.signup_webhook']) {
-            $app->sendWebhook($app['userbase.signup_webhook'], 'user.create', $user->getUsername());
-        }
-
-        //--EVENT LOG --//
-        $time = time();
-        $sEventData = json_encode(
-            array(
-                'username' => $user->getUsername(),
-                'email' => $user->getEmail(),
-                'time' => $time
-            )
-        );
-
-        $event = new Event();
-        $event->setName($user->getUsername());
-        $event->setEventName('user.create');
-        $event->setOccuredAt($time);
-        $event->setData($sEventData);
-        $event->setAdminName('');
-
-        $eventRepo = $app->getEventRepository();
-        $eventRepo->add($event);
-
-        $app->sendMail('welcome', $username);
-
-        //-- END EVENT LOG --//
         return $app->redirect(
             $app['url_generator']->generate(
                 'signup_thankyou',
-                ['accountName' => $user->getUsername()]
+                ['accountName' => $username]
             )
         );
     }
@@ -241,16 +184,22 @@ class SignupController
             }
         }
 
-        if ($account->getStatus()=='NEW') {
-            $app->sendMail('verified', $account->getName());
-            if ($app['userbase.verified_webhook']) {
-                $app->sendWebhook($app['userbase.verified_webhook'], 'user.verified', $account->getName());
+        $commandBus = $app['commandbus'];
+
+        //if ($account->getStatus()=='NEW') {
+            //--VERIFY COMMAND--//
+            $command = new Domain\Account\VerifyCommand(
+                $accountName
+            );
+
+            try {
+                $commandBus->handle($command);
+            } catch (\Exception $e) {
+                return $app->redirect(
+                    $app['url_generator']->generate('signup') . '?errorcode=verify_failed'
+                );
             }
-            $account->setStatus('ACTIVE');
-            $repo->update($account);
-        }
-
-
+        //}
 
         $data = array();
         return new Response($app['twig']->render(

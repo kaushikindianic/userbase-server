@@ -5,6 +5,7 @@ class Invite
 {
     private $id;
     private $inviter;
+    private $inviter_org;
     private $display_name;
     private $email;
     private $created_at;
@@ -32,6 +33,18 @@ class Invite
         $this->inviter = $inviter;
         return $this;
     }
+    
+    public function getInviterOrg()
+    {
+        return $this->inviter_org;
+    }
+    
+    public function setInviterOrg($inviter_org)
+    {
+        $this->inviter_org = $inviter_org;
+        return $this;
+    }
+    
     
     public function getDisplayName()
     {

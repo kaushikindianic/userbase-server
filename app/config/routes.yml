@@ -311,7 +311,7 @@ admin_account_add_property:
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::addPropertyAction }
 
 admin_account_delete_property:
-    path: /admin/accounts/{accountname}/deleteproperty/{propertyId}
+    path: /admin/accounts/{accountname}/deleteproperty/{propertyName}
     defaults:  { _controller: UserBase\Server\Controller\AccountAdminController::deletePropertyAction }
 
 admin_account_users:
@@ -553,3 +553,7 @@ account_email_unverify:
 fix_emails:
     path: /admin/fix/emails
     defaults: { _controller: UserBase\Server\Controller\FixerController::emailsAction }
+
+fix_invites:
+    path: /admin/fix/invites
+    defaults: { _controller: UserBase\Server\Controller\FixerController::invitesAction }

@@ -124,7 +124,7 @@
 <h3>Account Properties ({{ accountProperties|length }})</h3>
 <ul>
     {% for p in accountProperties %}
-    <li><b>{{ p.getName() }}</b>: {{ p.getValue() }} <a href="{{path('admin_account_delete_property', {'accountname': account.getName, 'propertyId': p.id })}}"><i class="fa fa-remove"></i></a></li>
+    <li><b>{{ p.getName() }}</b>: {{ p.getValue() }} <a href="{{path('admin_account_delete_property', {'accountname': account.getName, 'propertyName': p.getName() })}}"><i class="fa fa-remove"></i></a></li>
     {% endfor %}
 </ul>
 <form action="{{ path('admin_account_add_property', {'accountname': account.getName()})}}" method="post">

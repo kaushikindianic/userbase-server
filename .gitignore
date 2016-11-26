@@ -1,6 +1,7 @@
 vendor/*
 web/bower/*
 tmp/
+var/
 app/config/parameters.yml
 composer.phar
 /.settings

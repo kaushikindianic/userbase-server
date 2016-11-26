@@ -313,14 +313,15 @@
     
     <table name="invite">
         <column name="id" type="integer" unsigned="true" autoincrement="true"/>
-        <column name="inviter" type="string" length="64" />
+        <column name="inviter" type="string" length="64" doc="accountname of inviting user" notnull="false" />
+        <column name="inviter_org" type="string" length="64" doc="accountname of inviting user's organization" notnull="false" />
         
         <column name="display_name" type="string" length="128" />
         <column name="email" type="string" length="128" />
 
         <column name="created_at" type="integer" />
         <column name="payload" type="text" notnull="false" />
-        <column name="account_name" type="string" length="128" doc="account name that was eventually created. null while pending" notnull="false"/>
+        <column name="account_name" type="string" length="128" doc="account name that was eventually created. null while pending" notnull="false" />
 
         <index name="primary" primary="true" columns="id" />
     </table>

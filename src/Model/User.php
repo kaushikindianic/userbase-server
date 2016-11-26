@@ -6,19 +6,21 @@ use Symfony\Component\Security\Core\User\AdvancedUserInterface;
 
 final class User implements AdvancedUserInterface
 {
-    private $password;
-    private $enabled;
-    private $accountNonExpired;
-    private $credentialsNonExpired;
-    private $accountNonLocked;
-    private $roles;
-    //private $displayName;
+    protected $name;
+    protected $password;
+    protected $email;
+    protected $enabled;
+    protected $accountNonExpired;
+    protected $credentialsNonExpired;
+    protected $accountNonLocked;
+    protected $roles;
+    protected $display_name;
     
-    //private $createdAt;
-    private $passwordUpdatedAt;
-    private $lastSeenAt;
-    //private $deletedAt;
-    private $isAdmin = false;
+    protected $created_at;
+    protected $password_updated_at;
+    protected $last_seen_at;
+    protected $deleted_at;
+    protected $isAdmin = false;
     //private $alias;
 
     public function __construct($name)
@@ -59,23 +61,23 @@ final class User implements AdvancedUserInterface
     
     public function getPasswordUpdatedAt()
     {
-        return $this->passwordUpdatedAt;
+        return $this->password_updated_at;
     }
     
-    public function setPasswordUpdatedAt($passwordUpdatedAt)
+    public function setPasswordUpdatedAt($password_updated_at)
     {
-        $this->passwordUpdatedAt = $passwordUpdatedAt;
+        $this->password_updated_at = $password_updated_at;
     }
     
     public function getLastSeenAt()
     {
-        return $this->lastSeenAt;
+        return $this->last_seen_at;
     }
     
-    public function setLastSeenAt($lastSeenAt)
+    public function setLastSeenAt($last_seen_at)
     {
-        if ($this->lastSeenAt>0) {
-            $this->lastSeenAt = $lastSeenAt;
+        if ($this->last_seen_at>0) {
+            $this->last_seen_at = $last_seen_at;
         }
         return null;
     }

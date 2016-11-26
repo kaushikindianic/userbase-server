@@ -45,6 +45,13 @@ use UserBase\Server\Repository\PdoAccountEmailRepository;
 use UserBase\Server\Repository\PdoInviteRepository;
 use Ramsey\Uuid\Uuid;
 
+use League\Tactician\CommandBus;
+use League\Tactician\Handler\CommandHandlerMiddleware;
+use League\Tactician\Handler\Locator\InMemoryLocator;
+use League\Tactician\Handler\CommandNameExtractor\ClassNameExtractor;
+use League\Tactician\Handler\MethodNameInflector\HandleInflector;
+use League\Tactician\Handler\MethodNameInflector\HandleClassNameWithoutSuffixInflector;
+
 class Application extends SilexApplication
 {
     private $config;
@@ -71,11 +78,23 @@ class Application extends SilexApplication
         parent::__construct($values);
 
         $this->configureParameters();
+        $this->configureLogging();
         $this->configureService();
+        $this->configureCommandBus();
         $this->configureStrings();
         $this->configureRoutes();
         $this->configureTemplateEngine();
         $this->configureSecurity();
+    }
+    
+    protected $logPath;
+    
+    private function configureLogging()
+    {
+        $this->logPath = __DIR__ . '/../var/log';
+        if (!file_exists($this->logPath)) {
+            mkdir($this->logPath, 0777, true);
+        }
     }
 
     private function configureParameters()
@@ -102,6 +121,7 @@ class Application extends SilexApplication
         $this['userbase.signup_properties'] = isset($this->config['userbase']['signup_properties']) ? $this->config['userbase']['signup_properties'] : null;
         $this['userbase.signup_webhook'] = isset($this->config['userbase']['signup_webhook']) ? $this->config['userbase']['signup_webhook'] : null;
         $this['userbase.verified_webhook'] = isset($this->config['userbase']['verified_webhook']) ? $this->config['userbase']['verified_webhook'] : null;
+        $this['userbase.accepted_webhook'] = isset($this->config['userbase']['accepted_webhook']) ? $this->config['userbase']['accepted_webhook'] : null;
         
         $this['userbase.postfix'] = $this->config['userbase']['postfix'];
         $this['userbase.logourl'] = $this->config['userbase']['logourl'];
@@ -115,9 +135,69 @@ class Application extends SilexApplication
             $this['sms.sender'] = $this->config['sms']['sender'];
             $this['sms.apikey'] = $this->config['sms']['apikey'];
         }
+        
+        $this['parameters'] = $this->config;
     }
 
-
+    private function configureCommandBus()
+    {
+        $this->before(function (\Symfony\Component\HttpFoundation\Request $request, Application $app) {
+            $locator = new InMemoryLocator();
+            $handlerClassNames = [
+                \UserBase\Server\Domain\Account\CommandHandler::class,
+                \UserBase\Server\Domain\AccountProperty\CommandHandler::class
+            ];
+            
+            foreach ($handlerClassNames as $handlerClassName) {
+                $handler = new $handlerClassName($this); // TODO: use injector?
+                $commandClasses = $handler->subscribe();
+                foreach ($commandClasses as $commandClass) {
+                    $locator->addHandler(
+                        $handler,
+                        $commandClass
+                    );
+                }
+            }
+            
+            $handlerMiddleware = new CommandHandlerMiddleware(
+                new ClassNameExtractor(),
+                $locator,
+                new HandleClassNameWithoutSuffixInflector()
+            );
+            
+            $logger = new Logger('command');
+            $logger->pushProcessor(new \Monolog\Processor\WebProcessor());
+            $logger->pushProcessor(new \Monolog\Processor\GitProcessor());
+            $logger->pushHandler(new StreamHandler($this->logPath . '/command.log', Logger::INFO));
+            
+            $loggerMiddleware = new \UserBase\Server\Domain\LoggingCommandMiddleware($logger);
+            $commandBus = new CommandBus(
+                [
+                    $loggerMiddleware,
+                    $handlerMiddleware
+                ]
+            );
+            $this['commandbus'] = $commandBus;
+            
+            $subscriber = new \UserBase\Server\Event\MailEventSubscriber($this);
+            $this['dispatcher']->addSubscriber($subscriber);
+            $subscriber = new \UserBase\Server\Event\WebhookEventSubscriber($this);
+            $this['dispatcher']->addSubscriber($subscriber);
+            $subscriber = new \UserBase\Server\Event\HipChatEventSubscriber($this);
+            $this['dispatcher']->addSubscriber($subscriber);
+            $subscriber = new \UserBase\Server\Event\EventLogEventSubscriber($this);
+            $this['dispatcher']->addSubscriber($subscriber);
+            
+            $pdo = Service::pdo();
+            $subscriber = new \UserBase\Server\Projector\PdoUserProjector($pdo, 'user');
+            $this['dispatcher']->addSubscriber($subscriber);
+            $subscriber = new \UserBase\Server\Projector\PdoAccountProjector($pdo, 'account');
+            $this['dispatcher']->addSubscriber($subscriber);
+            $subscriber = new \UserBase\Server\Projector\PdoAccountPropertyProjector($pdo, 'account_property');
+            $this['dispatcher']->addSubscriber($subscriber);
+        });
+    }
+    
     private function configureService()
     {
         $this->register(
@@ -408,43 +488,6 @@ class Application extends SilexApplication
     public function getInviteRepository()
     {
         return $this->inviteRepository;
-    }
-
-    public function sendWebhook($url, $eventName, $username)
-    {
-        $userRepo = $this->getUserRepository();
-        $accountRepo = $this->getAccountRepository();
-        $user = $userRepo->getByName($username);
-        $account = $accountRepo->getByName($username);
-        $data = [];
-        $data['event'] = $eventName;
-        $data['event-id'] = Uuid::uuid4();
-        $data['datetime'] = date('Y-m-d H:i:s');
-
-        $data['account'] = [
-            'name' => $account->getName(),
-            'display_name' => $account->getDisplayName(),
-            'email' => $account->getEmail(),
-            'mobile' => $account->getMobile()
-        ];
-        
-        $verify = __DIR__ . '/../app/config/cacert.pem';
-        if (!file_exists($verify)) {
-            throw new RuntimeException('cacert.pem not found');
-        }
-        
-        $headers = [
-            'Content-Type' => 'application/json'
-        ];
-
-        $guzzle = new \GuzzleHttp\Client(
-            [
-                'headers' => $headers,
-                'verify' => $verify
-            ]
-        );
-        $response = $guzzle->request('POST', $url, ['json' => $data]);
-        
     }
 
     public function sendMail($templateName, $username)

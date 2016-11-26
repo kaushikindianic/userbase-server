@@ -31,4 +31,25 @@ class FixerController
         }
         exit();
     }
+    
+    public function invitesAction(Application $app, Request $request)
+    {
+        $inviteRepo = $app->getInviteRepository();
+        $userRepo = $app->getUserRepository();
+        $invites = $inviteRepo->findAll();
+        foreach ($invites as $invite) {
+            if (!$invite['account_name']) {
+                echo $invite['email'];
+                $user = $userRepo->getByName($invite['email']);
+                if ($user) {
+                    echo " @" . $user->getName();
+                    $inviteRepo->accept($invite['id'], $user->getName());
+                } else {
+                    echo " :(";
+                }
+                echo "<br />\n";
+            }
+        }
+        exit();
+    }
 }

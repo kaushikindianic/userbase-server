@@ -19,6 +19,7 @@ use DataTable\Core\Writer\Csv as CsvWriter;
 use DataTable\Core\Reader\Csv as CsvReader;
 use UserBase\Server\Model\AccountTag;
 use UserBase\Server\Model\AccountEmail;
+use UserBase\Server\Domain;
 
 class AccountAdminController
 {
@@ -660,20 +661,26 @@ class AccountAdminController
 
     public function addPropertyAction(Application $app, Request $request, $accountname)
     {
-        $accountPropertyRepository = $app->getAccountPropertyRepository();
-        $property = new AccountProperty();
-        $property->setAccountName($accountname);
-        $property->setName($request->request->get('property_name'));
-        $property->setValue($request->request->get('property_value'));
-        $accountPropertyRepository->add($property);
+        $command = new Domain\AccountProperty\SetCommand(
+            $accountname,
+            $request->request->get('property_name'),
+            $request->request->get('property_value')
+        );
+        $bus = $app['commandbus'];
+        $bus->handle($command);
+        
         return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
     }
 
-    public function deletePropertyAction(Application $app, Request $request, $accountname, $propertyId)
+    public function deletePropertyAction(Application $app, Request $request, $accountname, $propertyName)
     {
-        $accountPropertyRepository = $app->getAccountPropertyRepository();
-        $property = $accountPropertyRepository->find($propertyId);
-        $accountPropertyRepository->delete($property);
+        $command = new Domain\AccountProperty\UnsetCommand(
+            $accountname,
+            $propertyName
+        );
+        $bus = $app['commandbus'];
+        $bus->handle($command);
+        
         return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
     }
 

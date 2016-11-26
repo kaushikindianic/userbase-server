@@ -16,6 +16,7 @@ class InviteController
         $error = $request->query->get('error');
         $oInviteRepo = $app->getInviteRepository();
         $entities = $oInviteRepo->findAll();
+        $entities = array_reverse($entities);
 
         return new Response($app['twig']->render('invite/index.html.twig', array(
             'error' => $error,
@@ -47,19 +48,20 @@ class InviteController
         $oInviteRepo = $app->getInviteRepository();
         $add = ($id)? false : true;
         $defaults = array();
-
+        $inviteId = null;
         if ($id) {
             if (!$oInvite = $oInviteRepo->getById($id)) {
                 return $app->redirect($app['url_generator']->generate('admin_invite_index'));
             }
             $defaults = [
                 'inviter' => $oInvite['inviter'],
+                'inviter_org' => $oInvite['inviter_org'],
                 'display_name' => $oInvite['display_name'],
                 'email' => $oInvite['email'],
                 'payload' => $oInvite['payload'],
                 'account_name' => $oInvite['account_name']
             ];
-        } else {
+            $inviteId = $oInvite['id'];
         }
 
         // GENERATE FORM --//
@@ -73,6 +75,12 @@ class InviteController
                 'attr' => array(
                     'autofocus' => '',
                 )
+            ))
+            ->add('inviter_org', 'text', array(
+                'required' => false,
+                'label' => 'Inviter org',
+                'read_only' => false,
+                'trim' => true
             ))
             ->add('display_name', 'text', array(
                 'required' => true,
@@ -115,6 +123,7 @@ class InviteController
 
                 $oInviteModel
                     ->setInviter($formData['inviter'])
+                    ->setInviterOrg($formData['inviter_org'])
                     ->setDisplayName($formData['display_name'])
                     ->setEmail($formData['email'])
                     ->setPayload($formData['payload'])
@@ -135,6 +144,7 @@ class InviteController
         return new Response($app['twig']->render('invite/edit.html.twig', array(
             'form' => $form->createView(),
             'error' => $error,
+            'inviteId' => $inviteId,
             'add' => $add
         )));
     }

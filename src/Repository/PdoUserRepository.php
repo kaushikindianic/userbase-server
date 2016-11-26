@@ -9,6 +9,7 @@ use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;
 use Symfony\Component\Security\Core\Encoder\PasswordEncoderInterface;
 use Silex\Application;
 use UserBase\Server\Model\User;
+use Boost\Populator\ProtectedPopulator;
 use RuntimeException;
 use PDO;
 use DateTime;
@@ -49,7 +50,7 @@ final class PdoUserRepository implements UserProviderInterface
         );
 
         $statement->execute(array('name' => $name, 'email' => $name));
-        $row = $statement->fetch();
+        $row = $statement->fetch(PDO::FETCH_ASSOC);
         
         
         if (!$row) {
@@ -81,7 +82,7 @@ final class PdoUserRepository implements UserProviderInterface
         $statement->execute($aVal);
 
         $users = array();
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $user = $this->row2user($row);
             $users[] = $user;
         }
@@ -95,12 +96,19 @@ final class PdoUserRepository implements UserProviderInterface
             throw new RuntimeException("No user account: " . $row['user']);
         }
         $user = new User($row['name']);
+        $populator = new ProtectedPopulator();
+        $populator->populate($user, $row);
+        
+        /*
         $user->setEmail($row['email']);
         $user->setCreatedAt($row['created_at']);
         $user->setDeletedAt($row['deleted_at']);
         $user->setLastSeenAt($row['last_seen_at']);
         $user->setPassword($row['password']);
         $user->setDisplayName($row['display_name']);
+        print_r($row);exit();
+        */
+        
         $enabled = true;
         if (!$account->isEmailVerified()) {
             $enabled = false;
@@ -140,7 +148,7 @@ final class PdoUserRepository implements UserProviderInterface
 
         $userObj = $this->getByName($name);
 
-        $this->oauth->registerUser($app, $userObj);
+        //$this->oauth->registerUser($app, $userObj);
 
         return $userObj;
     }
@@ -215,7 +223,7 @@ final class PdoUserRepository implements UserProviderInterface
 
         $statement->execute();
         $users = array();
-        while ($row = $statement->fetch()) {
+        while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
             $user = $this->row2user($row);
             $users[] = $user;
         }

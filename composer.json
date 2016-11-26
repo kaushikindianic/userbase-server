@@ -42,7 +42,10 @@
         "xi/sms": "~0.3",
         "datatable/core" : "dev-master",
         "ramsey/uuid": "~3.0",
-        "linkorb/xuid": "~1.0"
+        "linkorb/xuid": "~1.0",
+        "linkorb/boost": "~1.0",
+        "league/tactician": "~1.0",
+        "hipchat/hipchat-php": ">=1.0.0"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",
