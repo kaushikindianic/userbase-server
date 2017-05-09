@@ -5,6 +5,7 @@
 ## Install dependencies
 
     composer install
+    bower install
 
 ## Initializing the database
 
