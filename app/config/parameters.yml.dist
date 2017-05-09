@@ -19,6 +19,8 @@ pdo:
 herald:
     username: my_herald_username
     password: my_herald_password
+    account: linkorb
+    library: linkorb
     baseurl: my_herald_baseurl
     transport: my_herald_transport
     prefix: "my_herald_prefix/"
