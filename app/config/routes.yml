@@ -322,6 +322,10 @@ admin_account_searchuser:
     path: /admin/accounts/{accountname}/searchuser
     defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountSearchUserAction }
 
+admin_account_user_update:
+    path: /admin/accounts/{accountname}/users/update
+    defaults: {_controller:  UserBase\Server\Controller\AccountAdminController::accountUserUpdateAction }
+
 # APPLICATION MODULE
 
 admin_apps_list:
