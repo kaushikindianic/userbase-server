@@ -53,11 +53,6 @@
         "linkorb/haigha": "~2.2",
         "linkorb/conventions-checker": "~1.1"
     },
-    "extra": {
-        "grumphp": {
-            "config-default-path": "vendor/linkorb/conventions-checker/config/app/grumphp.yml"
-        }
-    },
     "autoload": {
         "psr-4": {
             "UserBase\\Server\\": "src/"

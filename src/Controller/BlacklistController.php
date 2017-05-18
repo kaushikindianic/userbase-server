@@ -1,4 +1,5 @@
 <?php
+
 namespace UserBase\Server\Controller;
 
 use Silex\Application;
@@ -7,7 +8,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
 use UserBase\Server\Model\Blacklist;
-use Exception;
 
 class BlacklistController
 {
@@ -19,7 +19,7 @@ class BlacklistController
 
         return new Response($app['twig']->render('blacklist/index.html.twig', array(
             'error' => $error,
-            'entities' => $entities
+            'entities' => $entities,
         )));
     }
 
@@ -28,6 +28,7 @@ class BlacklistController
         $oBlacklistRepo = $app->getBlacklistRepository();
 
         $oBlacklistRepo->remove($id);
+
         return $app->redirect($app['url_generator']->generate('admin_blacklist_index', array()));
     }
 
@@ -45,7 +46,7 @@ class BlacklistController
     {
         $error = $request->query->get('error');
         $oBlacklistRepo = $app->getBlacklistRepository();
-        $add = ($id)? false : true;
+        $add = ($id) ? false : true;
         $defaults = array();
 
         if ($id) {
@@ -53,7 +54,7 @@ class BlacklistController
                 return $app->redirect($app['url_generator']->generate('admin_blacklist_index'));
             }
             $defaults = ['account_name' => $oBlacklist['account_name'],
-                        'description' => $oBlacklist['description']
+                        'description' => $oBlacklist['description'],
                     ];
         } else {
         }
@@ -65,10 +66,10 @@ class BlacklistController
                 'label' => 'name',
                 'read_only' => false,
                 'trim' => true,
-                'constraints' =>  new Assert\NotBlank(array('message' => 'Name value should not be blank.')),
+                'constraints' => new Assert\NotBlank(array('message' => 'Name value should not be blank.')),
                 'attr' => array(
                     'autofocus' => '',
-                )
+                ),
             ))
             ->add('description', 'textarea', array('required' => false, 'label' => 'Description'))
             ->getForm();
@@ -102,7 +103,7 @@ class BlacklistController
         return new Response($app['twig']->render('blacklist/edit.html.twig', array(
             'form' => $form->createView(),
             'error' => $error,
-            'add' => $add
+            'add' => $add,
         )));
     }
 }
