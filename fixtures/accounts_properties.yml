@@ -1,0 +1,19 @@
+parameters:
+    account_name:  <randomElement(array ('charlie', 'bob', 'alice', 'david','eve', 'acme'))>
+
+table.account_property:
+    random_account_property_birth{1..2}:
+        account_name : '<{account_name}>'
+        name: birthdate
+    #   value: <identity(($name == 'birthdate')? date('Y-m-d', time() - mt_rand(1162050000, 1262065681) ): (($name == 'gender')? 'Male' : $this->fake('hexcolor')) )>
+        value: <date($format = 'Y-m-d', $max = '1990-01-01')>
+
+    random_account_property_gender{1..2}:
+        account_name (unique): '<{account_name}>'
+        name: gender
+        value: <randomElement(array ('Male', 'Female'))>
+
+    random_account_property_color{1..4}:
+        account_name (unique) : '<{account_name}>'
+        name: favorite_color
+        value: <hexcolor()>

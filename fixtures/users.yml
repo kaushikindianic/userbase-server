@@ -1,0 +1,7 @@
+table.user:
+    random_user{1..5}:
+        name (unique) : <randomElement(array ('charlie', 'bob', 'alice', 'david','eve'))>
+        password: <identity($name)>s3cr3t
+        password_updated_at: <dateTimeBetween($startDate =  '-5 days', $endDate = 'now', $timezone = date_default_timezone_get())>
+        last_seen_at: 0
+        is_admin: <identity(($name == 'alice' ||  $name == 'bob')? 1 : 0 )>

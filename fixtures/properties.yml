@@ -1,0 +1,4 @@
+table.property:
+    random_property{1..3}:
+        name (unique): <randomElement(array ('gender', 'birthdate', 'favorite_color'))>
+        description: <identity($name)>::- <paragraph(2)>

@@ -1,0 +1,5 @@
+table.account_user:
+    random_account_user{1..4}:
+        account_name: acme
+        user_name (unique): <randomElement(array ('charlie', 'bob', 'alice', 'david'))>
+        is_owner: <identity(($user_name == 'alice' ||  $user_name == 'bob')? 1 : 0 )>

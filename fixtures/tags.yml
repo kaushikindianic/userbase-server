@@ -1,0 +1,16 @@
+table.tag:
+    random_tag_admin:
+        id: 1
+        name: 'admin'
+        description: <identity($name)>:- <paragraph(2)>
+
+    random_tag_employee:
+        id: 2
+        name: 'employee'
+        description: <identity($name)>:- <paragraph(2)>
+
+
+    random_tag_customer:
+        id: 3
+        name: 'customer'
+        description: <identity($name)>:- <paragraph(2)>

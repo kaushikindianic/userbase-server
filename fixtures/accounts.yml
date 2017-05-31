@@ -1,0 +1,18 @@
+table.account:
+    random_account{1..6}:
+        name (unique) : <randomElement(array ('charlie', 'bob', 'alice', 'david','eve', 'acme'))>
+        display_name: <identity($name)>
+        about: <paragraph(2)>
+        account_type: <identity(($name == 'acme')? 'organization' : 'user' )>
+        created_at: <dateTimeBetween($startDate =  '-90 days', $endDate = 'now', $timezone = date_default_timezone_get())>
+        deleted_at: null
+        email: <identity($name)>@mailinator.com
+        url: <url()>
+        email_verified_at:  <dateTimeBetween($startDate =  $created_at, $endDate = '+ 1 hours', $timezone = date_default_timezone_get())>
+        mobile: <nl_NL:phoneNumber()>
+        mobile_verified_at: <dateTimeBetween($startDate =  $created_at, $endDate = '+ 2 hours', $timezone = date_default_timezone_get())>
+        mobile_code: null
+        status: ACTIVE
+        approved_at: <dateTimeBetween($startDate =  $created_at, $endDate = '+ 12 hours', $timezone = date_default_timezone_get())>
+        expire_at: null
+        message: null
