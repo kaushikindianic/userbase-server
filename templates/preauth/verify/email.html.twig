@@ -6,6 +6,13 @@
 <div class="alert alert-success">{{ "verify_email.resent"|trans }}</div>
 {% endif %}
 
+{% if error_string is defined  and error_string != '' %}
+    <div class="alert alert-danger" role="alert">
+      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+      <span class="sr-only"></span>  {{error_string }}
+    </div>
+{% endif %}
+
 <h1>{{ "verify_email.header"|trans }}</h1>
 <p>{{ "verify_email.description"|trans }}</p>
 
