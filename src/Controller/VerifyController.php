@@ -27,6 +27,7 @@ class VerifyController
             $data['resent'] = true;
         }
         $data['accountName'] = $accountName;
+        $data['account'] = $account;
 
         return new Response($app['twig']->render(
             '@PreAuth/verify/email.html.twig',

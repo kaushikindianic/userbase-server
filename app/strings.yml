@@ -71,6 +71,7 @@ verify_email.resend: Resend
 error.E05: Link expired/early, and allows to send a new verification link?
 error.E04: Link expred, regenerate new
 error.E03: account not found.
+verify_email.email_incorrect_tip: Is this not the correct email address? Please contact us to correct this for you
 
 
 verify_mobile.header: Mobile verification required

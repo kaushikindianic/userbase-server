@@ -2,24 +2,25 @@
 
 {% block content %}
 
-{% if resent is defined %}
-<div class="alert alert-success">{{ "verify_email.resent"|trans }}</div>
-{% endif %}
+    {% if error_string is defined  and error_string != '' %}
+        <div class="alert alert-danger" role="alert">
+          <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+          <span class="sr-only"></span>  {{error_string }}
+        </div>
+    {% endif %}
 
-{% if error_string is defined  and error_string != '' %}
-    <div class="alert alert-danger" role="alert">
-      <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
-      <span class="sr-only"></span>  {{error_string }}
-    </div>
-{% endif %}
+    {% if resent is defined %}
+        <div class="alert alert-success">{{ "verify_email.resent"|trans }}</div>
+    {% endif %}
 
-<h1>{{ "verify_email.header"|trans }}</h1>
-<p>{{ "verify_email.description"|trans }}</p>
+    <h1>{{ "verify_email.header"|trans }}</h1>
+    <p>{{ "verify_email.description"|trans }}</p>
 
+    <b>{{ account.email }}</b>
+    <i>{{ "verify_email.email_incorrect_tip"|trans }}</i>
 
+    <a class="btn btn-success" href="{{path('verify_email', {'accountName': accountName })}}?resend">{{ "verify_email.resend"|trans }}</a><br />
 
-<a class="btn btn-success" href="{{path('verify_email', {'accountName': accountName })}}?resend">{{ "verify_email.resend"|trans }}</a><br />
-
-{{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+    {{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
 
 {% endblock %}
