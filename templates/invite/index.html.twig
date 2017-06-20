@@ -34,7 +34,7 @@
                 </a>
             </td>
             <td>{{ entity.created_at|date }}</td>
-            <td><b>{{ entity.inviter_org }}</b> {{ entity.inviter }}</td>
+            <td><b>{% if not entity.inviter_org %}???{% else %}{{ entity.inviter_org }}{%endif%}</b><br />{{ entity.inviter }}</td>
             <td>{{ entity.display_name }}</td>
             <td>{{ entity.email }}</td>
             <td>{{ entity.account_name }}</td>

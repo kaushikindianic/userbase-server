@@ -623,10 +623,19 @@ class ApiController
             ->setPayload($payload)
         ;
         $inviteRepo->add($invite);
+
+        $inviterOrg = null;
+        if ($payload)  {
+            $payloadData = json_decode($payload, true);
+            if (isset($payloadData['properties']['inviter_org'])) {
+                $inviterOrg = $payloadData['properties']['inviter_org'];
+            }
+        }
         
         $data = array();
         $data['displayName'] = $displayName;
         $data['inviter'] = $inviter;
+        $data['inviter_org'] = $inviterOrg;
 
         $payloadData = json_decode($payload, true);
         if ($payloadData && is_array($payloadData)) {

@@ -52,4 +52,23 @@ class FixerController
         }
         exit();
     }
+
+    public function inviterOrgAction(Application $app, Request $request)
+    {
+        $inviteRepo = $app->getInviteRepository();
+        $invites = $inviteRepo->findAll();
+        foreach ($invites as $invite) {
+            if (!$invite['inviter_org']) {
+                $json = $invite['payload'];
+                $data = json_decode($json, true);
+                //print_r($data);
+                if (isset($data['properties']['organization_id'])) {
+                    $invite['inviter_org'] = $data['properties']['organization_id'];
+                    $inviteRepo->updateFromArray($invite);
+                }
+            }
+        }
+        exit('Done');
+    }
+
 }

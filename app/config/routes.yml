@@ -557,3 +557,7 @@ fix_emails:
 fix_invites:
     path: /admin/fix/invites
     defaults: { _controller: UserBase\Server\Controller\FixerController::invitesAction }
+
+fix_inviter_org:
+    path: /admin/fix/inviter_org
+    defaults: { _controller: UserBase\Server\Controller\FixerController::inviterOrgAction }

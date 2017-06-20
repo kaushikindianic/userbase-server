@@ -17,12 +17,13 @@ class PdoInviteRepository
     public function add(Invite $oInviteModel)
     {
         $sql = 'INSERT IGNORE INTO
-            invite(created_at, inviter, display_name, email, payload, account_name)
-            VALUES (:created_at, :inviter, :display_name, :email, :payload, :account_name)';
+            invite(created_at, inviter, inviter_org, display_name, email, payload, account_name)
+            VALUES (:created_at, :inviter, :inviter_org, :display_name, :email, :payload, :account_name)';
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
             'created_at' => time(),
             'inviter' => $oInviteModel->getInviter(),
+            'inviter_org' => $oInviteModel->getInviterOrg(),
             'display_name' => $oInviteModel->getDisplayName(),
             'email' => $oInviteModel->getEmail(),
             'payload' => $oInviteModel->getPayload(),
@@ -91,5 +92,27 @@ class PdoInviteRepository
     {
         $statement = $this->pdo->prepare('DELETE FROM invite WHERE id =:id');
         return $statement->execute(array('id' => (int) $id ));
+    }
+
+    public function updateFromArray($data)
+    {
+        $statement = $this->pdo->prepare('UPDATE invite SET
+            inviter =:inviter,
+            inviter_org =:inviter_org,
+            display_name=:display_name,
+            email=:email,
+            payload=:payload,
+            account_name=:account_name
+            WHERE id =:id');
+
+        return $statement->execute(array(
+            ':inviter' => $data['inviter'],
+            ':inviter_org' => $data['inviter_org'],
+            ':display_name' => $data['display_name'],
+            ':email' => $data['email'],
+            ':payload' => $data['payload'],
+            ':account_name' => $data['account_name'],
+            ':id' => $data['id']
+        ));
     }
 }
