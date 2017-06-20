@@ -11,6 +11,8 @@ class Invite
     private $created_at;
     private $payload;
     private $account_name;
+    private $status;
+    private $last_stamp;
 
     public function setId($id)
     {
@@ -99,5 +101,28 @@ class Invite
     public function getAccountName()
     {
         return $this->account_name;
+    }
+
+
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
+    }
+
+    public function getLastStamp()
+    {
+        return $this->lastStamp;
+    }
+
+    public function setLastStamp($lastStamp)
+    {
+        $this->lastStamp = $lastStamp;
+        return $this;
     }
 }

@@ -34,42 +34,62 @@ class FixerController
 
     public function invitesAction(Application $app, Request $request)
     {
+        // Update 'account_name' for accepted invites
         $inviteRepo = $app->getInviteRepository();
         $userRepo = $app->getUserRepository();
         $invites = $inviteRepo->findAll();
-        foreach ($invites as $invite) {
-            if (!$invite['account_name']) {
-                echo $invite['email'];
-                $user = $userRepo->getByName($invite['email']);
-                if ($user) {
-                    echo " @" . $user->getName();
-                    $inviteRepo->accept($invite['id'], $user->getName());
-                } else {
-                    echo " :(";
-                }
-                echo "<br />\n";
-            }
-        }
-        exit();
-    }
+        $lastEmail = null;
 
-    public function inviterOrgAction(Application $app, Request $request)
-    {
-        $inviteRepo = $app->getInviteRepository();
+        foreach ($invites as $invite) {
+            $email = $invite['email'];
+            echo $email;
+
+            if ($lastEmail==$email) {
+                echo "- Deleting double for $email\n";
+                $inviteRepo->registerAttempt($email, $invite['created_at']); // register it as an attempt
+                $inviteRepo->remove($invite['id']);
+            } else {
+                if (!$invite['attempts']) {
+                    // register first attempt
+                    $inviteRepo->registerAttempt($email, $invite['created_at']);
+                }
+
+                if (!$invite['account_name']) {
+                    $user = $userRepo->getByName($email);
+                    if ($user) {
+                        echo " linking to @" . $user->getName();
+                        $inviteRepo->accept($invite['id'], $user->getName());
+                    } else {
+                        echo " not linkable :(";
+                    }
+                    echo "<br />\n";
+                }
+            }
+            $lastEmail = $invite['email'];
+        }
+
+        $i = 0;
         $invites = $inviteRepo->findAll();
+        // update inviter_org when missing (resolve from payload)
         foreach ($invites as $invite) {
             if (!$invite['inviter_org']) {
+                echo "Resolving inviter_org for " . $invite['email'] . "\n";
                 $json = $invite['payload'];
                 $data = json_decode($json, true);
                 //print_r($data);
                 if (isset($data['properties']['organization_id'])) {
                     $invite['inviter_org'] = $data['properties']['organization_id'];
-                    $inviteRepo->updateFromArray($invite);
                 }
             }
+            if (!$invite['status']) {
+                if ($invite['account_name']!='') {
+                    $invite['status'] = 'ACCEPTED';
+                } else {
+                    $invite['status'] = 'NEW';
+                }
+            }
+            $inviteRepo->updateFromArray($invite);
         }
-        exit('Done');
+        exit();
     }
-
-
 }

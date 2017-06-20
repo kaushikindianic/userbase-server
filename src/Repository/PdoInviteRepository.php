@@ -17,8 +17,8 @@ class PdoInviteRepository
     public function add(Invite $oInviteModel)
     {
         $sql = 'INSERT IGNORE INTO
-            invite(created_at, inviter, inviter_org, display_name, email, payload, account_name)
-            VALUES (:created_at, :inviter, :inviter_org, :display_name, :email, :payload, :account_name)';
+            invite(created_at, inviter, inviter_org, display_name, email, payload, account_name, status)
+            VALUES (:created_at, :inviter, :inviter_org, :display_name, :email, :payload, :account_name, :status)';
         $statement = $this->pdo->prepare($sql);
         $row = $statement->execute(array(
             'created_at' => time(),
@@ -27,7 +27,8 @@ class PdoInviteRepository
             'display_name' => $oInviteModel->getDisplayName(),
             'email' => $oInviteModel->getEmail(),
             'payload' => $oInviteModel->getPayload(),
-            'account_name' => $oInviteModel->getAccountName()
+            'account_name' => $oInviteModel->getAccountName(),
+            'status' => $oInviteModel->getStatus()
         ));
         return $row;
     }
@@ -40,7 +41,8 @@ class PdoInviteRepository
             display_name=:display_name,
             email=:email,
             payload=:payload,
-            account_name=:account_name
+            account_name=:account_name,
+            status=:status
             WHERE id =:id');
 
         return $statement->execute(array(
@@ -50,20 +52,35 @@ class PdoInviteRepository
             ':email' => $oInviteModel->getEmail(),
             ':payload' => $oInviteModel->getPayload(),
             ':account_name' => $oInviteModel->getAccountName(),
+            ':status' => $oInviteModel->getStatus(),
             ':id' => $oInviteModel->getId()
         ));
     }
 
     public function accept($inviteId, $accountName)
     {
-        $statement = $this->pdo->prepare('UPDATE IGNORE invite SET
-            account_name=:account_name
-            WHERE id =:id');
+        $statement = $this->pdo->prepare("UPDATE IGNORE invite SET
+            account_name=:account_name,
+            status='ACCEPTED'
+            WHERE id =:id");
 
         return $statement->execute(array(
 
             ':account_name' => $accountName,
             ':id' => $inviteId
+        ));
+    }
+
+    public function registerAttempt($email, $stamp)
+    {
+        $statement = $this->pdo->prepare('UPDATE invite SET
+            last_stamp=:last_stamp,
+            attempts=attempts+1
+            WHERE email =:email');
+
+        return $statement->execute(array(
+            ':last_stamp' => $stamp,
+            ':email' => $email
         ));
     }
 
@@ -83,7 +100,7 @@ class PdoInviteRepository
 
     public function findAll()
     {
-        $statement = $this->pdo->prepare('SELECT * FROM invite');
+        $statement = $this->pdo->prepare('SELECT * FROM invite ORDER BY email, id');
         $statement->execute(array());
         return $statement->fetchAll();
     }
@@ -103,7 +120,8 @@ class PdoInviteRepository
             display_name=:display_name,
             email=:email,
             payload=:payload,
-            account_name=:account_name
+            account_name=:account_name,
+            status=:status
             WHERE id =:id');
 
         return $statement->execute(array(
@@ -113,6 +131,7 @@ class PdoInviteRepository
             ':email' => $data['email'],
             ':payload' => $data['payload'],
             ':account_name' => $data['account_name'],
+            ':status' => $data['status'],
             ':id' => $data['id']
         ));
     }

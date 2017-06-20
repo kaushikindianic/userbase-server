@@ -16,6 +16,12 @@ class InviteController
         $error = $request->query->get('error');
         $oInviteRepo = $app->getInviteRepository();
         $entities = $oInviteRepo->findAll();
+
+        usort($entities, function($a, $b)
+        {
+            return strcmp($a['created_at'], $b['created_at']);
+        });
+
         $entities = array_reverse($entities);
 
         return new Response($app['twig']->render('invite/index.html.twig', array(

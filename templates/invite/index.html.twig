@@ -22,9 +22,9 @@
             <th>#id</th>
             <th>Date/time</th>
             <th>Inviter</th>
-            <th>Display Name</th>
-            <th>Email</th>
-            <th>Account</th>
+            <th>Invitee</th>
+            <th>Status</th>
+            <th>Attempts</th>
         </tr>
         {% for entity in entities %}
         <tr>
@@ -35,9 +35,13 @@
             </td>
             <td>{{ entity.created_at|date }}</td>
             <td><b>{% if not entity.inviter_org %}???{% else %}{{ entity.inviter_org }}{%endif%}</b><br />{{ entity.inviter }}</td>
-            <td>{{ entity.display_name }}</td>
-            <td>{{ entity.email }}</td>
-            <td>{{ entity.account_name }}</td>
+            <td>
+                <b>{{ entity.display_name }}</b><br />
+                {{ entity.email }}<br />
+                <i>{{ entity.account_name }}</i>
+            </td>
+            <td>{{ entity.status }}</td>
+            <td>{{ entity.attempts }}</td>
         </tr>
         {% endfor %}
     </table>

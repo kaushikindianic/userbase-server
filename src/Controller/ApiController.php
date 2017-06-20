@@ -607,30 +607,37 @@ class ApiController
     public function createInviteAction(Application $app, Request $request, $inviter, $displayName, $email)
     {
         $inviteRepo = $app->getInviteRepository();
+
         $email = strtolower($email);
         $email = str_replace(':', '.', $email);
 
+
+
+        $inviterOrg = null;
         $payload = null;
         if ($request->query->has('payload')) {
             $payload = base64_decode($request->query->get('payload'));
-        }
-
-        $invite = new Invite();
-        $invite
-            ->setInviter($inviter)
-            ->setDisplayName($displayName)
-            ->setEmail($email)
-            ->setPayload($payload)
-        ;
-        $inviteRepo->add($invite);
-
-        $inviterOrg = null;
-        if ($payload)  {
             $payloadData = json_decode($payload, true);
             if (isset($payloadData['properties']['inviter_org'])) {
                 $inviterOrg = $payloadData['properties']['inviter_org'];
             }
         }
+
+        $invite = new Invite();
+        $invite
+            ->setInviter($inviter)
+            ->setInviterOrg($inviterOrg)
+            ->setDisplayName($displayName)
+            ->setEmail($email)
+            ->setPayload($payload)
+            ->setStatus('NEW')
+        ;
+
+        if (count($inviteRepo->findByEmail($email))==0) {
+            // email does not yet exist
+            $inviteRepo->add($invite);
+        }
+
         $data = array();
         $data['displayName'] = $displayName;
         $data['inviter'] = $inviter;
@@ -644,6 +651,7 @@ class ApiController
         }
 
         $app['mailer']->sendTemplate('invite', ['email' => $email, 'display_name' => $displayName], $data);
+        $inviteRepo->registerAttempt($email, time());
 
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);

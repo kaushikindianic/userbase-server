@@ -330,6 +330,11 @@
         <column name="payload" type="text" notnull="false" />
         <column name="account_name" type="string" length="128" doc="account name that was eventually created. null while pending" notnull="false" />
 
+        <column name="last_stamp" type="integer" doc="Last invite sent" />
+        <column name="attempts" type="integer" doc="Attempt count" />
+
+        <column name="status" type="string" length="32" id="NEW, ACCEPTED, REJECTED" />
+
         <index name="primary" primary="true" columns="id" />
     </table>
 </schema>
