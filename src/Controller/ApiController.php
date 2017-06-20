@@ -618,8 +618,8 @@ class ApiController
         if ($request->query->has('payload')) {
             $payload = base64_decode($request->query->get('payload'));
             $payloadData = json_decode($payload, true);
-            if (isset($payloadData['properties']['inviter_org'])) {
-                $inviterOrg = $payloadData['properties']['inviter_org'];
+            if (isset($payloadData['properties']['organization_id'])) {
+                $inviterOrg = $payloadData['properties']['organization_id'];
             }
         }
 
@@ -630,7 +630,7 @@ class ApiController
             ->setDisplayName($displayName)
             ->setEmail($email)
             ->setPayload($payload)
-            ->setStatus('NEW')
+            ->setStatus('PENDING')
         ;
 
         if (count($inviteRepo->findByEmail($email))==0) {

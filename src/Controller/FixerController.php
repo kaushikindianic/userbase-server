@@ -85,7 +85,7 @@ class FixerController
                 if ($invite['account_name']!='') {
                     $invite['status'] = 'ACCEPTED';
                 } else {
-                    $invite['status'] = 'NEW';
+                    $invite['status'] = 'PENDING';
                 }
             }
             $inviteRepo->updateFromArray($invite);
