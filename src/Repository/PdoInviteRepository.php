@@ -53,7 +53,7 @@ class PdoInviteRepository
             ':id' => $oInviteModel->getId()
         ));
     }
-    
+
     public function accept($inviteId, $accountName)
     {
         $statement = $this->pdo->prepare('UPDATE IGNORE invite SET
@@ -61,7 +61,7 @@ class PdoInviteRepository
             WHERE id =:id');
 
         return $statement->execute(array(
-            
+
             ':account_name' => $accountName,
             ':id' => $inviteId
         ));
@@ -73,7 +73,7 @@ class PdoInviteRepository
         $statement->execute(array('id' => (int) $id));
         return $statement->fetch();
     }
-    
+
     public function findByEmail($email)
     {
         $statement = $this->pdo->prepare('SELECT * FROM invite WHERE email = :email');
@@ -93,6 +93,7 @@ class PdoInviteRepository
         $statement = $this->pdo->prepare('DELETE FROM invite WHERE id =:id');
         return $statement->execute(array('id' => (int) $id ));
     }
+
 
     public function updateFromArray($data)
     {

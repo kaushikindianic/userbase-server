@@ -19,19 +19,19 @@ class FixerController
         foreach ($accounts as $account) {
             if ($account->getAccountType()=='user') {
                 $email = $account->getEmail();
-                
+
                 $ae = new AccountEmail();
                 $ae->setAccountName($account->getName());
                 $ae->setEmail($account->getEmail());
                 $ae->setVerifiedAt($account->getEmailVerifiedAt());
                 $accountEmailRepo->add($ae);
             }
-            
+
             print_r($account);
         }
         exit();
     }
-    
+
     public function invitesAction(Application $app, Request $request)
     {
         $inviteRepo = $app->getInviteRepository();
@@ -70,5 +70,6 @@ class FixerController
         }
         exit('Done');
     }
+
 
 }

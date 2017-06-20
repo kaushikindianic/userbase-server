@@ -57,7 +57,7 @@ class ApiController
             $aAccounts = $oAccRepo->getByUserName($user->getUsername());
 
             $account = $oAccRepo->getByName($user->getName());
-            
+
             $data['accounts'] = array();
             foreach ($aAccounts as $account) {
                 $accountData = $this->account2array($app, $account, true);
@@ -70,8 +70,8 @@ class ApiController
                 $rolesData[] = $statement;
                 $data['accounts'][] = $accountData;
             }
-            
-            
+
+
             $data['policies'] = $rolesData;
 
             // GET USER SPACES //
@@ -156,7 +156,7 @@ class ApiController
                 $propertyData['value'] = $accountProperty->getValue();
                 $data['properties'][] = $propertyData;
             }
-            
+
             // NOTIFICATIONS //
             $notifications = $notificationRepo->findByAccountName($account->getName());
             $data['notifications'] = $this->notificationsToArray($notifications);
@@ -164,7 +164,7 @@ class ApiController
 
         return $data;
     }
-    
+
     public function notificationsToArray($notifications)
     {
         $data = array();
@@ -199,7 +199,7 @@ class ApiController
             $items[] = $a;
         }
         $data['items'] = $items;
-        
+
         return $this->getJsonResponse($data);
     }
 
@@ -253,7 +253,7 @@ class ApiController
 
         return $this->getJsonResponse($data);
     }
-    
+
     public function getJsonResponse($data)
     {
         $response = new JsonResponse($data);
@@ -283,12 +283,12 @@ class ApiController
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
-    
-    
+
+
     public function setPictureAction(Application $app, Request $req, $accountName)
     {
         global $_FILES;
-        
+
         $targetFilename = __DIR__ . '/../../web/account_picture/' . $accountName . '.png';
         if (!isset($_FILES['file'])) {
             $data = [
@@ -297,7 +297,7 @@ class ApiController
             ];
             return $this->getJsonResponse($data);
         }
-        
+
         $data = file_get_contents($_FILES["file"]["tmp_name"]);
         $im = imagecreatefromstring($data);
         if (!$im) {
@@ -314,10 +314,10 @@ class ApiController
             ];
             return $this->getJsonResponse($data);
         }
-        
+
         imagepng($im, $targetFilename);
-        
-        
+
+
         $data = [
             'status' => 'ok',
         ];
@@ -337,7 +337,7 @@ class ApiController
         if (!$oUser = $oAccRepo->getByName($userName)) {
             return $this->getErrorResponse(404, "User not found");
         }
-        
+
         if (!in_array($oAccount->getAccountType(), ['organization', 'group'])) {
             return $this->getErrorResponse(500, "Account is not organization OR group");
         }
@@ -364,12 +364,12 @@ class ApiController
         }
         return $this->getErrorResponse(500, "Account is not organization OR group");
     }
-    
+
     public function tagRemoveAction(Application $app, $accountName, $tagName)
     {
         $accountRepo = $app->getAccountRepository();
         $accountTagRepo = $app->getAccountTagRepository();
-        
+
         $accountTags = $accountTagRepo->findByAccountName($accountName);
         //print_r($accountTags);
         //print_r($accountTags);
@@ -389,7 +389,7 @@ class ApiController
         $accountRepo = $app->getAccountRepository();
         $accountTagRepo = $app->getAccountTagRepository();
         $tagRepo = $app->getTagRepository();
-        
+
         $accountTags = $accountTagRepo->findByAccountName($accountName);
         //print_r($accountTags);
         foreach ($accountTags as $accountTag) {
@@ -397,17 +397,17 @@ class ApiController
                 return $this->getErrorResponse(500, "This account already has this tag");
             }
         }
-        
+
         $tag = $tagRepo->getByName($tagName);
         if (!$tag) {
             return $this->getErrorResponse(500, "No such tagname exists");
         }
-        
+
         $accountTag = new AccountTag();
         $accountTag->setTagId($tag['id']);
         $accountTag->setAccountName($accountName);
         $accountTagRepo->add($accountTag);
-        
+
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
@@ -478,7 +478,7 @@ class ApiController
         if ($request->query->has('mobile')) {
             $account->setMobile(urldecode($request->get('mobile')));
         }
-    
+
         $accountRepo->update($account);
 
         $data = ['status' => 'ok'];
@@ -541,8 +541,8 @@ class ApiController
         }
         return $this->getJsonResponse($data);
     }
-    
-    
+
+
     public function addEmailAction(Application $app, Request $request, $accountName, $email)
     {
         $accountEmailRepo = $app->getAccountEmailRepository();
@@ -558,7 +558,7 @@ class ApiController
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
-    
+
     public function verifyEmailAction(Application $app, Request $request, $accountName, $email)
     {
         $accountEmailRepo = $app->getAccountEmailRepository();
@@ -570,7 +570,7 @@ class ApiController
         if ($ea['account_name']!=$accountName) {
             return $this->getErrorResponse(403, "Email does not belong to this account");
         }
-        
+
         $e = new AccountEmail();
         $e->setId($ea['id']);
         $e->setAccountName($accountName);
@@ -581,7 +581,7 @@ class ApiController
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
-    
+
     public function defaultEmailAction(Application $app, Request $request, $accountName, $email)
     {
         $accountEmailRepo = $app->getAccountEmailRepository();
@@ -594,7 +594,7 @@ class ApiController
         if ($ea['account_name']!=$accountName) {
             return $this->getErrorResponse(403, "Email does not belong to this account");
         }
-        
+
         $account=$accountRepo->getByName($accountName);
         $account->setEmail($ea['email']);
         $account->setEmailVerifiedAt($ea['verified_at']);
@@ -603,7 +603,7 @@ class ApiController
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }
-    
+
     public function createInviteAction(Application $app, Request $request, $inviter, $displayName, $email)
     {
         $inviteRepo = $app->getInviteRepository();
@@ -614,7 +614,7 @@ class ApiController
         if ($request->query->has('payload')) {
             $payload = base64_decode($request->query->get('payload'));
         }
-        
+
         $invite = new Invite();
         $invite
             ->setInviter($inviter)
@@ -631,7 +631,6 @@ class ApiController
                 $inviterOrg = $payloadData['properties']['inviter_org'];
             }
         }
-        
         $data = array();
         $data['displayName'] = $displayName;
         $data['inviter'] = $inviter;
@@ -645,7 +644,7 @@ class ApiController
         }
 
         $app['mailer']->sendTemplate('invite', ['email' => $email, 'display_name' => $displayName], $data);
-        
+
         $data = ['status' => 'ok'];
         return $this->getJsonResponse($data);
     }

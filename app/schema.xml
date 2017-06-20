@@ -21,7 +21,7 @@
         <column name="expire_at" type="integer" notnull="false" />
         <column name="message" type="text" notnull="false" />
 
-        <column name="status" type="string" length="16"  notnull="false" doc=" NEW, ACTIVE, INACTIVE" comment="NEW, ACTIVE, INACTIVE status" />
+        <column name="status" type="string" length="16"  notnull="false" doc="NEW, ACTIVE, INACTIVE" comment="NEW, ACTIVE, INACTIVE status" />
 
         <index name="primary" primary="true" columns="name" />
         <index name="index_email" columns="email" />
