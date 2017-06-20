@@ -334,6 +334,7 @@
         <column name="attempts" type="integer" doc="Attempt count" />
 
         <column name="status" type="string" length="32" id="NEW, ACCEPTED, REJECTED" />
+        <column name="status_reason" type="text" />
 
         <index name="primary" primary="true" columns="id" />
     </table>

@@ -1,0 +1,11 @@
+{% extends "@PreAuth/layout.html.twig" %}
+
+{% block content %}
+
+<h1>{{ "invite_rejected_thankyou.header"|trans }}</h1>
+<p>{{ "invite_rejected_thankyou.description"|trans }}</p>
+
+
+{{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+
+{% endblock %}

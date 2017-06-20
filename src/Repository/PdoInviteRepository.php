@@ -71,6 +71,29 @@ class PdoInviteRepository
         ));
     }
 
+    public function reject($inviteId)
+    {
+        $statement = $this->pdo->prepare("UPDATE invite SET
+            status='REJECTED'
+            WHERE id =:id");
+
+        return $statement->execute(array(
+            ':id' => $inviteId
+        ));
+    }
+
+    public function statusReason($inviteId, $reason)
+    {
+        $statement = $this->pdo->prepare("UPDATE invite SET
+            status_reason=:status_reason
+            WHERE id =:id");
+
+        return $statement->execute(array(
+            ':status_reason' => $reason,
+            ':id' => $inviteId
+        ));
+    }
+
     public function registerAttempt($email, $stamp)
     {
         $statement = $this->pdo->prepare('UPDATE invite SET

@@ -44,6 +44,19 @@ check_username:
     path: /check/username
     defaults: { _controller: UserBase\Server\Controller\SignupController::checkUsernameAction }
 
+invite_link:
+    path: /invite-link/{inviteId}/{inviteHash}
+    defaults:  { _controller: UserBase\Server\Controller\InviteLinkController::viewAction }
+
+invite_link_reject:
+    path: /invite-reject/{inviteId}/{inviteHash}
+    defaults:  { _controller: UserBase\Server\Controller\InviteLinkController::rejectAction }
+
+invite_link_reject_reason:
+    path: /invite-reject-reason/{inviteId}/{inviteHash}
+    defaults:  { _controller: UserBase\Server\Controller\InviteLinkController::rejectReasonAction }
+
+
 # ==== email validation ====
 verify_email:
     path: /verify/email/{accountName}
@@ -557,7 +570,3 @@ fix_emails:
 fix_invites:
     path: /admin/fix/invites
     defaults: { _controller: UserBase\Server\Controller\FixerController::invitesAction }
-
-fix_inviter_org:
-    path: /admin/fix/inviter_org
-    defaults: { _controller: UserBase\Server\Controller\FixerController::inviterOrgAction }

@@ -74,6 +74,19 @@ verify_mobile.description: Please click the button below to send a verification 
 verify_mobile.sent: We've just sent a verification code to your mobile.
 verify_mobile.send: Send code
 
+
+invite_link.header: Respond to invite
+invite_link.description: Please select one of the options below to respond to the invite
+invite_link.accept: Accept and signup
+invite_link.reject: Reject, don't remind me
+invite_link.reject_confirm: Are you sure you want to reject this invitation?
+
+invite_rejected.header: Invite rejected
+invite_rejected.description: We have removed the invitation. To help us improve our service, please let us know why you've chosen to remove your invitation:
+invite_rejected_thankyou.header: Thank you
+invite_rejected_thankyou.description: Thank you for your feedback
+
+
 password_reset.header: Password reset
 password_reset.description: Enter your username, email or mobile below, and we'll send you a password-reset information.
 password_reset.placeholder: Username, email or mobile

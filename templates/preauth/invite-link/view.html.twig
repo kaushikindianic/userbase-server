@@ -1,0 +1,17 @@
+{% extends "@PreAuth/layout.html.twig" %}
+
+{% block content %}
+
+<h1>{{ "invite_link.header"|trans }}</h1>
+<p>{{ "invite_link.description"|trans }}</p>
+
+
+
+<a class="btn btn-success" href="{{ path('signup') }}">{{ "invite_link.accept"|trans }}</a><br />
+<br />
+<a class="btn btn-default" onclick="return confirm('{{ "invite_link.reject_confirm"|trans }}')" href="{{ path('invite_link_reject', {'inviteId': invite.id, 'inviteHash': inviteHash}) }}">{{ "invite_link.reject"|trans }}</a><br />
+<br />
+
+{{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+
+{% endblock %}

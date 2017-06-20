@@ -1,0 +1,16 @@
+{% extends "@PreAuth/layout.html.twig" %}
+
+{% block content %}
+
+<h1>{{ "invite_rejected.header"|trans }}</h1>
+<p>{{ "invite_rejected.description"|trans }}</p>
+
+<form action="{{ path('invite_link_reject_reason', {'inviteId': invite.id, 'inviteHash': inviteHash}) }}" method="post">
+    <textarea name="reject_reason" class="form-control"></textarea><br />
+    <button type="submit" class="btn btn-success"><i class="fa fa-envelope"></i></button>
+</form>
+<br />
+
+{{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
+
+{% endblock %}
