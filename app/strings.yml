@@ -68,10 +68,11 @@ verify_email.header: E-mail verification required
 verify_email.description: Please click the link that was sent to your e-mail address.
 verify_email.resent: We've just re-sent you the verification email.
 verify_email.resend: Resend
-error.E05: Link expired/early, and allows to send a new verification link?
-error.E04: Link expred, regenerate new
-error.E03: account not found.
-verify_email.email_incorrect_tip: Is this not the correct email address? Please contact us to correct this for you
+verify_email.email_incorrect_tip: Is this not the correct email address? Please contact us to correct this for you.
+
+error.E03: Account not found
+error.E04: Link invalid. Use the button below to send a new verification link.
+error.E05: Link expired. Use the button below to send a new verification link.
 
 
 verify_mobile.header: Mobile verification required

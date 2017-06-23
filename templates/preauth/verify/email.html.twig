@@ -16,11 +16,15 @@
     <h1>{{ "verify_email.header"|trans }}</h1>
     <p>{{ "verify_email.description"|trans }}</p>
 
-    <b>{{ account.email }}</b>
-    <i>{{ "verify_email.email_incorrect_tip"|trans }}</i>
+    <b>{{ account.email }}</b><br />
+    <br />
+    <i>{{ "verify_email.email_incorrect_tip"|trans|raw }}</i><br />
+    <br />
 
     <a class="btn btn-success" href="{{path('verify_email', {'accountName': accountName })}}?resend">{{ "verify_email.resend"|trans }}</a><br />
 
+    <br />
+    <br />
     {{ "common.label_need_help"|trans }} <a target="_blank" href="{{ path("help") }}">{{ "common.action_click_for_help"|trans }}</a><br />
 
 {% endblock %}
