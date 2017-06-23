@@ -1,0 +1,10 @@
+table.invite:
+    random_invite{1..5}:
+    #   id
+        inviter: <sentence(4)>
+        display_name: <name()>
+        email: <email()>
+        created_at: <dateTimeBetween($startDate =  '-60 days', $endDate = 'now', $timezone = date_default_timezone_get())>
+        payload: <text()>
+        account_name: <randomElement(array ('charlie', 'bob', 'alice', 'david','eve'))>
+        inviter_org: <company()>

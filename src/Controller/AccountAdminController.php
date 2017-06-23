@@ -1,4 +1,5 @@
 <?php
+
 namespace UserBase\Server\Controller;
 
 use Silex\Application;
@@ -7,15 +8,12 @@ use Symfony\Component\HttpFoundation\Response;
 use Exception;
 use UserBase\Server\Model\Account;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\Form\FormError;
 use Symfony\Component\Validator\Constraints as Assert;
 use UserBase\Server\Model\Event;
 use UserBase\Server\Model\Apikey;
 use UserBase\Server\Model\AccountProperty;
 use UserBase\Server\Export\Accounts;
-use RuntimeException;
 use DataTable\Core\Table;
-use DataTable\Core\Writer\Csv as CsvWriter;
 use DataTable\Core\Reader\Csv as CsvReader;
 use UserBase\Server\Model\AccountTag;
 use UserBase\Server\Model\AccountEmail;
@@ -23,7 +21,6 @@ use UserBase\Server\Domain;
 
 class AccountAdminController
 {
-
     public function accountListAction(Application $app, Request $request)
     {
         $search = $request->request->get('searchText');
@@ -116,17 +113,32 @@ class AccountAdminController
                 //-- END EVENT LOG --//
 
                 return $app->redirect($app['url_generator']->generate('admin_account_users', array(
-                    'accountname' => $accountname
+                    'accountname' => $accountname,
                 )));
             }
         }
-        $aAccUsers = $oAccRepo->getAccountUsers($accountname);
+        $aAccUsers = $oAccRepo->getUsersByAcount($accountname);
 
         return new Response($app['twig']->render('admin/account_users.html.twig', array(
             'accountName' => $accountname,
             'aAccUsers' => $aAccUsers,
-            'error' => $error
+            'error' => $error,
         )));
+    }
+
+    public function accountUserUpdateAction(Application $app, Request $request, $accountname)
+    {
+        $oAccRepo = $app->getAccountRepository();
+        $username = $request->get('username');
+        $isOwner = (int) $request->get('isOwner');
+
+        if ($request->isMethod('POST') && !empty($username)) {
+            $oAccRepo->updateAccUser($accountname, $username, $isOwner);
+        }
+
+        return new JsonResponse(array(
+            'success' => true,
+        ));
     }
 
     public function accountSearchUserAction(Application $app, Request $request, $accountname)
@@ -157,7 +169,7 @@ class AccountAdminController
                 //-- END EVENT LOG --//
 
                 return new JsonResponse(array(
-                    'success' => true
+                    'success' => true,
                 ));
             }
         }
@@ -165,11 +177,11 @@ class AccountAdminController
         $aUsers = $oUserRepo->getSearchUsers($searchUser);
 
         $oRes = new Response($app['twig']->render('admin/account_search_users.html.twig', array(
-            'aUsers' => $aUsers
+            'aUsers' => $aUsers,
         )));
 
         return new JsonResponse(array(
-            'html' => $oRes->getContent()
+            'html' => $oRes->getContent(),
         ));
     }
 
@@ -183,10 +195,10 @@ class AccountAdminController
         $accountTypes = [
             'organization' => 'Organization',
             'user' => 'User',
-            'apikey' => 'API Key'
+            'apikey' => 'API Key',
         ];
         // also support getting template by id
-        if (! $account && is_numeric($accountname)) {
+        if (!$account && is_numeric($accountname)) {
             $account = $repo->getById($accountname);
         }
         if ($account === null) {
@@ -209,29 +221,28 @@ class AccountAdminController
             );
         }
         //-- GENERATE FORM --//
-        $aStatus = [ 'NEW' => 'NEW', 'ACTIVE' => 'ACTIVE', 'INACTIVE' => 'INACTIVE', 'EXPIRED' => 'EXPIRED'];
-
+        $aStatus = ['NEW' => 'NEW', 'ACTIVE' => 'ACTIVE', 'INACTIVE' => 'INACTIVE', 'EXPIRED' => 'EXPIRED'];
 
         $form = $app['form.factory']->createBuilder('form', $defaults);
         $form->add('name', 'text', array(
             'required' => true,
-            'read_only' => ($add)? false: true,
+            'read_only' => ($add) ? false : true,
             'error_bubbling' => true,
             'attr' => array(
                 'placeholder' => 'Name',
-                (($add)? 'autofocus' : '') => '',
-            )
+                (($add) ? 'autofocus' : '') => '',
+            ),
         ))
         ->add('accountType', 'choice', array('required' => true,
             'label' => 'Account type',
             'trim' => true,
             'choices' => $accountTypes,
-            'read_only' => ($add)? false: true,
+            'read_only' => ($add) ? false : true,
             'empty_data' => null,
             'empty_value' => '-- Select --',
             'attr' => array(
                 'placeholder' => 'Account type',
-                'class' => 'form-control'
+                'class' => 'form-control',
             ),
         ))
         ->add('displayName', 'text', array(
@@ -239,8 +250,8 @@ class AccountAdminController
             'label' => 'Display name',
             'attr' => array(
                 'placeholder' => 'Display name',
-                ((!$add)? 'autofocus' : '') => '',
-            )
+                ((!$add) ? 'autofocus' : '') => '',
+            ),
         ))
         ->add('email', 'email', array(
             'required' => true,
@@ -249,19 +260,19 @@ class AccountAdminController
             'error_bubbling' => true,
             'constraints' => array(
                 new Assert\NotBlank(array('message' => 'E-mail value should not be blank.')),
-                new Assert\Email()
+                new Assert\Email(),
             ),
             'attr' => array(
                 'placeholder' => 'E-mail',
-                'class' => 'form-control'
-            )
+                'class' => 'form-control',
+            ),
         ));
         if (!$add) {
             $form->add('email_verified', 'checkbox', array(
                 'required' => false,
                 'trim' => true,
                 'label' => 'email verified',
-                'data' => ($account->getEmailVerifiedAt())? true : false,
+                'data' => ($account->getEmailVerifiedAt()) ? true : false,
             ));
         }
 
@@ -274,8 +285,8 @@ class AccountAdminController
             ),
             'attr' => array(
                 'placeholder' => 'Mobile',
-                'class' => 'form-control'
-            )
+                'class' => 'form-control',
+            ),
         ));
 
         if (!$add) {
@@ -283,7 +294,7 @@ class AccountAdminController
                 'required' => false,
                 'trim' => true,
                 'label' => 'Mobile verified',
-                'data' => ($account->getMobileVerifiedAt())? true : false,
+                'data' => ($account->getMobileVerifiedAt()) ? true : false,
             ));
         }
 
@@ -293,37 +304,37 @@ class AccountAdminController
             'error_bubbling' => true,
             'attr' => array(
                 'placeholder' => 'URL',
-                'class' => 'form-control'
-            )
+                'class' => 'form-control',
+            ),
         ))
         ->add('about', 'text', array(
             'required' => false,
             'attr' => array(
                 'placeholder' => 'About',
-            )
+            ),
         ))
         ->add('expire_at', 'date', array(
             'required' => false,
-            'input'  => 'timestamp',
+            'input' => 'timestamp',
             'widget' => 'single_text',
             'attr' => array(
                 'placeholder' => 'Expire date',
-            )
+            ),
         ))
         ->add('message', 'textarea', array(
             'required' => false,
             'attr' => array(
                 'placeholder' => 'Message to user',
-            )
+            ),
         ))
 
         ->add('approved_at', 'date', array(
             'required' => false,
-            'input'  => 'timestamp',
+            'input' => 'timestamp',
             'widget' => 'single_text',
             'attr' => array(
                 'placeholder' => 'Review date',
-            )
+            ),
         ))
 
         ->add('status', 'choice', array(
@@ -334,7 +345,7 @@ class AccountAdminController
             'empty_data' => null,
             'empty_value' => '-- Select --',
             'attr' => array(
-                'class' => 'form-control'
+                'class' => 'form-control',
             ),
         ));
         $form = $form->getForm();
@@ -373,9 +384,9 @@ class AccountAdminController
                 ;
 
                 if ($add) {
-                    if (! $repo->add($account)) {
+                    if (!$repo->add($account)) {
                         return $app->redirect($app['url_generator']->generate('admin_account_add', array(
-                            'error' => 'Name exists'
+                            'error' => 'Name exists',
                         )));
                     }
                     //-- ASSIGN MEMEBR TO USER --//
@@ -399,8 +410,8 @@ class AccountAdminController
                     //-- END EVENT LOG --//
                 } else {
                     $repo->update($account);
-                    $repo->setEmailVerifiedStamp($account, (($data['email_verified'])? time() : 0));
-                    $repo->setMobileVerifiedStamp($account, (($data['mobile_verified'])? time() : 0));
+                    $repo->setEmailVerifiedStamp($account, (($data['email_verified']) ? time() : 0));
+                    $repo->setMobileVerifiedStamp($account, (($data['mobile_verified']) ? time() : 0));
 
                     //--EVENT LOG --//
                     $time = time();
@@ -421,14 +432,14 @@ class AccountAdminController
                 }
 
                 return $app->redirect($app['url_generator']->
-                generate('admin_account_view', ['accountname'=>$account->getName()]));
+                generate('admin_account_view', ['accountname' => $account->getName()]));
             }
         }
 
         return new Response($app['twig']->render('admin/account_edit.html.twig', array(
             'form' => $form->createView(),
             'account' => $account,
-            'error' => $error
+            'error' => $error,
         )));
     }
 
@@ -437,7 +448,7 @@ class AccountAdminController
         $accountRepo = $app->getAccountRepository();
         $account = $accountRepo->getByName($accountname);
         // also support getting template by id
-        if (! $account && is_numeric($accountname)) {
+        if (!$account && is_numeric($accountname)) {
             $account = $repo->getById($accountname);
         }
 
@@ -449,7 +460,7 @@ class AccountAdminController
         $accountProperties = $accountPropertyRepository->getByAccountName($accountname);
 
         $oAccountTagRepo = $app->getAccountTagRepository();
-        $aAssignTags =  $oAccountTagRepo->findByAccountName($accountname);
+        $aAssignTags = $oAccountTagRepo->findByAccountName($accountname);
 
         $oAccountConnectionRepo = $app->getAccountConnectionRepository();
         $totalAccountConnect = $oAccountConnectionRepo->totConnection($accountname);
@@ -477,7 +488,7 @@ class AccountAdminController
                     'aAssignTags' => $aAssignTags,
                     'properties' => $properties,
                     'events' => $events,
-                    'totalAccountConnect' => $totalAccountConnect
+                    'totalAccountConnect' => $totalAccountConnect,
                 )
             )
         );
@@ -488,9 +499,10 @@ class AccountAdminController
         $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $charactersLength = strlen($characters);
         $randomString = '';
-        for ($i = 0; $i < $length; $i++) {
+        for ($i = 0; $i < $length; ++$i) {
             $randomString .= $characters[rand(0, $charactersLength - 1)];
         }
+
         return $randomString;
     }
 
@@ -498,10 +510,9 @@ class AccountAdminController
     {
         $repo = $app->getUserRepository();
         $accountRepo = $app->getAccountRepository();
-        $username = 'apikey-' . $accountname . '-' . $this->generateRandomString(16);
+        $username = 'apikey-'.$accountname.'-'.$this->generateRandomString(16);
         $email = '';
         $password = $this->generateRandomString(32);
-
 
         //--CREATE PERSONAL ACCOUNT--//
         $keyAccount = new Account($username);
@@ -524,13 +535,12 @@ class AccountAdminController
                 $app['url_generator']->generate(
                     'admin_account_view',
                     ['accountname' => $accountname]
-                ) . '?errorcode=E34'
+                ).'?errorcode=E34'
             );
         }
         $user = $repo->getByName($username);
 
         $repo->setPassword($user, $password);
-
 
         $accountRepo->addAccUser($user->getUsername(), $user->getUsername(), 'apikey');
         $accountRepo->addAccUser($accountname, $user->getUsername(), 'apikey');
@@ -556,7 +566,7 @@ class AccountAdminController
                 array(
                     'account' => $accountRepo->getByName($accountname),
                     'apikey' => $username,
-                    'secret' => $password
+                    'secret' => $password,
                 )
             )
         );
@@ -569,30 +579,29 @@ class AccountAdminController
         return $this->apikeyForm($app, $request, $accountname, $id);
     }
 
-
     private function apikeyForm($app, $request, $accountname, $id)
     {
         $error = $request->query->get('error');
         $repo = $app->getAccountRepository();
-        $oApiKeyRepo  = $app->getApikeyRepository();
+        $oApiKeyRepo = $app->getApikeyRepository();
         $add = false;
 
         $account = $repo->getByName($accountname);
         // also support getting template by id
-        if (! $account && is_numeric($accountname)) {
+        if (!$account && is_numeric($accountname)) {
             $account = $repo->getById($accountname);
         }
 
         if ($id) {
             if (!$aApikey = $oApiKeyRepo->getById($id)) {
                 return $app->redirect($app['url_generator']->generate('admin_account_view', array(
-                        'accountname' => $accountname
+                        'accountname' => $accountname,
                  )));
             }
             $defaults = [
                 'name' => $aApikey['name'],
-                'username' =>  $aApikey['username'],
-                'password' => $aApikey['password']
+                'username' => $aApikey['username'],
+                'password' => $aApikey['password'],
             ];
             $nameParam = array();
         } else {
@@ -604,7 +613,7 @@ class AccountAdminController
         $form = $app['form.factory']->createBuilder('form', $defaults)
         ->add('name', 'text', $nameParam)
         ->add('username', 'text', array('required' => false, 'label' => 'username'))
-        ->add('password', 'password', array('required' => false, 'always_empty' => false ))
+        ->add('password', 'password', array('required' => false, 'always_empty' => false))
         ->getForm();
 
         // handle form submission
@@ -623,39 +632,41 @@ class AccountAdminController
                 $oApikeyModel->setId($id)
                     ->setName($data['name'])
                     ->setUserName($data['username'])
-                    ->setPassword((empty($data['password'])?$defaults['password'] :$data['password']))
+                    ->setPassword((empty($data['password']) ? $defaults['password'] : $data['password']))
                     ->setAccountName($accountname);
             }
             if ($add) {
-                if (! $oApiKeyRepo->add($oApikeyModel)) {
+                if (!$oApiKeyRepo->add($oApikeyModel)) {
                     return $app->redirect($app['url_generator']->generate('admin_account_view', array(
                         'error' => 'Failed adding Apikey',
-                        'accountname' => $accountname
+                        'accountname' => $accountname,
                     )));
                 }
             } else {
                 $oApiKeyRepo->update($oApikeyModel);
             }
+
             return $app->redirect($app['url_generator']->generate('admin_account_view', array(
-                'accountname' => $accountname
+                'accountname' => $accountname,
             )));
         }
+
         return new Response($app['twig']->render('admin/account_apikey_add.html.twig', array(
             'form' => $form->createView(),
             'account' => $account,
             'add' => $add,
-            'error' => $error
+            'error' => $error,
         )));
     }
 
     public function apikeysAction(Application $app, Request $request)
     {
-        $oApiKeyRepo  = $app->getApikeyRepository();
-        $aApikeys  = $oApiKeyRepo->getAll();
+        $oApiKeyRepo = $app->getApikeyRepository();
+        $aApikeys = $oApiKeyRepo->getAll();
 
         return new Response($app['twig']->render('admin/account_apikey_list.html.twig', array(
             'account' => $account,
-            'aApikeys' => $aApikeys
+            'aApikeys' => $aApikeys,
         )));
     }
 
@@ -668,7 +679,7 @@ class AccountAdminController
         );
         $bus = $app['commandbus'];
         $bus->handle($command);
-        
+
         return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
     }
 
@@ -680,13 +691,14 @@ class AccountAdminController
         );
         $bus = $app['commandbus'];
         $bus->handle($command);
-        
+
         return $app->redirect($app['url_generator']->generate('admin_account_view', ['accountname' => $accountname]));
     }
 
     public function accountExportAction(Application $app, Request $request)
     {
         $export = new Accounts($app);
+
         return $export->csvExport();
     }
 
@@ -705,14 +717,14 @@ class AccountAdminController
                 'error_bubbling' => true,
                 'multiple' => false,
                 'constraints' => array(
-                    new Assert\NotBlank(array('message' => 'upload csv file.'))
+                    new Assert\NotBlank(array('message' => 'upload csv file.')),
                 ),
                 'attr' => array(
                     'id' => 'attachment',
                     'placeholder' => 'upload csv file',
                     //'class' => 'form-control',
                     'autofocus' => '',
-                )
+                ),
             ))
             ->getForm();
 
@@ -755,7 +767,7 @@ class AccountAdminController
 
                         $accountRepo->setMobileVerifiedStamp(
                             $oAccount,
-                            (($row->getValueByColumnName('mobile_verfied_at'))? strtotime($row->getValueByColumnName('mobile_verfied_at')) : 0)
+                            (($row->getValueByColumnName('mobile_verfied_at')) ? strtotime($row->getValueByColumnName('mobile_verfied_at')) : 0)
                         );
 
                         //-- add email --//
@@ -765,20 +777,20 @@ class AccountAdminController
                             if ($oAccountEmail[0]['account_name'] == $accountname) {
                                 $oAccountEmailModel->setId($oAccountEmail[0]['id'])
                                     ->setEmail($oAccountEmail[0]['email'])
-                                    ->setVerifiedAt((($row->getValueByColumnName('email_verified_at'))? strtotime($row->getValueByColumnName('email_verified_at')) : 0));
+                                    ->setVerifiedAt((($row->getValueByColumnName('email_verified_at')) ? strtotime($row->getValueByColumnName('email_verified_at')) : 0));
                                 $oAccountEmailRepo->update($oAccountEmailModel);
                             }
                             if ($oAccount->getEmail() == $row->getValueByColumnName('email')) {
                                 $accountRepo->setEmailVerifiedStamp(
                                     $oAccount,
-                                    (($row->getValueByColumnName('email_verified_at'))? strtotime($row->getValueByColumnName('email_verified_at')) : 0)
+                                    (($row->getValueByColumnName('email_verified_at')) ? strtotime($row->getValueByColumnName('email_verified_at')) : 0)
                                 );
                             }
                         } else {
                             $oAccountEmailModel
                                 ->setAccountName($accountname)
                                 ->setEmail($row->getValueByColumnName('email'))
-                                ->setVerifiedAt((($row->getValueByColumnName('email_verified_at'))? strtotime($row->getValueByColumnName('email_verified_at')) : 0));
+                                ->setVerifiedAt((($row->getValueByColumnName('email_verified_at')) ? strtotime($row->getValueByColumnName('email_verified_at')) : 0));
                             $oAccountEmailRepo->add($oAccountEmailModel);
                         }
 
@@ -799,7 +811,7 @@ class AccountAdminController
 
                         //-- add/update/remove account tags --//
                         foreach ($tags as $tag) {
-                            if (0 == strcasecmp('Y', trim($row->getValueByColumnName('tag.' . $tag['name'])))) {
+                            if (0 == strcasecmp('Y', trim($row->getValueByColumnName('tag.'.$tag['name'])))) {
                                 $oAccountTagModel = new AccountTag();
                                 $oAccountTagModel->setAccountName($accountname)->setTagId($tag['id']);
                                 $oAccountTagRepo->add($oAccountTagModel);
@@ -810,7 +822,7 @@ class AccountAdminController
                         //-- add account email --//
                         //-- add/update/remove account property --//
                         foreach ($properties as $property) {
-                            $value = trim($row->getValueByColumnName('property.' . $property['name']));
+                            $value = trim($row->getValueByColumnName('property.'.$property['name']));
                             if ($value) {
                                 $entity = new AccountProperty();
                                 $entity->setAccountName($accountname)
@@ -823,9 +835,11 @@ class AccountAdminController
                         }
                     }
                 }
+
                 return $app->redirect($app['url_generator']->generate('admin_account_list'));
             }
         }
+
         return new response($app['twig']->render('admin/account_import.html.twig', array(
             'form' => $form->createView(),
             'form_url' => '#',

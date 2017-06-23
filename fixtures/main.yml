@@ -1,0 +1,11 @@
+include:
+    - accounts.yml
+    - users.yml
+    - account_users.yml
+    - properties.yml
+
+    - accounts_properties.yml
+    - account_tag.yml
+    - tags.yml
+    - addresses.yml
+    - invites.yml

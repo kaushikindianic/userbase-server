@@ -18,45 +18,45 @@ class PdoAccountRepository
     public function getByName($name)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM account WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+            'SELECT * FROM account WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1'
         );
         $statement->execute(array('name' => $name));
         $row = $statement->fetch();
-        
+
         return $row ? $this->rowToAccount($row) : null;
     }
-    
+
     public function getByEmailAndMobile($email, $mobile)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM account
+            'SELECT * FROM account
             WHERE email=:email AND mobile=:mobile
             AND (deleted_at IS NULL OR deleted_at=0)
-            LIMIT 1"
+            LIMIT 1'
         );
         $statement->execute(
             [
                 'email' => $email,
-                'mobile' => $mobile
+                'mobile' => $mobile,
             ]
         );
         $row = $statement->fetch();
-        
+
         return $row ? $this->rowToAccount($row) : null;
     }
 
     public function getByEmail($email)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM account WHERE email=:email AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+            'SELECT * FROM account WHERE email=:email AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1'
         );
         $statement->execute(array('email' => $email));
         $row = $statement->fetch();
         if (!$row) {
             $statement = $this->pdo->prepare(
-                "SELECT a.* FROM account AS a
+                'SELECT a.* FROM account AS a
                 JOIN account_email AS ae ON ae.account_name = a.name
-                WHERE ae.email=:email AND (a.deleted_at IS NULL OR a.deleted_at=0) LIMIT 1"
+                WHERE ae.email=:email AND (a.deleted_at IS NULL OR a.deleted_at=0) LIMIT 1'
             );
             $statement->execute(array('email' => $email));
             $row = $statement->fetch();
@@ -68,7 +68,7 @@ class PdoAccountRepository
     public function getByMobile($mobile)
     {
         $statement = $this->pdo->prepare(
-            "SELECT * FROM account WHERE mobile=:mobile AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+            'SELECT * FROM account WHERE mobile=:mobile AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1'
         );
         $statement->execute(array('mobile' => $mobile));
         $row = $statement->fetch();
@@ -79,14 +79,14 @@ class PdoAccountRepository
     public function getAccountUsersByType($accountname, $type)
     {
         $statement = $this->pdo->prepare(
-            "SELECT account.* FROM account_user
+            'SELECT account.* FROM account_user
             JOIN account ON account.name=account_user.user_name
-            WHERE account_user.account_name=:account_name AND account.account_type=:account_type"
+            WHERE account_user.account_name=:account_name AND account.account_type=:account_type'
         );
         $statement->execute(
             array(
                 'account_name' => $accountname,
-                'account_type' => $type
+                'account_type' => $type,
             )
         );
         $rows = $statement->fetchAll();
@@ -94,20 +94,21 @@ class PdoAccountRepository
         foreach ($rows as $row) {
             $objs[] = $this->rowToAccount($row);
         }
+
         return $objs;
     }
 
     public function getUserAccountsByType($username, $type)
     {
         $statement = $this->pdo->prepare(
-            "SELECT account.* FROM account_user
+            'SELECT account.* FROM account_user
             JOIN account ON account.name=account_user.account_name
-            WHERE account_user.user_name=:user_name AND account.account_type=:account_type"
+            WHERE account_user.user_name=:user_name AND account.account_type=:account_type'
         );
         $statement->execute(
             array(
                 'user_name' => $username,
-                'account_type' => $type
+                'account_type' => $type,
             )
         );
         $rows = $statement->fetchAll();
@@ -115,17 +116,18 @@ class PdoAccountRepository
         foreach ($rows as $row) {
             $objs[] = $this->rowToAccount($row);
         }
+
         return $objs;
     }
 
     private function userExistsByName($name)
     {
         $statement = $this->pdo->prepare(
-            "SELECT name FROM user WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1"
+            'SELECT name FROM user WHERE name=:name AND (deleted_at IS NULL OR deleted_at=0) LIMIT 1'
         );
         $statement->execute(array('name' => $name));
 
-        return !!$statement->fetch();
+        return (bool) $statement->fetch();
     }
 
     public function getAll($limit = 10, $search = '', $accountType = '')
@@ -137,7 +139,7 @@ class PdoAccountRepository
 
         if ($search) {
             $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
-            $aVal[':search'] = "%".$search."%";
+            $aVal[':search'] = '%'.$search.'%';
         }
         if ($accountType) {
             $sql .= ' AND account_type = :account_type ';
@@ -151,15 +153,16 @@ class PdoAccountRepository
         $accounts = array();
 
         foreach ($rows as $row) {
-            $accounts [$row['name']]= $this->rowToAccount($row);
+            $accounts[$row['name']] = $this->rowToAccount($row);
         }
+
         return $accounts;
     }
 
     private function rowToAccount($row)
     {
         $account = new Account($row['name']);
-    
+
         return $account->setCreatedAt($row['created_at'])
             ->setDeletedAt($row['deleted_at'])
             ->setAbout($row['about'])
@@ -199,9 +202,10 @@ class PdoAccountRepository
                     ':email' => $account->getEmail(),
                     ':mobile' => $account->getMobile(),
                     ':url' => $account->getUrl(),
-                    ':status' =>$account->getStatus()
+                    ':status' => $account->getStatus(),
                 )
             );
+
             return $row;
         } else {
             return false;
@@ -231,7 +235,7 @@ class PdoAccountRepository
                 ':status' => $account->getStatus(),
                 ':message' => $account->getMessage(),
                 ':approved_at' => $account->getApprovedAt(),
-                ':expire_at' => $account->getExpireAt()
+                ':expire_at' => $account->getExpireAt(),
             )
         );
     }
@@ -239,21 +243,21 @@ class PdoAccountRepository
     public function delete($name)
     {
         if (!$name) {
-            throw new RuntimeException("account not specified");
+            throw new RuntimeException('account not specified');
         }
 
-        $statement = $this->pdo->prepare("UPDATE account SET deleted_at = :deleted_at WHERE name=:name");
+        $statement = $this->pdo->prepare('UPDATE account SET deleted_at = :deleted_at WHERE name=:name');
 
         $statement->execute(array(
             ':deleted_at' => time(),
-            ':name' => $name
+            ':name' => $name,
         ));
     }
 
     public function getAccountUsers($accountName)
     {
         $statement = $this->pdo->
-        prepare("SELECT * FROM account_user WHERE account_name = :account_name ORDER BY user_name ASC");
+        prepare('SELECT * FROM account_user WHERE account_name = :account_name ORDER BY user_name ASC');
         $statement->execute(array(':account_name' => $accountName));
         $rows = $statement->fetchAll();
 
@@ -262,17 +266,19 @@ class PdoAccountRepository
         foreach ($rows as $row) {
             $aUsers[] = $row['user_name'];
         }
+
         return $aUsers;
     }
 
     public function getAccountMembers($accountName)
     {
-        $statement = $this->pdo->prepare("SELECT au.*, a.email FROM account_user AS au
+        $statement = $this->pdo->prepare('SELECT au.*, a.email FROM account_user AS au
                 JOIN account AS a ON au.user_name = a.name
                 WHERE  au.account_name = :account_name
-            ORDER BY au.user_name ASC");
+            ORDER BY au.user_name ASC');
         $statement->execute(array(':account_name' => $accountName));
         $rows = $statement->fetchAll();
+
         return $rows;
     }
 
@@ -286,7 +292,7 @@ class PdoAccountRepository
         $statement->execute(
             array(
                 ':account_name' => $accountName,
-                ':user_name' => $userName
+                ':user_name' => $userName,
             )
         );
     }
@@ -299,8 +305,9 @@ class PdoAccountRepository
         );
         $statement->execute(array(':account_name' => $accountName,
             ':user_name' => $userName,
-            ':is_owner' =>$isOwner
+            ':is_owner' => $isOwner,
         ));
+
         return true;
     }
 
@@ -310,17 +317,18 @@ class PdoAccountRepository
             'SELECT  AU.account_name FROM account_user As AU
             JOIN  account as A ON AU.account_name = A.name
             WHERE AU.user_name = :user_name
-            AND (deleted_at IS NULL OR deleted_at=0) 
+            AND (deleted_at IS NULL OR deleted_at=0)
             ORDER BY AU.account_name ASC'
         );
-        $statement->execute(array( ':user_name' => $userName));
+        $statement->execute(array(':user_name' => $userName));
         $rows = $statement->fetchAll();
 
         $accounts = array();
 
         foreach ($rows as $row) {
-            $accounts[]= $this->getByName($row['account_name']);
+            $accounts[] = $this->getByName($row['account_name']);
         }
+
         return $accounts;
     }
 
@@ -329,6 +337,7 @@ class PdoAccountRepository
         $statement = $this->pdo->
         prepare('SELECT * FROM account_user WHERE account_name =:account_name AND user_name =:user_name LIMIT 1');
         $statement->execute(array(':account_name' => $accountName, ':user_name' => $userName));
+
         return $statement->fetch();
     }
 
@@ -341,27 +350,28 @@ class PdoAccountRepository
 
         $row = $statement->execute(array(':account_name' => $accountName,
             ':user_name' => $userName,
-            ':is_owner' =>$isOwner
+            ':is_owner' => $isOwner,
         ));
+
         return $row;
     }
 
     public function setEmailVerifiedStamp(Account $account, $stamp)
     {
         if (!$account) {
-            throw new RuntimeException("Account not specified");
+            throw new RuntimeException('Account not specified');
         }
 
         $statement = $this->pdo->prepare(
-            "UPDATE account SET
+            'UPDATE account SET
             email_verified_at = :stamp
-            WHERE name=:name"
+            WHERE name=:name'
         );
 
         $statement->execute(
             array(
                 ':stamp' => $stamp,
-                ':name' => $account->getName()
+                ':name' => $account->getName(),
             )
         );
     }
@@ -369,19 +379,19 @@ class PdoAccountRepository
     public function setMobileVerifiedStamp(Account $account, $stamp)
     {
         if (!$account) {
-            throw new RuntimeException("Account not specified");
+            throw new RuntimeException('Account not specified');
         }
 
         $statement = $this->pdo->prepare(
-            "UPDATE account SET
+            'UPDATE account SET
             mobile_verified_at = :stamp
-            WHERE name=:name"
+            WHERE name=:name'
         );
 
         $statement->execute(
             array(
                 ':stamp' => $stamp,
-                ':name' => $account->getName()
+                ':name' => $account->getName(),
             )
         );
     }
@@ -389,21 +399,22 @@ class PdoAccountRepository
     public function setMobileCode(Account $account)
     {
         if (!$account) {
-            throw new RuntimeException("Account not specified");
+            throw new RuntimeException('Account not specified');
         }
         $code = rand(10000000, 99999999);
         $statement = $this->pdo->prepare(
-            "UPDATE account SET
+            'UPDATE account SET
             mobile_code = :code
-            WHERE name=:name"
+            WHERE name=:name'
         );
 
         $statement->execute(
             array(
                 ':code' => $code,
-                ':name' => $account->getName()
+                ':name' => $account->getName(),
             )
         );
+
         return $code;
     }
 
@@ -420,6 +431,27 @@ class PdoAccountRepository
         $statement->execute($aVal);
         $rows = $statement->fetch();
 
-        return $rows? $rows['totRec'] : 0;
+        return $rows ? $rows['totRec'] : 0;
+    }
+
+    public function getUsersByAcount($accountName)
+    {
+        $statement = $this->pdo->
+        prepare('SELECT * FROM account_user WHERE account_name = :account_name ORDER BY user_name ASC');
+        $statement->execute(array(':account_name' => $accountName));
+        $rows = $statement->fetchAll(PDO::FETCH_ASSOC);
+
+        return $rows;
+    }
+
+    public function updateAccUser($accountName, $username, $isOwner)
+    {
+        $statement = $this->pdo->prepare('UPDATE account_user SET is_owner = :is_owner WHERE account_name = :account_name AND user_name =:username');
+
+        return $statement->execute([
+            ':is_owner' => $isOwner,
+            ':account_name' => $accountName,
+            ':username' => $username,
+        ]);
     }
 }

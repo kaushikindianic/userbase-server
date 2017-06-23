@@ -1,62 +1,81 @@
-{% extends "admin/layout.html.twig" %} 
+{% extends "admin/layout.html.twig" %}
 {% block content %}
 
-<h2>Account: {{ accountName }}</h2>
-<h3>Users Assigned List</h3>
-<form action="#" method="post" name="frmAccUser" id="frmAccUser">
-    <input type="hidden" name="delAssignUser" id="delAssignUser" value="" />
-    <table class="table">
-        <tr>
-            <th>Users</th>
-            <th>Action</th>
-        </tr>
-        {% for aAccUser in aAccUsers %}
-        <tr>
-            <td>{{ aAccUser }}</td>
-            <td><a href="#" class="jsUserRemove" data-username="{{ aAccUser }}"> <span class="fa fa-remove"></span></a></td>
-        </tr>
-        {% endfor %}
-    </table>
-</form>
-<!-- Button trigger modal -->
-<div class="buttonbox">   
-    <a href="{{ path('admin_account_view', {'accountname': accountName })}}" class="btn btn-default" role="button">Back</a>
-    <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true" 
-        data-backdrop="static">Add User</button>
-</div>
-<!-- Modal -->
-<div class="modal fade" id="popupAssignUsers" tabindex="-1" role="dialog"
-    aria-labelledby="myModalLabel">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"
-                    aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                <h4 class="modal-title" id="myModalLabel">Seach users to add</h4>
-            </div>
-            <div class="modal-body">
-                <div id="msgAppId" style="display: none;"
-                    class="alert alert-success" role="alert"></div>
-                <div>
-                    <form>
-                        <div class="form-group">
-                            <label for="recipient-name" class="control-label">Users:</label>
-                            <input type="text" class="form-control" id="searchAccUser" name="searchAccUser">
-                        </div>
-                    </form>
+    <h2>Account: {{ accountName }}</h2>
+    <h3>Users Assigned List</h3>
+    <form action="#" method="post" name="frmAccUser" id="frmAccUser">
+        <input type="hidden" name="delAssignUser" id="delAssignUser" value="" />
+        <table class="table">
+            <tr>
+                <th>Users</th>
+                <th>Is Owner?</th>
+                <th>Action</th>
+            </tr>
+            {% for aAccUser in aAccUsers %}
+            <tr>
+                <td>{{ aAccUser.user_name }}</td>
+
+                <td><input name="{{ aAccUser.user_name }}"  data-style="ios" class="checkbox-toggle"  type="checkbox" {% if aAccUser.is_owner %} checked="checked" {% endif %} ></td>
+
+                <td><a href="#" class="jsUserRemove" data-username="{{ aAccUser.user_name }}"> <span class="fa fa-remove"></span></a></td>
+            </tr>
+            {% endfor %}
+        </table>
+    </form>
+    <!-- Button trigger modal -->
+    <div class="buttonbox">
+        <a href="{{ path('admin_account_view', {'accountname': accountName })}}" class="btn btn-default" role="button">Back</a>
+        <button type="button" class="btn btn-primary" data-toggle="modal"  data-target="#popupAssignUsers" data-keyboard="true"
+            data-backdrop="static">Add User</button>
+    </div>
+    <!-- Modal -->
+    <div class="modal fade" id="popupAssignUsers" tabindex="-1" role="dialog"
+        aria-labelledby="myModalLabel">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"
+                        aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    <h4 class="modal-title" id="myModalLabel">Seach users to add</h4>
                 </div>
-                <div id="userAssignContent"></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <div class="modal-body">
+                    <div id="msgAppId" style="display: none;"
+                        class="alert alert-success" role="alert"></div>
+                    <div>
+                        <form>
+                            <div class="form-group">
+                                <label for="recipient-name" class="control-label">Users:</label>
+                                <input type="text" class="form-control" id="searchAccUser" name="searchAccUser">
+                            </div>
+                        </form>
+                    </div>
+                    <div id="userAssignContent"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
-<script type="text/javascript">
-    window.accUser = {url: "{{ path('admin_account_searchuser', {'accountname': accountName }) }}" };
-</script>
+{% endblock %}
+
+
+{% block stylesheets_custom %}
+    <link rel="stylesheet" href="{{ path("bower") }}/bootstrap-toggle/css/bootstrap-toggle.min.css">
+    <style>
+      .toggle.ios, .toggle-on.ios, .toggle-off.ios { border-radius: 20px; }
+      .toggle.ios .toggle-handle { border-radius: 20px; }
+    </style>
+{% endblock %}
+
+{% block scripts_custom %}
+    <script type="text/javascript">
+        window.accUser = {url: "{{ path('admin_account_searchuser', {'accountname': accountName }) }}" };
+        window.accUserIsOwner = {url: "{{ path('admin_account_user_update', {'accountname': accountName }) }}" };
+    </script>
+
+    <script src="{{ path("bower") }}/bootstrap-toggle/js/bootstrap-toggle.min.js"></script>
 {% endblock %}

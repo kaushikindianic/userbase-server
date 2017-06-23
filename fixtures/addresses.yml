@@ -1,0 +1,18 @@
+table.account_address:
+    random_account_address{1..5}:
+    #    id
+        account_name (unique): <randomElement(array ('charlie', 'bob', 'alice', 'eve', 'acme'))>
+        addressline1: <nl_NL:streetName()>
+        addressline2: <nl_NL:streetAddress()>
+        postalcode: <nl_NL:postcode()>
+        city: <nl_NL:city()>
+        country: <identity(substr($this->fake('country'), 0, 30 ))>
+
+    random_account_address_single:
+    #    id
+        account_name: 'alice'
+        addressline1: <streetName()>
+        addressline2: <streetAddress()>
+        postalcode: <postcode()>
+        city: <city()>
+        country: <identity(substr($this->fake('country'), 0, 30 ))>

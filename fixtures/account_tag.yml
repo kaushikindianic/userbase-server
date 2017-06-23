@@ -1,0 +1,13 @@
+table.account_tag:
+    random_account_tag_customer{1..2}:
+        account_name (unique): <randomElement(array ( 'eve', 'david'))>
+        tag_id: @random_tag_customer->id
+
+
+    random_account_tag_employee{1..2}:
+        account_name (unique): <randomElement(array ( 'alice', 'bob'))>
+        tag_id: @random_tag_employee->id
+
+    random_account_tag_admin:
+        account_name: 'charlie'
+        tag_id: @random_tag_admin->id
