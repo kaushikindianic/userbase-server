@@ -5,12 +5,13 @@
     "keywords": ["login", "signup", "user", "account", "linkorb"],
     "type": "library",
     "license": "MIT",
-    "authors": [{
-        "name": "Joost Faassen",
-        "email": "j.faassen@linkorb.com",
-        "role": "Development"
-    }],
-    "authors" : [{
+    "authors": [
+        {
+            "name": "Joost Faassen",
+            "email": "j.faassen@linkorb.com",
+            "role": "Development"
+        },
+        {
             "name" : "LinkORB",
             "email" : "engineering@linkorb.com",
             "role" : "Development"
