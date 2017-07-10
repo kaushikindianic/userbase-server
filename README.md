@@ -34,6 +34,25 @@ Setup the pdo connection details (dsn, username, password) in the `pdo` section.
 
 If you're using Herald as a Mailer, configure it in the `herald` section of the `config.yml`
 
+### `jwt_issuer`
+
+Userbase can issue Json Web Tokens (JWT) to users.  The JWT provides a user with a way to prove a claim on their username at apps which:-
+
+1. rely on Userbase to provide user account information
+2. support authentication by JWT
+
+The apps must be registered in the `app` database table.  The registration info must include a value for `base_url` which points to the app.
+
+Userbase must be configured with the following parameters to use this feature:-
+
+* `jwt_key_path`: Path to a private key with which to sign JWTs.
+
+The following parameters are optional:-
+
+* `jwt_algorithm`: Algorithm with which to sign JWTs.
+
+Apps should be configured with a `jwt_issuer_url` which is the full url of the Userbase path `/issue/jwt` (e.g. `http://userbase.example.com/issue/jwt`) and and `app_identifier` which matches the name of the app registered with Userbase.
+
 ## Starting the server
 
     php -S 0.0.0.0:8888 -t web/

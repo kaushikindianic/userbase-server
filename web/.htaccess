@@ -34,7 +34,7 @@
   # Rewrite URLs of the form 'index.php?q=x'.
   RewriteCond %{REQUEST_FILENAME} !-f
   RewriteCond %{REQUEST_FILENAME} !-d
-  RewriteRule ^(.*)$ index.php?/$1 [L,QSA]
+  RewriteRule ^(.*)$ index.php/$1 [L,QSA]
 </IfModule>
 
 # $Id: .htaccess,v 1.90 2007/10/05 14:43:23 dries Exp $

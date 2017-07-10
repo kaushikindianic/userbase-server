@@ -41,3 +41,7 @@ oauth2:
         facebook:
             clientId: <facebookClientId>
             secretSecret: <secret>
+
+jwt_issuer:
+    jwt_key_path: /path/to/jwt_key.rsa
+    jwt_algorithm: ~
