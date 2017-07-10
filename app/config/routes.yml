@@ -565,6 +565,15 @@ account_email_unverify:
     path: /admin/accounts/{accountName}/email/{id}/unverify
     defaults: { _controller: UserBase\Server\Controller\AccountEmailController::unverifyAction }
 
+
+# ISSUER #
+issuer_login_form:
+    path: /begin-issuer-authentication
+    defaults: { _controller: UserBase\Server\Controller\JwtIssuerController::loginFormAction }
+issuer_issue_jwt:
+    path: /issue/jwt
+    defaults: { _controller: UserBase\Server\Controller\JwtIssuerController::issueJwtAction }
+
 # Fixes
 
 fix_emails:

@@ -377,6 +377,16 @@ class Application extends SilexApplication
                 'http' => true,
                 'users' => $this->getUserRepository(),
             ),
+            'issuer' => array(
+                'anonymous' => false,
+                'pattern' => '^/issue',
+                'form' => array(
+                    'use_forward' => true,
+                    'login_path' => 'issuer_login_form',
+                    'check_path' => '/issue/authenticate',
+                ),
+                'users' => $this->getUserRepository(),
+            ),
             'default' => array(
                 'anonymous' => true,
                 'pattern' => '^/',
