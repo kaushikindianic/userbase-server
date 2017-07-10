@@ -50,7 +50,6 @@
         "hipchat/hipchat-php": ">=1.0.0"
     },
     "require-dev": {
-        "php": "7.0.0 - 7.0.5 || ^7.0.7",
         "doctrine/dbal": "~2.5",
         "dbtk/schema-loader": "~2.1",
         "linkorb/haigha": "~2.2",
