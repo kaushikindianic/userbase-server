@@ -1,0 +1,16 @@
+{% extends "@PreAuth/layout.html.twig" %}
+
+{% block content %}
+<h1>{{ 'logout.header' | trans }}</h1>
+<p>{{ 'logout.message' | trans }}</p>
+
+{% if (apps | length) == 1 %}
+{# later, when logging out logs out all apps, we can show a list of apps that #}
+{# have been logged out. for now, it is incorrect to list more than one app #}
+<ul class="list list-unstyled">
+    {% for app in apps %}
+    <li><span class="glyphicon glyphicon-ok" aria-hidden="true"></span> <a href="{{ app.baseUrl }}">{{ app.displayName | default(app.name) }}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endblock %}

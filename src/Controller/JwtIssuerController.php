@@ -100,4 +100,17 @@ class JwtIssuerController
             "{$clientApp->getBaseUrl()}{$authPath}?jwt={$jwt}"
         );
     }
+
+    public function exitAction(Application $app, Request $request)
+    {
+        $apps = $app['session']->get('issuer.app_tracking', []);
+        $app['session']->invalidate(0);
+
+        return $app['twig']->render(
+            'issuer/exit.html.twig',
+            [
+                'apps' => $apps,
+            ]
+        );
+    }
 }

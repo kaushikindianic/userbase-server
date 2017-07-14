@@ -28,6 +28,10 @@ logout/success:
     path: /logout/success
     defaults:  { _controller: UserBase\Server\Controller\LoginController::logoutSuccessAction }
 
+exit:
+    path: /exit
+    defaults:  { _controller: UserBase\Server\Controller\JwtIssuerController::exitAction }
+
 signup:
     path: /signup
     defaults:  { _controller: UserBase\Server\Controller\SignupController::signupAction }

@@ -377,6 +377,10 @@ class Application extends SilexApplication
                 'http' => true,
                 'users' => $this->getUserRepository(),
             ),
+            'exit' => array(
+                'pattern' => '^/exit',
+                'anonymous' => true,
+            ),
             'issuer' => array(
                 'anonymous' => false,
                 'pattern' => '^/issue',
@@ -384,6 +388,11 @@ class Application extends SilexApplication
                     'use_forward' => true,
                     'login_path' => 'issuer_login_form',
                     'check_path' => '/issue/authenticate',
+                ),
+                'logout' => array(
+                    'logout_path' => '/issue/deauthenticate',
+                    'target_url' => '/exit',
+                    'invalidate_session' => false,
                 ),
                 'users' => $this->getUserRepository(),
             ),
