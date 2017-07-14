@@ -92,6 +92,10 @@ class JwtIssuerController
 
         $authPath = self::DEFAULT_APP_AUTH_PATH;
 
+        $apps = $app['session']->get('issuer.app_tracking', []);
+        $apps[$clientApp->getName()] = $clientApp;
+        $app['session']->set('issuer.app_tracking', $apps);
+
         return new RedirectResponse(
             "{$clientApp->getBaseUrl()}{$authPath}?jwt={$jwt}"
         );
