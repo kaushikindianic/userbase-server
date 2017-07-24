@@ -642,15 +642,19 @@ class ApiController
         $data['displayName'] = $displayName;
         $data['inviter'] = $inviter;
         $data['inviter_org'] = $inviterOrg;
+        $templateName = 'invite'; // default;
 
         $payloadData = json_decode($payload, true);
         if ($payloadData && is_array($payloadData)) {
             if (isset($payloadData['properties'])) {
                 $data = array_merge($data, $payloadData['properties']);
+                if ($data['template']) {
+                    $templateName = $data['template'];
+                }
             }
         }
 
-        $app['mailer']->sendTemplate('invite', ['email' => $email, 'display_name' => $displayName], $data);
+        $app['mailer']->sendTemplate($templateName, ['email' => $email, 'display_name' => $displayName], $data);
         $inviteRepo->registerAttempt($email, time());
 
         $data = ['status' => 'ok'];
