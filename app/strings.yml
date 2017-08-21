@@ -40,8 +40,8 @@ error.account_not_user: The entered account information is not a personal accoun
 error.mobile_not_verified: This account does not have a verified mobile.
 error.no_valid_mobile: This account does not have a valid mobile.
 error.invalid_accountname_word: username not a valid name.
-error.email_invalid: Invalid Email address
-error.username_exists: username alrady exists
+error.email_invalid: Invalid email address
+error.username_exists: username already exists
 
 index.pleaselogin: Please login
 index.welcome_username: Hello %username%
