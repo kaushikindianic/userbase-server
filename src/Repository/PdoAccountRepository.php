@@ -133,19 +133,31 @@ class PdoAccountRepository
     public function getAll($limit = 10, $search = '', $accountType = '')
     {
         $aVal = array();
+
+        /*
         $sql = 'SELECT a.*
             FROM account AS a
             WHERE (a.deleted_at IS NULL OR a.deleted_at = 0)';
+        */
+        $sql = 'SELECT a.* FROM account AS a';
+
+        if ($search) {
+            $sql .= ' LEFT JOIN account_email AS ae ON a.name = ae.account_name ';
+        }
+
+        $sql .= ' WHERE (a.deleted_at IS NULL OR a.deleted_at = 0) ';
 
         if ($search) {
             $sql .= ' AND name LIKE  :search  OR  display_name LIKE :search ';
+            $sql .= ' OR mobile LIKE  :search ';
+            $sql .= 'OR (a.email LIKE :search AND ae.email LIKE :search )';
             $aVal[':search'] = '%'.$search.'%';
         }
         if ($accountType) {
             $sql .= ' AND account_type = :account_type ';
             $aVal[':account_type'] = $accountType;
         }
-        $sql .= '  ORDER BY created_at DESC';
+        $sql .= ' ORDER BY created_at DESC';
 
         $statement = $this->pdo->prepare($sql);
         $statement->execute($aVal);
