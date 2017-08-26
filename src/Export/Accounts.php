@@ -1,11 +1,13 @@
 <?php
+
 namespace UserBase\Server\Export;
 
 use Symfony\Component\HttpFoundation\Response;
 use DataTable\Core\Table;
 use DataTable\Core\Writer\Csv as CsvWriter;
-use DataTable\Core\Reader\Csv as CsvReader;
-use Exception;
+
+ini_set('memory_limit', '-1');
+set_time_limit(0);
 
 class Accounts
 {
@@ -24,7 +26,7 @@ class Accounts
 
         $table = new Table();
         $table->setName(basename('accounts.csv'));
-        $nameColumn = $table->getColumnByName("name");
+        $nameColumn = $table->getColumnByName('name');
         $displayNameColumn = $table->getColumnByName('display_name');
         $aboutColumn = $table->getColumnByName('about');
         $createdAtColumn = $table->getColumnByName('created_at');
@@ -38,7 +40,7 @@ class Accounts
         $mobileVerfiedAt = $table->getColumnByName('mobile_verfied_at');
 
         foreach ($tags as $tag) {
-            $tagColumn = $table->getColumnByName('tag.' . $tag['name']);
+            $tagColumn = $table->getColumnByName('tag.'.$tag['name']);
         }
         $accountTags = $this->app->getAccountTagRepository()->findAll();
         foreach ($accountTags as $accountTag) {
@@ -48,7 +50,7 @@ class Accounts
         }
         //-- Add properities --//
         foreach ($properties as $property) {
-            $propertyColumn = $table->getColumnByName('property.' . $property['name']);
+            $propertyColumn = $table->getColumnByName('property.'.$property['name']);
         }
         $accountProperties = $this->app->getAccountPropertyRepository()->findAll();
         foreach ($accountProperties as $accountProperty) {
@@ -61,7 +63,7 @@ class Accounts
         foreach ($oAccounts as $oAccount) {
             $row = $table->getRowByIndex($i);
 
-            $nameColumn = $row->getCellByColumnName("name");
+            $nameColumn = $row->getCellByColumnName('name');
             $nameColumn->setValue($oAccount->getName());
 
             $displayNameColumn = $row->getCellByColumnName('display_name');
@@ -71,8 +73,8 @@ class Accounts
             $aboutColumn->setValue($oAccount->getAbout());
 
             $createdAtColumn = $row->getCellByColumnName('created_at');
-            $createdAtColumn->setValue((($oAccount->getCreatedAt())?
-                date('Y-m-d H:i:s', $oAccount->getCreatedAt()):0));
+            $createdAtColumn->setValue((($oAccount->getCreatedAt()) ?
+                date('Y-m-d H:i:s', $oAccount->getCreatedAt()) : 0));
 
             $accountTypeColumn = $row->getCellByColumnName('account_type');
             $accountTypeColumn->setValue($oAccount->getAccountType());
@@ -90,16 +92,15 @@ class Accounts
             $mobileColumn->setValue($oAccount->getMobile());
 
             $emailVerifiedAt = $row->getCellByColumnName('email_verified_at');
-            $emailVerifiedAt->setValue(($oAccount->getEmailVerifiedAt())?
+            $emailVerifiedAt->setValue(($oAccount->getEmailVerifiedAt()) ?
                 date('Y-m-d H:i:s', $oAccount->getEmailVerifiedAt()) : 0);
 
             $mobileVerfiedAt = $row->getCellByColumnName('mobile_verfied_at');
-            $mobileVerfiedAt->setValue(($oAccount->getMobileVerifiedAt())?
+            $mobileVerfiedAt->setValue(($oAccount->getMobileVerifiedAt()) ?
             date('Y-m-d H:i:s', $oAccount->getMobileVerifiedAt()) : 0);
 
-
             foreach ($tags as $tag) {
-                $tagColumn = $row->getCellByColumnName('tag.' . $tag['name']);
+                $tagColumn = $row->getCellByColumnName('tag.'.$tag['name']);
                 if ($oAccount->hasTagName($tag['name'])) {
                     $tagColumn->setValue('Y');
                 } else {
@@ -108,24 +109,28 @@ class Accounts
             }
 
             foreach ($properties as $property) {
-                $propertyColumn = $row->getCellByColumnName('property.' . $property['name']);
+                $propertyColumn = $row->getCellByColumnName('property.'.$property['name']);
                 if ($oAccount->hasPropertyName($property['name'])) {
                     $propertyColumn->setValue($oAccount->getPropertyNameValue($property['name']));
                 } else {
                     $propertyColumn->setValue('');
                 }
             }
-            $i++;
+            ++$i;
         }
+        unset($oAccounts, $properties, $accountProperties, $accountTags);
+
         // use a writer to export the datatable to a .csv file
         $writer = new CsvWriter();
         $writer->setEnclosure('');
         $output = $writer->write($table);
 
         $response = new Response($output);
-        $response->headers->set('Content-Type', "text/csv");
+        $response->headers->set('Content-Type', 'text/csv');
         $response->headers->set('Content-Disposition', 'attachment; filename="accounts.csv"');
-        $response->headers->set('Content-Transfer-Encoding', "binary");
+        $response->headers->set('Content-Transfer-Encoding', 'binary');
+        $response->headers->set('Expires', '0');
+
         return $response;
     }
 }
