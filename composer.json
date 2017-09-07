@@ -47,7 +47,8 @@
         "linkorb/xuid": "~1.0",
         "linkorb/boost": "~1.0",
         "league/tactician": "~1.0",
-        "hipchat/hipchat-php": ">=1.0.0"
+        "hipchat/hipchat-php": ">=1.0.0",
+        "hackzilla/password-generator-bundle": "^2.0.0"
     },
     "require-dev": {
         "doctrine/dbal": "~2.5",

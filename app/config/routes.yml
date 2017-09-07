@@ -248,6 +248,10 @@ admin_event_index:
     path: /admin/events
     defaults:  { _controller: UserBase\Server\Controller\AdminController::eventIndexAction }
 
+admin_random_password:
+    path: /admin/password-generator
+    defaults:  { _controller: UserBase\Server\Controller\AdminController::addApikeyAction }
+
 # USER MODULE
 admin_user_list:
     path: /admin/users
