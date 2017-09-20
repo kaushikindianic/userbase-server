@@ -41,12 +41,6 @@ columns:
         arguments:
             formatter: url
 
-# account_property
-    account_property.accont_name:
-        method: faker
-        arguments:
-            formatter: userName
-
 # user
     user.name:
         name: faker
@@ -58,17 +52,6 @@ columns:
             - identities.user_name
             - api_key.username
 
-# account_user
-    account_user.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-    account_user.user_name:
-        method: faker
-        arguments:
-            formatter: userName
-
 # app
     app.name:
         method: faker
@@ -77,23 +60,7 @@ columns:
         cascades:
             - app_user.app_name
 
-# app_user
-    app_user.app_name:
-        method: faker
-        arguments:
-            formatter: company
-
-    app_user.user_name:
-        method: faker
-        arguments:
-            formatter: userName
-
 # identities
-    identities.user_name:
-        method: faker
-        arguments:
-            formatter: userName
-
     identities.identity_email:
         method: faker
         arguments:
@@ -126,62 +93,7 @@ columns:
             formatter: lastName
 
 # event
-    event.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
     event.admin_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-# api_key
-    api_key.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-    api_key.username:
-        method: faker
-        arguments:
-            formatter: userName
-
-# space
-    space.account_name:
-        method: faker
-        arguments:
-            formatter: domainName
-
-# blacklist
-    blacklist.account_name:
-        method: faker
-        arguments: userName
-
-# account_tag
-    account_tag.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-# account_connection
-    account_connection.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-    account_connection.connection_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-# account_notification
-    account_notification.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-    account_notification.source_account_name:
         method: faker
         arguments:
             formatter: userName
@@ -198,11 +110,6 @@ columns:
             formatter: phoneNumber
 
 # account_address
-    account_address.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
     account_address.addressline1:
         method: faker
         arguments:
@@ -229,11 +136,6 @@ columns:
             formatter: country
 
 # account_email
-    account_email.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
     account_email.email:
         method: faker
         arguments:
@@ -244,16 +146,6 @@ columns:
         method: faker
         arguments:
             formatter: email
-
-    invite.account_name:
-        method: faker
-        arguments:
-            formatter: userName
-
-    invite.inviter:
-        method: faker
-        arguments:
-            formatter: userName
 
     inivte.display_name:
         method: faker
