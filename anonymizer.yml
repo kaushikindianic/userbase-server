@@ -1,0 +1,153 @@
+columns:
+# account
+    account.name:
+        method: faker
+        arguments:
+            formatter: userName
+        cascades:
+            - account_property.accont_name
+            - account_user.account_name
+            - event.account_name
+            - api_key.account_name
+            - space.account_name
+            - blacklist.account_name
+            - account_tag.account_name
+            - account_connection.account_name
+            - account_connection.connection_name
+            - account_notification.account_name
+            - account_notification.source_account_name
+            - account_address.account_name
+            - account_email.account_name
+            - invite.account_name
+            - invite.inviter
+
+    account.display_name:
+        method: faker
+        arguments:
+            formatter: name
+
+    account.email:
+        method: faker
+        arguments:
+            formatter: email
+
+    account.mobile:
+        method: faker
+        arguments:
+            formatter: phoneNumber
+
+    account.url:
+        method: faker
+        arguments:
+            formatter: url
+
+# user
+    user.name:
+        name: faker
+        arguments:
+            formatter: userName
+        cascades:
+            - account_user.user_name
+            - app_user.user_name
+            - identities.user_name
+            - api_key.username
+
+# app
+    app.name:
+        method: faker
+        arguments:
+            formatter: company
+        cascades:
+            - app_user.app_name
+
+# identities
+    identities.identity_email:
+        method: faker
+        arguments:
+            formatter: email
+
+    identities.identity_first_name:
+        method: faker
+        arguments:
+            formatter: firstName
+
+    identities.identity_last_name:
+        method: faker
+        arguments:
+            formatter: lastName
+
+# oauth_users
+    oauth_users.username:
+        method: faker
+        arguments:
+            formatter: userName
+
+    oauth_users.first_name:
+        method: faker
+        arguments:
+            formatter: firstName
+
+    oauth_users.last_name:
+        method: faker
+        arguments:
+            formatter: lastName
+
+# event
+    event.admin_name:
+        method: faker
+        arguments:
+            formatter: userName
+
+# mobile_alias
+    mobile_alias.mobile:
+        method: faker
+        arguments:
+            formatter: phoneNumber
+
+    mobile_alias.mobile_alias:
+        method: faker
+        arguments:
+            formatter: phoneNumber
+
+# account_address
+    account_address.addressline1:
+        method: faker
+        arguments:
+            formatter: streetName
+
+    account_address.addressline2:
+        method: faker
+        arguments:
+            formatter: streetAddress
+
+    account_address.postalcode:
+        method: faker
+        arguments:
+            formatter: postcode
+
+    account_address.city:
+        method: faker
+        arguments:
+            formatter: city
+
+    account_address.country:
+        method: faker
+        arguments:
+            formatter: country
+
+# account_email
+    account_email.email:
+        method: faker
+        arguments:
+            formatter: email
+
+#  invite
+    invite.email:
+        method: faker
+        arguments:
+            formatter: email
+
+    inivte.display_name:
+        method: faker
+        arguments:
+            formatter: name
